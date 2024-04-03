@@ -2,6 +2,7 @@ import { useState, useRef, } from 'react'
 import AuthService from '../services/auth-service';
 import { RiEyeFill, RiEyeOffFill } from 'react-icons/ri';
 import Loader from '../constants/Loader';
+import states from './nigerian-state';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -29,6 +30,10 @@ const SignUp = () => {
     password: '',
     password_confirmation: '',
     avatar: null,
+    seller: false,
+    state: '',
+    store_name: '',
+    mobile: '',
   })
 
   const handleChange = (e: any) => {
@@ -52,7 +57,7 @@ const SignUp = () => {
       toast.success(response?.message)
       localStorage.setItem('user', JSON.stringify(response?.jwt_token));
       setTimeout(() => {
-        window.location.href = '/dashboard/overview';
+        window.location.href = '/';
       }, 2000)
     } catch (error:any) {
       // Handle error
@@ -68,21 +73,36 @@ const SignUp = () => {
     <ToastContainer />
     <div className='bg-gray-900 py-10'>
       <div className="max-w-md mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 py-12 px-4 sm:px-6 lg:px-8">
-        <h5 className="font-bold text-center mb-8">Sign Up</h5>
+        <h5 className="font-bold text-center mb-8">Create Account</h5>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="name" className="block text-sm text-gray-700 font-bold">Name:</label>
-            <input type="text" name="name" id="name" className="mt-1 p-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-b border-gray-300 rounded-md" onChange={handleChange} />
+            <input placeholder='Full Name' required type="text" name="name" id="name" className="mt-1 p-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-b border-gray-300 rounded-md" onChange={handleChange} />
           </div>
+
           <div>
-            <label htmlFor="email" className="block text-sm text-gray-700 font-bold">Email:</label>
-            <input type="email" name="email" id="email" className="mt-1 border-b focus:outline-none focus:ring-blue-500 p-2 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" onChange={handleChange} />
+            <input type="email" required placeholder='Email' name="email" id="email" className="mt-1 border-b focus:outline-none focus:ring-blue-500 p-2 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" onChange={handleChange} />
+          </div>
+
+          <div>
+            <input type="text" required placeholder='Mobile' name="mobile" id="mobile" className="mt-1 border-b focus:outline-none focus:ring-blue-500 p-2 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" onChange={handleChange} />
+          </div>
+
+          <div>
+            <input type="text" required placeholder='Store name' name="store_name" id="store_name" className="mt-1 border-b focus:outline-none focus:ring-blue-500 p-2 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" onChange={handleChange} />
+          </div>
+
+          <div>
+            <select required value={user?.state} name="state" id="state" className="mt-1 border-b focus:outline-none focus:ring-blue-500 p-2 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" onChange={handleChange}>
+              <option>Select Location</option>
+              {states.map((state, index) => (
+                <option key={index} value={state}>{state}</option>
+              ))}
+            </select>
           </div>
 
           <div className="relative">
-            <label htmlFor="password" className="block text-sm text-gray-700 font-bold">Password:</label>
             <div className="mt-1 relative rounded-md shadow-sm">
-              <input type={showPassword ? 'text' : 'password'} name="password" id="password" className="focus:ring-0 focus:outline-none block w-full pr-10 sm:text-sm border-b border-gray-300 p-2 border-gray-300 rounded-md" onChange={handleChange} />
+              <input required type={showPassword ? 'text' : 'password'} name="password" id="password" placeholder='Password' className="focus:ring-0 focus:outline-none block w-full pr-10 sm:text-sm border-b border-gray-300 p-2 border-gray-300 rounded-md" onChange={handleChange} />
               <button type="button" className="absolute inset-y-0 right-0 pr-3 flex items-center" onClick={togglePasswordVisibility}>
                 {showPassword ? <RiEyeOffFill className="h-5 w-5 text-gray-400" /> : <RiEyeFill className="h-5 w-5 text-gray-400" />}
               </button>
@@ -90,9 +110,8 @@ const SignUp = () => {
           </div>
 
           <div className="relative">
-            <label htmlFor="password_confirmation" className="block text-sm text-gray-700 font-bold">Confirm Password:</label>
             <div className="mt-1 relative rounded-md shadow-sm">
-              <input type={showPasswordConfirmation ? 'text' : 'password'} name="password_confirmation" id="password_confirmation" className="focus:ring-0 focus:outline-none block border-b w-full pr-10 sm:text-sm border-gray-300 p-2 rounded-md" onChange={handleChange} />
+              <input required type={showPasswordConfirmation ? 'text' : 'password'} placeholder='Confirm Password' name="password_confirmation" id="password_confirmation" className="focus:ring-0 focus:outline-none block border-b w-full pr-10 sm:text-sm border-gray-300 p-2 rounded-md" onChange={handleChange} />
               <button type="button" className="absolute inset-y-0 right-0 pr-3 flex items-center" onClick={toggleShowPasswordConfirmation}>
                 {showPasswordConfirmation ? <RiEyeOffFill className="h-5 w-5 text-gray-400" /> : <RiEyeFill className="h-5 w-5 text-gray-400" />}
               </button>

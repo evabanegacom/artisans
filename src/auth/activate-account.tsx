@@ -5,10 +5,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import Loader from '../constants/Loader';
 import SuccessModal from '../components/success-modal';
 import { logout } from '../constants';
+import AuthService from '../services/auth-service';
 
 const ActivateAccount = () => {
   const searchParams = new URLSearchParams(window.location.search);
-  const token = searchParams.get('token');
+  const token:any = searchParams.get('token');
   const [loading, setLoading] = useState(false)
   const [  success, setSuccess ] = useState<any>({});
   const [ isOpen, setIsopen ] = useState(false)
@@ -16,13 +17,10 @@ const ActivateAccount = () => {
   // <a href="https://fin-man.fly.dev/api/v1/activate/<%= user.activation_token %>">Activate Account</a>
 
   const activateAccount = async () => {
-    const data:any = {
-      token: token
-    }
     setLoading(true)
     try {
       // const response = 'hello'
-      const response = await axios.post('https://fin-man.fly.dev/api/v1/activate', data);
+      const response = await AuthService.activateAccount(token);
       setSuccess(response)
       setTimeout(() => {
         // toast.success(response?.data?.message);

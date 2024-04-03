@@ -33,7 +33,7 @@ const Login = () => {
             localStorage.setItem('user', JSON.stringify(response.jwt_token));
             // Handle success, redirect, or perform additional actions
             setLoading(false)
-            window.location.href='/dashboard/overview'
+            window.location.href='/'
         } catch (error:any) {
             // Handle error
             toast.error('Invalid credentials')

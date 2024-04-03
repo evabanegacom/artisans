@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 
-const baseURL = import.meta.env.VITE_BASE_URL || 'https://fin-man.fly.dev/api/v1';
+const baseURL = import.meta.env.VITE_BASE_URL || 'http://localhost:3000/api/v1';
 export const api: AxiosInstance = axios.create({
   baseURL: baseURL,
 });
