@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux'
 import Footer from './components/footer.tsx/footer'
 import 'react-toastify/dist/ReactToastify.css';
 import routes from './routes';
+import Carousel from './components/banner/banner'
 
 function App() {
   const isLoggedin = useSelector((state: any) => state?.reducer?.auth?.isAuth);
@@ -24,6 +25,7 @@ function App() {
       <div className='w-full overflow-hidden'>
         <ToastContainer />
             <Navbar />
+            <Carousel />
         <BrowserRouter>
           <Suspense fallback={<Spinner size={16} color="text-blue-500" />}>
             <Routes>

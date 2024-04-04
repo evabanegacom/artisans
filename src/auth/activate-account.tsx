@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
-import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.css';
 import Loader from '../constants/Loader';
 import SuccessModal from '../components/success-modal';
