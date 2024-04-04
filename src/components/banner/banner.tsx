@@ -56,8 +56,8 @@ const Carousel: React.FC = () => {
           </div>
         </div>
       ))}
-      <button className="prev" onClick={prevBanner}>Prev</button>
-      <button className="next" onClick={nextBanner}>Next</button>
+      {/* <button className="prev" onClick={prevBanner}>Prev</button> */}
+      {/* <button className="next" onClick={nextBanner}>Next</button> */}
     </div>
   );
 };
