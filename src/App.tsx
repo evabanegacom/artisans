@@ -5,7 +5,7 @@ import ActivateAccount from './auth/activate-account'
 import ForgotPassword from './auth/forgot-password'
 import Login from './auth/login'
 import ResetPassword from './auth/reset-password'
-import SignUp from './auth/sign-up'
+import SignUp from './auth/seller-sign-up'
 import ErrorBoundary from './components/error-boundary'
 import Spinner from './constants/spinner'
 import Home from './pages/home/home'
@@ -18,14 +18,14 @@ import Carousel from './components/banner/banner'
 
 function App() {
   const isLoggedin = useSelector((state: any) => state?.reducer?.auth?.isAuth);
-  const isLoginOrSignUpPage = window.location.pathname === '/login' || window.location.pathname === '/signup' || window.location.pathname.includes('activate') || window.location.pathname === '/forgot-password' || window.location.pathname.includes('/reset-password');
+  const isLoginOrSignUpPage = window.location.pathname === '/login' || window.location.pathname === '/sign-up' || window.location.pathname.includes('activate') || window.location.pathname === '/forgot-password' || window.location.pathname.includes('/reset-password') || window.location.pathname === '/seller-signUp';
   return (
     <>
        <ErrorBoundary fallback={<div>Something went wrong</div>}>
       <div className='w-full overflow-hidden'>
         <ToastContainer />
             <Navbar />
-            <Carousel />
+            {!isLoginOrSignUpPage ? <Carousel /> : null}
         <BrowserRouter>
           <Suspense fallback={<Spinner size={16} color="text-blue-500" />}>
             <Routes>

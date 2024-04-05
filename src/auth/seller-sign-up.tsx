@@ -6,7 +6,7 @@ import states from './nigerian-state';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const SignUp = () => {
+const SellerSignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [ loading, setLoading ] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
@@ -30,8 +30,9 @@ const SignUp = () => {
     password: '',
     password_confirmation: '',
     avatar: null,
-    seller: false,
+    seller: true,
     state: '',
+    store_name: '',
     mobile: '',
   })
 
@@ -84,6 +85,10 @@ const SignUp = () => {
 
           <div>
             <input type="text" required placeholder='Mobile' name="mobile" id="mobile" className="mt-1 border-b focus:outline-none focus:ring-blue-500 p-2 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" onChange={handleChange} />
+          </div>
+
+          <div>
+            <input type="text" required placeholder='Store name' name="store_name" id="store_name" className="mt-1 border-b focus:outline-none focus:ring-blue-500 p-2 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" onChange={handleChange} />
           </div>
 
           <div>
@@ -144,4 +149,4 @@ const SignUp = () => {
   )
 }
 
-export default SignUp
+export default SellerSignUp

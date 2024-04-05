@@ -4,8 +4,12 @@ const ActivateAccount = lazy(() => import('./auth/activate-account'));
 const ForgotPassword = lazy(() => import('./auth/forgot-password'));
 const Login = lazy(() => import('./auth/login'));
 const ResetPassword = lazy(() => import('./auth/reset-password'));
-const SignUp = lazy(() => import('./auth/sign-up'));
+const SellerSignUp = lazy(() => import('./auth/seller-sign-up'));
 const Home = lazy(() => import('./pages/home/home'));
+const ProductCategories = lazy(() => import('./pages/product-categories/product-categories'));
+const Productview = lazy(() => import('./pages/product-view/product-view'));
+const UserStore = lazy(() => import('./pages/user-store/user-store'));
+const SignUp = lazy(() => import('./auth/sign-up'));
 
 const routes = [
     {
@@ -13,8 +17,8 @@ const routes = [
         element: <Home />,
     },
     {
-        path: '/signup',
-        element: <SignUp />,
+        path: '/seller-signUp',
+        element: <SellerSignUp />,
     },
     {
         path: '/login',
@@ -32,6 +36,26 @@ const routes = [
         path: '/reset-password',
         element: <ResetPassword />,
     },
+    {
+        path: '/product/:name',
+        element: <Productview />,
+    },
+
+    {
+        path: '/products/:category',
+        element: <ProductCategories />,
+    },
+
+    {
+        path: '/:store_name',
+        element: <UserStore />,
+    },
+
+    {
+       path: '/sign-up',
+       element: <SignUp />,
+    },
+
     {
         path: '*',
         element: <h1>Not Found</h1>,

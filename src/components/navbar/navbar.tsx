@@ -5,7 +5,7 @@ import { useState } from "react";
 const Navbar = () => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [showOptions, setShowOptions] = useState<boolean>(false);
-
+  
   return (
     <nav className="bg-gray-800">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -90,7 +90,7 @@ const Navbar = () => {
   aria-labelledby="user-menu-button"
 >
   <a
-    href="#"
+    href="/seller-signUp"
     className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
     role="menuitem"
     id="user-menu-item-0"
@@ -98,7 +98,7 @@ const Navbar = () => {
     Sell your art
   </a>
   <a
-    href="#"
+    href="/sign-up"
     className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
     role="menuitem"
     id="user-menu-item-1"

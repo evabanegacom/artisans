@@ -52,3 +52,21 @@ export const submitFormData = async (formData: FormData, endpoint:string) => {
     throw error;
   }
 };
+
+export const updateFormData = async (formData: FormData, endpoint:string) => {
+  try {
+    const response = await api.put(`${baseURL}/${endpoint}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    // Handle success if needed
+    console.log('Success:', response?.data);
+    return response.data;
+  } catch (error) {
+    // Handle error
+    console.error('Error:', error);
+    throw error;
+  }
+}
