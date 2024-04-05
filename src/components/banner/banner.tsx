@@ -9,7 +9,7 @@ interface Banner {
 
 const banners: Banner[] = [
   {
-    image: 'https://res.cloudinary.com/spetsnaz/image/upload/v1604424499/wrnav3ViwwQ8ZM4P83STH3U4.png',
+    image: 'https://res.cloudinary.com/spetsnaz/image/upload/v1603546589/71xsZ9XMCtJtTa1tmKanbeVG.jpg',
     title: 'Unique Handcrafted Artworks',
     description: 'Discover exquisite handmade arts and crafts from talented artisans around the world.',
   },
