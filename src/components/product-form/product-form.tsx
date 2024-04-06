@@ -17,6 +17,8 @@ interface FormData {
   pictureFour: string;
   soldBy: string;
   contactNumber: string;
+  product_number: string;
+  tags: string[];
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({ onSubmit }) => {
@@ -34,11 +36,19 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit }) => {
     pictureFour: '',
     soldBy: '',
     contactNumber: '',
+    product_number: '',
+    tags: [],
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const tagsInput = e.target.value;
+    const tagsArray = tagsInput.split(',').map(tag => tag.trim());
+    setFormData({ ...formData, tags: tagsArray });
   };
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,6 +72,24 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit }) => {
     onSubmit(formData);
   };
 
+  const productCategories = [
+    // "Software",
+    "E-books",
+    // "Online Courses",
+    "Digital Art",
+    // "Music",
+    // "Video",
+    // "Games",
+    "Photography",
+    "Templates",
+    // "Fonts",
+    "Plugins",
+    "Themes",
+    "Digital Assets",
+    "Virtual Goods",
+    "Subscription Services"
+  ];
+  
   return (
     <form onSubmit={handleSubmit}>
   <label>
@@ -76,14 +104,23 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit }) => {
     Price:
     <input type="number" name="price" value={formData.price} onChange={handleChange} />
   </label>
-  <label>
-    Category:
-    <input type="text" name="category" value={formData.category} onChange={handleChange} />
-  </label>
+  <select>
+    <option value="">Select Category</option>
+    {productCategories.map(category => (
+      <option key={category} value={category}>
+        {category}
+      </option>
+    ))}
+  </select>
   <label>
     Quantity:
     <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} />
   </label>
+  <label>
+        Tags:
+        <input type="text" name="tags" value={formData.tags.join(',')} onChange={handleTagsChange} />
+        <small>Enter tags separated by commas</small>
+      </label>
   <label>
     Picture One:
     <input type="file" name="pictureOne" onChange={handleFileChange} />

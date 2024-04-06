@@ -25,7 +25,6 @@ function App() {
       <div className='w-full overflow-hidden'>
         <ToastContainer />
             <Navbar />
-            {!isLoginOrSignUpPage ? <Carousel /> : null}
         <BrowserRouter>
           <Suspense fallback={<Spinner size={16} color="text-blue-500" />}>
             <Routes>

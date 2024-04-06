@@ -37,7 +37,7 @@ const getProductByStore = async (store_name: string) => {
 
 
 
-const productService = {
+const ProductService = {
   createProduct,
   updateProduct,
   deleteProduct,
@@ -47,4 +47,4 @@ const productService = {
   getProductByStore
 };
 
-export default productService;
+export default ProductService;
