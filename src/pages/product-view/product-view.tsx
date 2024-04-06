@@ -143,7 +143,7 @@ const ProductView = () => {
 
             <div className="box">
               <div className="row">
-                <h2>{item.title}{" "}</h2>
+                <h2><b>{item.title}</b></h2>
                 <span>${item.price}</span>
               </div>
               <Colors colors={item.colors} />
