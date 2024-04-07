@@ -11,7 +11,7 @@ const CategoriesPage = () => {
   const [products, setProducts] = useState<any>([]);
   const getProducts = async () => {
     try {
-      const response = await ProductService.getProductsByCategory(category as string);
+      const response = await ProductService.getProductsByCategory(category as string , currentPage);
       setProducts(response?.data || []);
     } catch (error) {
       console.error(error);
@@ -19,7 +19,7 @@ const CategoriesPage = () => {
   }
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [currentPage]);
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);

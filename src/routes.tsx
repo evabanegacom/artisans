@@ -1,5 +1,6 @@
 import { lazy } from 'react';
 import SearchResults from './pages/search-results/search-results';
+import ProductForm from './components/product-form/product-form';
 
 const ActivateAccount = lazy(() => import('./auth/activate-account'));
 const ForgotPassword = lazy(() => import('./auth/forgot-password'));
@@ -60,6 +61,11 @@ const routes = [
     {
         path: '/search-results',
         element: <SearchResults />,
+    },
+
+    {
+        path: '/create-product',
+        element: <ProductForm />
     },
 
     {

@@ -20,6 +20,7 @@ const SearchResults = () => {
       console.log('/search-page'); // Update with your actual search page URL
     }
   }, []);
+  
   return (
     <div className="bg-gray-200 p-3">  {/* Base styles */}
     <h1 className=
