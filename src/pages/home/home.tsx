@@ -13,7 +13,6 @@ const Home = () => {
   return (
     <div>
       <Carousel />
-      {/* <SearchResults /> */}
       {categories.map((category) => (
         <ProductCategories category={category} key={category} />
       ))}

@@ -29,9 +29,9 @@ const ProductItem = ({ product}: Props) => {
       </a>
       <div className='flex items-center justify-between rounded-lg'>
        <h3 className='text-gray-500 text-xs tracking-widest title-font mb-1 uppercase'>{product?.category}</h3>
-       <h2 className='text-gray-900 title-font text-lg font-medium'>{product?.name}</h2>
+       <h2 className='text-gray-900 title-font text-md text-semibold font-medium'>{product?.name}</h2>
       </div>
-       <p className='mt-1 font-bold text-green-600'>{product?.price}</p>
+       <p className='mt-1 font-semibold text-md text-green-600'>{product?.price}</p>
     </div>
   )
 }

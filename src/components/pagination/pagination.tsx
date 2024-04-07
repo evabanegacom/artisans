@@ -12,6 +12,8 @@ const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage, onPage
     onPageChange(pageNumber);
   };
 
+  console.log({ currentPage });
+
   return (
     <nav className="flex justify-center mt-8">
       <ul className="pagination">

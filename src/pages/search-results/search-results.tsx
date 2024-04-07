@@ -21,9 +21,9 @@ const SearchResults = () => {
     }
   }, []);
   return (
-    <div className="bg-gray-200 p-4">  {/* Base styles */}
+    <div className="bg-gray-200 p-3">  {/* Base styles */}
     <h1 className=
-      "text-center text-2xl font-bold text-white bg-blue-800 py-4 rounded-md mb-3">
+      "text-center text-2xl font-bold text-white bg-blue-800 py-4 rounded-md">
       results
     </h1>
     <div className="container px-5 py-20 mx-auto">

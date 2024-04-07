@@ -5,18 +5,14 @@ import ProductItem from '../../components/product-item';
 import { useParams } from 'react-router-dom';
 
 const CategoriesPage = () => {
-    const url = "http://localhost:5173/products/Electronics";
-    const { category } = useParams();
-    console.log(category); // Output: "Electronics"
-const [currentPage, setCurrentPage] = useState(1);
-console.log(category); // Output: "Electronics"
+  const { category } = useParams();
+  const [currentPage, setCurrentPage] = useState(1);
 
-const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<any>([]);
   const getProducts = async () => {
     try {
       const response = await ProductService.getProductsByCategory(category as string);
-      console.log(response);
-      setProducts(response.data);
+      setProducts(response?.data || []);
     } catch (error) {
       console.error(error);
     }
@@ -30,7 +26,7 @@ const [products, setProducts] = useState([]);
     // You can fetch data for the new page from the backend here
   };
 
-  const totalData = 5 || 0;
+  const totalData = products?.total_products || 0;
   const itemsPerPage = 20;
   const totalPages = Math.ceil(totalData / itemsPerPage);
 
@@ -41,10 +37,11 @@ const [products, setProducts] = useState([]);
         {category}
       </h1>
       <div className="container px-5 py-1 mx-auto">
-      <div className="flex flex-wrap -m-4">        {products.map((product:any) => (
+        <div className="flex flex-wrap -m-4">
+        {products?.products?.map((product: any) => (
           <ProductItem product={product} key={product.id} />
         ))}
-      </div>
+        </div>
       </div>
       <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
     </div>

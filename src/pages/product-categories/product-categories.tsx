@@ -14,7 +14,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
   const getProducts = async () => {
     try {
       const response = await ProductService.getProductsByCategory(category);
-      setProducts(response.data.slice(0, 4));
+      setProducts(response.data?.products.slice(0, 4));
     } catch (error) {
       console.error(error);
     }
