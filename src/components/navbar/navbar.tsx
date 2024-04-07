@@ -1,11 +1,30 @@
 import { useNavigate } from "react-router-dom";
 import LogoSvg from "../../logo-svg";
 import { useState } from "react";
+import useSearch from "../../search-hook";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchTerm } from "../../redux/actions";
+import { searchProducts } from "../../redux/actions";
 
 const Navbar = () => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [showOptions, setShowOptions] = useState<boolean>(false);
-  
+  const searchState = useSelector((state:any) => state?.reducer?.search)
+  console.log({searchState})
+  const { searchTerm } = searchState;
+
+  const dispatch = useDispatch();
+
+  const handleSearch = (event:any) => {
+    dispatch(setSearchTerm(event.target.value));
+  };
+
+  const findProducts = (e:any) => {
+    e.preventDefault();
+    console.log('searching for products');
+    dispatch(searchProducts(searchTerm) as any)
+};
+
   return (
     <nav className="bg-gray-800">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -33,11 +52,12 @@ const Navbar = () => {
                 <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Calendar</a>
               </div>
             </div>
-            <form className="hidden md:flex md:flex-1 gap-3">
+            <form onSubmit={findProducts} className="hidden md:flex md:flex-1 gap-3">
               <input
                 type="text"
                 className="bg-gray-700 text-white rounded-md px-3 py-2 text-sm font-medium focus:outline-none focus:ring-transparent ring-transparent flex-1"
                 placeholder="Search..."
+                onChange={handleSearch}
               />
 
               <button

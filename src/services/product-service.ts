@@ -35,7 +35,10 @@ const getProductByStore = async (store_name: string) => {
   return response;
 }
 
-
+const searchProducts = async (search: string) => {
+  const response = await api.get(`/products/search?query=${search}`);
+  return response;
+}
 
 const ProductService = {
   createProduct,
@@ -44,7 +47,8 @@ const ProductService = {
   getProducts,
   getProduct,
   getProductsByCategory,
-  getProductByStore
+  getProductByStore,
+  searchProducts
 };
 
 export default ProductService;
