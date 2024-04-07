@@ -37,7 +37,7 @@ const routes = [
         element: <ResetPassword />,
     },
     {
-        path: '/product/:name',
+        path: '/product/:id',
         element: <Productview />,
     },
 

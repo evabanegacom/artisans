@@ -3,6 +3,7 @@ import ProductService from "../../services/product-service";
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import ProductItem from "../../components/product-item";
 
 interface ProductCategoriesProps {
   category: string;
@@ -65,7 +66,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
         <div className="container mx-auto">
           <div className="flex items-center justify-between py-2">
             <h1 className="text-white text-2xl font-bold">{category}</h1>
-            <a href={`products/${category}`} className="text-white">View All</a>
+            <a href={`/products/${category}`} className="text-white">View All</a>
           </div>
         </div>
       </div>
@@ -74,24 +75,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
 
         {products.map((product: any) => (
           // <a href='#' key={product?.id} className="inline-block px-2">
-          <a href='#' key={product?.id}>
-            <div className="bg-white p-2 shadow-md rounded-lg">
-              <img src={product?.pictureTwo?.url} alt={product.name} className="w-full h-48 object-cover rounded-t-lg" />
-              <div className="flex items-center justify-between rounded-lg bg-white py-2">
-                <div className="flex items-center">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    {product?.name}
-                  </h3>
-                </div>
-                <div className="text-xl font-bold text-green-600">
-                  ${product?.price}
-                </div>
-              </div>
-              <div className="text-sm text-gray-500">
-                Sold by: {" "} {product?.sold_by}
-              </div>
-            </div>
-          </a>
+          <ProductItem product={product} key={product?.id}/>
         ))}
       {/* </Slider> */}
       </div>

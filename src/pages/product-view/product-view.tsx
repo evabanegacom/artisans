@@ -6,6 +6,7 @@ import Colors from './Colors';
 import DetailsThumb from './DetailsThumb';
 import { AiOutlineWhatsApp } from 'react-icons/ai';
 import { FiPhone } from 'react-icons/fi';
+import { useParams } from 'react-router-dom';
 
 
 interface Product {
@@ -26,7 +27,7 @@ interface Product {
 }
 
 const ProductView = () => {
-
+  const { id } = useParams();
   const [copied, setCopied] = useState(false);
 
   const [productDetails, setProductDetails] = useState<Product>();
@@ -84,7 +85,7 @@ const ProductView = () => {
   useEffect(() => {
     const getProductDetails = async () => {
       try {
-        const response = await ProductService.getProduct(4);
+        const response = await ProductService.getProduct(id as any);
         console.log(response)
         products[0].src = response.data.image_urls;
         products[0].description = response.data.description;
