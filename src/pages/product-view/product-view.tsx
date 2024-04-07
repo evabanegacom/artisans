@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Details.css';
 import ProductService from '../../services/product-service';
-import Slider from 'react-slick';
 import Colors from './Colors';
 import DetailsThumb from './DetailsThumb';
 import { AiOutlineWhatsApp } from 'react-icons/ai';
@@ -163,6 +162,7 @@ const ProductView = () => {
                   <AiOutlineWhatsApp className="mr-2" color='#25d366' /> {productDetails?.contact_number}
                 </button>
               </div>
+              <a className='bg-lime-950 text-white p-3 rounded align-center mt-3' href={`/${productDetails?.sold_by}`} style={{ display: 'grid', placeItems: 'center' }}>Visit store</a>
               {copied && <p className="text-green-500 text-sm">Contact number copied to clipboard</p>}
             </div>
           </div>

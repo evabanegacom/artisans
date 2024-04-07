@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import LogoSvg from "../../logo-svg";
 import { useState } from "react";
-import useSearch from "../../search-hook";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchTerm } from "../../redux/actions";
 import { searchProducts } from "../../redux/actions";
@@ -10,7 +9,6 @@ const Navbar = () => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const searchState = useSelector((state:any) => state?.reducer?.search)
-  console.log({searchState})
   const { searchTerm } = searchState;
 
   const dispatch = useDispatch();

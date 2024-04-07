@@ -31,7 +31,7 @@ export const getProductsByCategory = async (category: string) => {
 }
 
 const getProductByStore = async (store_name: string) => {
-  const response = await api.get(`/products/store/${store_name}`);
+  const response = await api.get(`/products/products_by_storename?store_name=${store_name}`);
   return response;
 }
 

@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import Carousel from "../../components/banner/banner"
 import ProductCategories from "../product-categories/product-categories"
 import SearchResults from "../search-results/search-results";
@@ -15,8 +14,7 @@ const Home = () => {
     <div>
       <Carousel />
       {/* <SearchResults /> */}
-      {searchResults?.length > 0 ? <SearchResults /> :
-      categories.map((category) => (
+      {categories.map((category) => (
         <ProductCategories category={category} key={category} />
       ))}
     </div>

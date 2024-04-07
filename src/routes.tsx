@@ -1,4 +1,5 @@
 import { lazy } from 'react';
+import SearchResults from './pages/search-results/search-results';
 
 const ActivateAccount = lazy(() => import('./auth/activate-account'));
 const ForgotPassword = lazy(() => import('./auth/forgot-password'));
@@ -54,6 +55,11 @@ const routes = [
     {
        path: '/sign-up',
        element: <SignUp />,
+    },
+
+    {
+        path: '/search-results',
+        element: <SearchResults />,
     },
 
     {

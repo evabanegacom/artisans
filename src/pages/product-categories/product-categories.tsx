@@ -63,12 +63,13 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
       <div className="bg-red-950">
         <div className="container mx-auto">
           <div className="flex items-center justify-between py-2">
-            <h1 className="text-white text-2xl font-bold">{category}</h1>
+            <div className="text-white text-2xl md:text-xl font-bold">{category}</div>
             <a href={`/products/${category}`} className="text-white">View All</a>
           </div>
         </div>
       </div>
-      <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="container px-5 py-1 mx-auto">
+      <div className="flex flex-wrap -m-4">
       {/* <Slider {...settings} className="container mx-auto grid grid-cols-1 md:grid-cols-4"> */}
 
         {products.map((product: any) => (
@@ -76,6 +77,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
           <ProductItem product={product} key={product?.id}/>
         ))}
       {/* </Slider> */}
+      </div>
       </div>
 
     </div>

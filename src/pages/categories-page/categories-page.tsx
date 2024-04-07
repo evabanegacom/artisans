@@ -40,10 +40,11 @@ const [products, setProducts] = useState([]);
         "text-center text-2xl font-bold text-white bg-blue-800 py-4 rounded-md mb-3">
         {category}
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mx-auto"> {/* Product list grid */}
-        {products.map((product:any) => (
+      <div className="container px-5 py-1 mx-auto">
+      <div className="flex flex-wrap -m-4">        {products.map((product:any) => (
           <ProductItem product={product} key={product.id} />
         ))}
+      </div>
       </div>
       <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
     </div>

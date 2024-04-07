@@ -19,12 +19,25 @@ const setSearchResults = (searchResults:any) => {
   };
 }
 
-export const searchProducts = (searchTerm: string) => async (dispatch: any) => {
-  console.log('dispatch triggered');
+// export const searchProducts = (searchTerm: string) => async (dispatch: any) => {
+//   console.log('dispatch triggered');
+//   try {
+//     const response = await ProductService.searchProducts(searchTerm);
+//     const searchData = response.data; // Extract serializable data from the response
+//     dispatch(setSearchResults(searchData));
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
+// In the searchProducts action creator
+export const searchProducts = (searchTerm: string) => async (dispatch: any, getState: any) => {
   try {
     const response = await ProductService.searchProducts(searchTerm);
+    console.log({response})
     const searchData = response.data; // Extract serializable data from the response
-    dispatch(setSearchResults(searchData));
+
+    // Redirect to the '/search-results' page with search data as URL parameters
+    window.location.href = `/search-results?searchTerm=${searchTerm}&data=${JSON.stringify(searchData)}`;
   } catch (error) {
     console.error(error);
   }
