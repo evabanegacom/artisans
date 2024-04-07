@@ -7,6 +7,7 @@ import DetailsThumb from './DetailsThumb';
 import { AiOutlineWhatsApp } from 'react-icons/ai';
 import { FiPhone } from 'react-icons/fi';
 
+
 interface Product {
   id: number;
   name: string;
@@ -31,7 +32,7 @@ const ProductView = () => {
   const [productDetails, setProductDetails] = useState<Product>();
   const products = [
     {
-      "_id": "1",
+      "id": "1",
       "title": "Nike Shoes",
       "src": productDetails?.image_urls || [],
       "description": "UI/UX designing, html css tutorials",
@@ -136,22 +137,22 @@ const ProductView = () => {
     <div className="app">
       {
         productDetails && productDetails?.image_urls?.length > 0 && product.item?.map((item: any) => (
-          <div className="details" key={item._id}>
+          <div className="details" key={item?.id}>
             <div className="big-img">
               <img src={item.src[product?.index]} alt="" />
             </div>
 
             <div className="box">
               <div className="row">
-                <h2><b>{item.title}</b></h2>
-                <span>${item.price}</span>
+                <h2><b>{item?.title}</b></h2>
+                <span>${item?.price}</span>
               </div>
               <Colors colors={item.colors} />
               <p>Sold by {productDetails?.sold_by}</p>
-              <p>{item.description}</p>
-              <p>{item.content}</p>
+              <p>{item?.description}</p>
+              <p>{item?.content}</p>
 
-              <DetailsThumb images={item.src} tab={handleTab} myRef={myRef} />
+              <DetailsThumb images={item?.src} tab={handleTab} myRef={myRef} />
               <div className='flex justify-between mt-2'>
                 <button onClick={handleCopyPhoneNumber} className="cart flex items-center text-sm"><FiPhone className="mr-2" /> {productDetails?.contact_number}</button>
                 <button

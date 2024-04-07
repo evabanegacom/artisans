@@ -6,7 +6,7 @@ const Login = lazy(() => import('./auth/login'));
 const ResetPassword = lazy(() => import('./auth/reset-password'));
 const SellerSignUp = lazy(() => import('./auth/seller-sign-up'));
 const Home = lazy(() => import('./pages/home/home'));
-const ProductCategories = lazy(() => import('./pages/product-categories/product-categories'));
+const CategoriesPage = lazy(() => import('./pages/categories-page/categories-page'));
 const Productview = lazy(() => import('./pages/product-view/product-view'));
 const UserStore = lazy(() => import('./pages/user-store/user-store'));
 const SignUp = lazy(() => import('./auth/sign-up'));
@@ -43,7 +43,7 @@ const routes = [
 
     {
         path: '/products/:category',
-        element: <ProductCategories />,
+        element: <CategoriesPage />,
     },
 
     {
