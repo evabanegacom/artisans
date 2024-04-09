@@ -12,6 +12,7 @@ const CategoriesPage = () => {
   const getProducts = async () => {
     try {
       const response = await ProductService.getProductsByCategory(category as string , currentPage);
+      console.log({response})
       setProducts(response?.data || []);
     } catch (error) {
       console.error(error);
@@ -21,6 +22,7 @@ const CategoriesPage = () => {
     getProducts();
   }, [currentPage]);
 
+  console.log({products})
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
     // You can fetch data for the new page from the backend here

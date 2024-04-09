@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { uniqueProductNumber } from '../../constants';
+import ProductService from '../../services/product-service';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Loader from '../../constants/Loader';
 
 const ProductForm: React.FC = () => {
-  const isLoggedin = useSelector((state: any) => state?.reducer?.auth?.isAuth);
+  const user = useSelector((state: any) => state?.reducer?.auth?.user);
+  console.log({user})
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -14,10 +21,11 @@ const ProductForm: React.FC = () => {
     pictureTwo: '',
     pictureThree: '',
     pictureFour: '',
-    soldBy: '',
-    contactNumber: '',
-    product_number: '',
+    sold_by: user?.store_name || '',
+    contact_number: user?.mobile || '08066698252',
+    product_number: uniqueProductNumber,
     tags: [],
+    user_id: user?.id
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | any>) => {
@@ -37,18 +45,52 @@ const ProductForm: React.FC = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData({ ...formData, [name]: reader.result as string });
+        setFormData({ ...formData, [name]: file }); // Store the file itself, not its data URL
       };
       reader.readAsDataURL(file);
     } else {
       setFormData({ ...formData, [name]: '' });
     }
   };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log(formData);
+    setLoading(true);
+  
+    try {
+      const productData = new FormData();
+  
+      // Append all form data except file inputs and tags
+      Object.entries(formData).forEach(([key, value]: [string, any]) => {
+        if (typeof value !== 'object' || value instanceof File) {
+          productData.append(key, value);
+        }
+      });
+  
+      // Append file inputs
+      for (const [name, file] of Object.entries(formData)) {
+        if (file instanceof File) {
+          productData.append(name, file);
+        }
+      }
+  
+      // Append tags
+      formData.tags.forEach((tag: string, index: number) => {
+        productData.append(`tags[${index}]`, tag);
+      });
+  
+      await ProductService.createProduct(productData);
+      // Handle success, redirect, or perform additional actions
+      toast.success('Product created successfully');
+    } catch (error) {
+      // Handle error
+      console.error('Error creating product:', error);
+      toast.error('Error creating product');
+    } finally {
+      setLoading(false); // Set loading state to false regardless of success or failure
+    }
   };
+  
 
   const productCategories = [
     "E-books",
@@ -134,19 +176,9 @@ const ProductForm: React.FC = () => {
         </label>
         <input type="file" name="pictureFour" onChange={handleFileChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
       </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="soldBy">
-          Sold By:
-        </label>
-        <input type="text" name="soldBy" value={formData.soldBy} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="contactNumber">
-          Contact Number:
-        </label>
-        <input type="text" name="contactNumber" value={formData.contactNumber} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-      </div>
-      <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>
+      {/* <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button> */}
+      <button disabled={loading} type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3">
+        {loading ? <Loader /> : 'Submit'} </button>
     </form>
     </div>
   );

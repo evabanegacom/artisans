@@ -209,9 +209,39 @@ export function formatDateTime(dateTimeString:string) {
   return date.toLocaleString('en-US', options);
 }
 
-
-
 export const logout = () => {
   localStorage.clear();
   window.location.href='/login'
 }
+
+function generateProductNumber(length:number) {
+  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=';
+  let productNumber = '';
+
+  // Generate a random string
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    productNumber += charset[randomIndex];
+  }
+
+  return productNumber;
+}
+
+function isUnique(productNumber:string, existingProductNumbers:string) {
+  return !existingProductNumbers.includes(productNumber);
+}
+
+function generateUniqueProductNumber(existingProductNumbers:string) {
+  const maxLength = 11;
+  let productNumber = generateProductNumber(maxLength);
+
+  // Ensure uniqueness
+  while (!isUnique(productNumber, existingProductNumbers)) {
+    productNumber = generateProductNumber(maxLength);
+  }
+
+  return productNumber;
+}
+
+const existingProductNumbers:string[] = [];
+export const uniqueProductNumber = generateUniqueProductNumber(existingProductNumbers as any);

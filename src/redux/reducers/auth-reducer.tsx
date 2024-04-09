@@ -5,6 +5,10 @@ interface userDataProps {
     email: string;
     name: string;
     activated: boolean
+    seller: boolean;
+    store_name: string;
+    mobile: string;
+    state: string;
 }
 
 interface authProps {
@@ -32,7 +36,11 @@ if (userData) {
                 id: decodedToken?.user_id,
                 email: decodedToken?.email,
                 name: decodedToken?.name,
-                activated: decodedToken?.activated
+                activated: decodedToken?.activated,
+                seller: decodedToken?.seller,
+                store_name: decodedToken?.store_name,
+                mobile: decodedToken?.mobile,
+                state: decodedToken?.state,
             }
         };
     }

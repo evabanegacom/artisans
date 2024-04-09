@@ -4,7 +4,7 @@ import SearchResults from "../search-results/search-results";
 import { useSelector } from "react-redux";
 
 const Home = () => {
-  const categories = ['Electronics', 'Digital art']
+  const categories = ['Electronics', 'Digital art', 'E-books', 'Beauty']
   const isLoggedin = useSelector((state: any) => state?.reducer?.auth?.isAuth);
   const searchState = useSelector((state:any) => state?.reducer?.search)
   const { searchTerm, searchResults } = searchState;
