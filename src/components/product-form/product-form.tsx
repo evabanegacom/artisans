@@ -8,15 +8,14 @@ import Loader from '../../constants/Loader';
 
 const ProductForm: React.FC = () => {
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
-  console.log({user})
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    price: 0,
-    category: '',
-    quantity: 0,
+    name: 'ljhb',
+    description: 'jhb',
+    price: 10,
+    category: 'ljhjl',
+    quantity: 10,
     pictureOne: '',
     pictureTwo: '',
     pictureThree: '',
@@ -24,7 +23,7 @@ const ProductForm: React.FC = () => {
     sold_by: user?.store_name || '',
     contact_number: user?.mobile || '08066698252',
     product_number: uniqueProductNumber,
-    tags: [],
+    tags: ['tag1', 'tag2', 'tag3'],
     user_id: user?.id
   });
 
@@ -34,11 +33,10 @@ const ProductForm: React.FC = () => {
   };
 
   const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const tagsInput = e.target.value;
-    const tagsArray = tagsInput.split(',').map(tag => tag.trim());
-    setFormData({ ...formData, tags: tagsArray as any});
-  };
-  
+    const tagsValue = e.target.value;
+    setFormData({ ...formData, tags: tagsValue.split(',').map(tag => tag.trim()) }); // Split the string into an array of tags and trim whitespace
+  };  
+    
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name;
     const file = e.target.files && e.target.files[0];
@@ -68,6 +66,9 @@ const ProductForm: React.FC = () => {
       });
   
       // Append file inputs
+      productData.append('tags', formData.tags.join(','));
+      
+
       for (const [name, file] of Object.entries(formData)) {
         if (file instanceof File) {
           productData.append(name, file);
@@ -75,10 +76,7 @@ const ProductForm: React.FC = () => {
       }
   
       // Append tags
-      formData.tags.forEach((tag: string, index: number) => {
-        productData.append(`tags[${index}]`, tag);
-      });
-  
+
       await ProductService.createProduct(productData);
       // Handle success, redirect, or perform additional actions
       toast.success('Product created successfully');
@@ -112,25 +110,25 @@ const ProductForm: React.FC = () => {
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
           Name:
         </label>
-        <input type="text" name="name" value={formData.name} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+        <input type="text" name="name" required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
       </div>
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
           Description:
         </label>
-        <textarea name="description" value={formData.description} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+        <textarea name="description" required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
       </div>
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="price">
           Price:
         </label>
-        <input type="number" name="price" value={formData.price} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+        <input type="number" name="price" required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
       </div>
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="category">
           Category:
         </label>
-        <select name="category" value={formData.category} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        <select name="category" value={formData.category} required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
           <option value="">Select Category</option>
           {productCategories.map(category => (
             <option key={category} value={category}>
@@ -143,15 +141,17 @@ const ProductForm: React.FC = () => {
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="quantity">
           Quantity:
         </label>
-        <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+        <input type="number" name="quantity" required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
       </div>
+
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="tags">
           Tags:
         </label>
-        <input type="text" name="tags" value={formData.tags.join(',')} onChange={handleTagsChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+        <input type="text" name="tags" onChange={handleTagsChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
         <small className="text-gray-500">Enter tags separated by commas</small>
       </div>
+
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pictureOne">
           Picture One:
