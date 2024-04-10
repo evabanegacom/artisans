@@ -5,6 +5,7 @@ import ProductService from '../../services/product-service';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Loader from '../../constants/Loader';
+import categories from '../../constants/categories';
 
 const ProductForm: React.FC = () => {
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
@@ -20,11 +21,11 @@ const ProductForm: React.FC = () => {
     pictureTwo: '',
     pictureThree: '',
     pictureFour: '',
-    sold_by: user?.store_name || '',
+    sold_by: user?.store_name || 'Precious',
     contact_number: user?.mobile || '08066698252',
     product_number: uniqueProductNumber,
     tags: ['tag1', 'tag2', 'tag3'],
-    user_id: user?.id
+    user_id: user?.id || 1
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | any>) => {
@@ -89,19 +90,6 @@ const ProductForm: React.FC = () => {
     }
   };
   
-
-  const productCategories = [
-    "E-books",
-    "Digital Art",
-    "Photography",
-    "Templates",
-    "Plugins",
-    "Themes",
-    "Digital Assets",
-    "Virtual Goods",
-    "Subscription Services"
-  ];
-  
   return (
     <div className='bg-gray-200 py-3'>
     <h1 className='text-center text-2xl font-bold text-white bg-blue-800 py-4 rounded-md mb-3'>Add Product</h1>
@@ -130,9 +118,9 @@ const ProductForm: React.FC = () => {
         </label>
         <select name="category" value={formData.category} required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
           <option value="">Select Category</option>
-          {productCategories.map(category => (
-            <option key={category} value={category}>
-              {category}
+          {categories.map(category => (
+            <option key={category?.id} value={category?.name}>
+              {category?.title}
             </option>
           ))}
         </select>

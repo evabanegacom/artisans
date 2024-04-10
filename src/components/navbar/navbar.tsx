@@ -20,7 +20,7 @@ const Navbar = () => {
   const findProducts = (e:any) => {
     e.preventDefault();
     console.log('searching for products');
-    dispatch(searchProducts(searchTerm) as any)
+    dispatch(searchProducts(searchTerm, 1) as any)
 };
 
   return (

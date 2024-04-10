@@ -6,7 +6,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import ProductItem from "../../components/product-item";
 
 interface ProductCategoriesProps {
-  category: string;
+  category: any;
 }
 
 const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
@@ -64,7 +64,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
       <div className="bg-red-950">
         <div className="container mx-auto">
           <div className="flex items-center justify-between py-2">
-            <div className="text-white text-2xl md:text-xl font-bold">{category}</div>
+            <div className="text-white text-2xl md:text-xl font-bold">{category?.title}</div>
             <a href={`/products/${category}`} className="text-white">View All</a>
           </div>
         </div>

@@ -35,7 +35,7 @@ const getProductByStore = async (store_name: string, page:number) => {
   return response;
 }
 
-const searchProducts = async (search: string, page:number) => {
+const searchProducts = async (search: string, page :number) => {
   const response = await api.get(`/products/search?query=${search}&page=${page}`);
   return response;
 }

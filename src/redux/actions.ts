@@ -30,9 +30,9 @@ const setSearchResults = (searchResults:any) => {
 //   }
 // };
 // In the searchProducts action creator
-export const searchProducts = (searchTerm: string) => async (dispatch: any, getState: any) => {
+export const searchProducts = (searchTerm: string, page: number) => async (dispatch: any) => {
   try {
-    const response = await ProductService.searchProducts(searchTerm);
+    const response = await ProductService.searchProducts(searchTerm, page);
     console.log({response})
     const searchData = response?.data?.products; // Extract serializable data from the response
 
