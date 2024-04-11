@@ -6,26 +6,27 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Loader from '../../constants/Loader';
 import categories from '../../constants/categories';
+import { Navigate } from 'react-router-dom';
 
 const ProductForm: React.FC = () => {
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    name: 'ljhb',
-    description: 'jhb',
-    price: 10,
-    category: 'ljhjl',
-    quantity: 10,
+    name: '',
+    description: '',
+    price: 0,
+    category: '',
+    quantity: 0,
     pictureOne: '',
     pictureTwo: '',
     pictureThree: '',
     pictureFour: '',
-    sold_by: user?.store_name || 'Precious',
-    contact_number: user?.mobile || '08066698252',
+    sold_by: user?.store_name || '',
+    contact_number: user?.mobile || '',
     product_number: uniqueProductNumber,
-    tags: ['tag1', 'tag2', 'tag3'],
-    user_id: user?.id || 1
+    tags: ['beauty'],
+    user_id: user?.id
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | any>) => {
@@ -35,7 +36,7 @@ const ProductForm: React.FC = () => {
 
   const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const tagsValue = e.target.value;
-    setFormData({ ...formData, tags: tagsValue.split(',').map(tag => tag.trim()) }); // Split the string into an array of tags and trim whitespace
+    setFormData({ ...formData, tags: tagsValue.split(',').map(tag => tag.trim()) });
   };  
     
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,6 +82,9 @@ const ProductForm: React.FC = () => {
       await ProductService.createProduct(productData);
       // Handle success, redirect, or perform additional actions
       toast.success('Product created successfully');
+      setTimeout(() => {
+        window.location.href = `/${user?.store_name}`;
+      }, 3000)
     } catch (error) {
       // Handle error
       console.error('Error creating product:', error);

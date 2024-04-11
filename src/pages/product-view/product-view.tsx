@@ -6,6 +6,7 @@ import DetailsThumb from './DetailsThumb';
 import { AiOutlineWhatsApp } from 'react-icons/ai';
 import { FiPhone } from 'react-icons/fi';
 import { useParams } from 'react-router-dom';
+import { formatAsCurrency } from '../../constants';
 
 
 interface Product {
@@ -145,13 +146,13 @@ const ProductView = () => {
             <div className="box">
               <div className="row">
                 <h2><b>{item?.title}</b></h2>
-                <span>${item?.price}</span>
+                <span>{formatAsCurrency(item?.price)}</span>
               </div>
               <Colors colors={item.colors} />
-              <p>Sold by {productDetails?.sold_by}</p>
+              <p>Sold by: {" "} {productDetails?.sold_by}</p>
+              {/* <p>{item?.content}</p> */}
+              <p>Category: {" "}{productDetails?.category}</p>
               <p>{item?.description}</p>
-              <p>{item?.content}</p>
-
               <DetailsThumb images={item?.src} tab={handleTab} myRef={myRef} />
               <div className='flex justify-between mt-2'>
                 <button onClick={handleCopyPhoneNumber} className="cart flex items-center text-sm"><FiPhone className="mr-2" /> {productDetails?.contact_number}</button>

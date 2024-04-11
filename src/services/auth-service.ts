@@ -35,6 +35,10 @@ const resetPassword = async (token:string) => {
     return response
 }
 
+const becomeASeller = async (store_name:string, id:number) => {
+    const response = await api.put(`/users/${id}`, { store_name, seller: true })
+}
+
 const AuthService = {
     createAccount,
     login,
@@ -42,7 +46,8 @@ const AuthService = {
     updatePassword,
     generateActivationLink,
     activateAccount,
-    resetPassword
+    resetPassword,
+    becomeASeller
 }
 
 export default AuthService;

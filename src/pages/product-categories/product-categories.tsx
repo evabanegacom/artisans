@@ -14,7 +14,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
   console.log(products.length)
   const getProducts = async () => {
     try {
-      const response = await ProductService.getProductsByCategory(category, 1);
+      const response = await ProductService.getProductsByCategory(category?.name, 1);
       console.log(response)
       setProducts(response.data?.products.slice(0, 4));
     } catch (error) {
@@ -60,9 +60,10 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
     ]
   };
 
+  console.log(products)
   return (
     <>
-    {products.length > 0 ?
+    {/* {products.length > 0 ? */}
     <div className="flex flex-col mt-3">
       
       <div className="bg-red-950">
@@ -84,7 +85,8 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
       {/* </Slider> */}
       </div>
       </div>
-    </div>: null}
+    </div>
+    {/* // : null */}
     </>
   )
 }
