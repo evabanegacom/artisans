@@ -11,6 +11,7 @@ interface ProductCategoriesProps {
 
 const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
   const [products, setProducts] = useState([]);
+  console.log(products.length)
   const getProducts = async () => {
     try {
       const response = await ProductService.getProductsByCategory(category, 1);
@@ -60,7 +61,10 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
   };
 
   return (
+    <>
+    {products.length > 0 ?
     <div className="flex flex-col mt-3">
+      
       <div className="bg-red-950">
         <div className="container mx-auto">
           <div className="flex items-center justify-between py-2">
@@ -80,8 +84,8 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
       {/* </Slider> */}
       </div>
       </div>
-
-    </div>
+    </div>: null}
+    </>
   )
 }
 

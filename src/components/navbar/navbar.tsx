@@ -4,13 +4,15 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchTerm } from "../../redux/actions";
 import { searchProducts } from "../../redux/actions";
+import { logout } from "../../constants";
 
 const Navbar = () => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const isLoggedin = useSelector((state: any) => state?.reducer?.auth?.isAuth);
+  const user = useSelector((state: any) => state?.reducer?.auth?.user);
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const searchState = useSelector((state:any) => state?.reducer?.search)
   const { searchTerm } = searchState;
-
   const dispatch = useDispatch();
 
   const handleSearch = (event:any) => {
@@ -44,8 +46,8 @@ const Navbar = () => {
             <a href='/'><LogoSvg /></a>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
-                <a href="#" className="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Dashboard</a>
-                <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Team</a>
+                <a href={user?.seller ? `/${user?.store_name}` : '/seller-signUp'} className="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">{user?.seller ? 'Dashboard' : 'Start selling'}</a>
+                <a href={user?.seller ? `/${user?.store_name}` : '/create-product'} className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Add Product</a>
                 <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Projects</a>
                 <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Calendar</a>
               </div>
@@ -113,8 +115,10 @@ const Navbar = () => {
     role="menuitem"
     id="user-menu-item-0"
   >
-    Sell your art
+    Profile
   </a>
+  {isLoggedin ? null :
+  <>
   <a
     href="/sign-up"
     className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
@@ -123,14 +127,26 @@ const Navbar = () => {
   >
     Create Account
   </a>
+  </>}
+  {isLoggedin ? 
   <a
-    href="#"
-    className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
-    role="menuitem"
-    id="user-menu-item-2"
-  >
-    Sign out
-  </a>
+  href="/login" onClick={logout}
+  className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
+  role="menuitem"
+  id="user-menu-item-2"
+>
+  Sign out
+</a> :
+  <a
+  href="/login"
+  className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
+  role="menuitem"
+  id="user-menu-item-2"
+>
+  Sign in
+</a>}
+  
+  
 </div>
 
               : null}
@@ -144,10 +160,10 @@ const Navbar = () => {
 
         <div className="space-y-1 px-2 py-1 border border-gray-700 rounded-md">
           <a
-            href="#"
+            href={user?.seller ? `/${user?.store_name}` : '/seller-signUp'}
             className="bg-blue-700 text-white block rounded-md px-2 py-1 text-lg font-medium hover:bg-gray-800 hover:text-shadow-sm hover:text-white"
           >
-            Dashboard
+            {user?.seller ? 'Store' : 'Start selling'}
           </a>
           <a
             href="#"

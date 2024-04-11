@@ -32,7 +32,7 @@ const ResetPassword = () => {
   const confirmAccount = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`https://fin-man.fly.dev/api/v1/password/reset/${token}`);
+      const response:any = await AuthService.resetPassword(token as string)
       response?.status === 200 ? setShowForm(true) : setShowForm(false)
       toast.success('Account confirmed successfully');
       setLoading(false)
@@ -75,19 +75,19 @@ const ResetPassword = () => {
       if (response) {
         toast.success('Password reset successfully')
         setTimeout(() => {
-          navigate('/login')
+          navigate('/')
         }, 2000)
       } else {
         toast.error('Failed to reset password')
         setTimeout(() => {
-          navigate('/login')
+          navigate('/')
         }, 2000)
       }
     } catch (error) {
       console.error('Error resetting password:', error)
       toast.error('Failed to reset password')
       setTimeout(() => {
-        navigate('/login')
+        navigate('/')
       }, 2000)
     }
   }

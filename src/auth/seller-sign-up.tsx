@@ -1,17 +1,33 @@
-import { useState, useRef, } from 'react'
+import { useState, useRef, useEffect, } from 'react'
 import AuthService from '../services/auth-service';
 import { RiEyeFill, RiEyeOffFill } from 'react-icons/ri';
 import Loader from '../constants/Loader';
 import states from './nigerian-state';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector } from 'react-redux';
+import SellerModal from '../components/seller-modal/seller-modal';
 
 const SellerSignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const userDetails = useSelector((state: any) => state?.reducer?.auth?.user);
+  const isLoggedin = useSelector((state: any) => state?.reducer?.auth?.isAuth);
   const [ loading, setLoading ] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
   const fileRef = useRef<any>(null);
-
+  const [ updateSellerModal, setUpdateSellerModal ] = useState(false);
+ 
+  useEffect(() => {
+    if (!isLoggedin) {
+      window.location.href = '/';
+    } else if (isLoggedin && userDetails?.seller === false) {
+      setUpdateSellerModal(true);
+    } else {
+      console.log('do nothing');
+    }
+  }, [isLoggedin, userDetails]); // Assuming userDetails is stable, or destructure the necessary properties if it's not
+  
+  console.log(userDetails.seller)
   const toggleShowPasswordConfirmation = () => {
     setShowPasswordConfirmation(!showPasswordConfirmation);
   }
@@ -71,6 +87,7 @@ const SellerSignUp = () => {
   return (
     <>
     <ToastContainer />
+    {isLoggedin && userDetails?.activated === false ? <div className='text-center text-red-500'>Please activate your account</div> :
     <div className='bg-gray-900 py-10'>
       <div className="max-w-md mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 py-12 px-4 sm:px-6 lg:px-8">
         <h5 className="font-bold text-center mb-8">Create Account</h5>
@@ -143,8 +160,9 @@ const SellerSignUp = () => {
           </a>
         </div>
       </div>
-
     </div>
+    }
+    <SellerModal isOpen={updateSellerModal} setIsOpen={setUpdateSellerModal} />
     </>
   )
 }

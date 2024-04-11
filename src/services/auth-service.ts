@@ -30,13 +30,19 @@ const activateAccount = async (token:string) => {
     return response
 }
 
+const resetPassword = async (token:string) => {
+    const response = await api.get(`/password/reset/${token}`)
+    return response
+}
+
 const AuthService = {
     createAccount,
     login,
     forgotPassword,
     updatePassword,
     generateActivationLink,
-    activateAccount
+    activateAccount,
+    resetPassword
 }
 
 export default AuthService;

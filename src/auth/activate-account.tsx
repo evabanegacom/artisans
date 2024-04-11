@@ -8,53 +8,55 @@ import AuthService from '../services/auth-service';
 
 const ActivateAccount = () => {
   const searchParams = new URLSearchParams(window.location.search);
-  const token:any = searchParams.get('token');
-  const [loading, setLoading] = useState(false)
-  const [  success, setSuccess ] = useState<any>({});
-  const [ isOpen, setIsopen ] = useState(false)
-
-  // <a href="https://fin-man.fly.dev/api/v1/activate/<%= user.activation_token %>">Activate Account</a>
+  const token = searchParams.get('token');
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
 
   const activateAccount = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      // const response = 'hello'
-      const response = await AuthService.activateAccount(token);
-      setSuccess(response)
-      setTimeout(() => {
-        // toast.success(response?.data?.message);
-        setIsopen(true)
-      }, 2000)
-
+      const response = await AuthService.activateAccount(token as string);
+      // Assuming the response structure correctly includes a data object with a message property.
+      if (response && response.data && response.data.message) {
+        setSuccessMessage(response.data.message);
+        setIsOpen(true); // Open the success modal only on successful response
+        toast.success(response.data.message);
+      } else {
+        // Log and toast a generic success message if the expected message is not found in the response
+        console.warn('Activation successful, but the response format is unexpected:', response);
+        toast.success("Your account has been activated.");
+      }
     } catch (error: any) {
-      console.error('Error activating account:', error.message);
-      setTimeout(() => {
-        toast.error('Error activating account');
-      }, 2000)
+      // Improved error handling: Log the entire error object for debugging purposes
+      console.error('Error activating account:', error);
+      // Displaying a more specific or generic error message based on the error object structure
+      const errorMessage = error.response?.data?.error || error.message || "An error occurred while activating your account.";
+      toast.error(errorMessage);
+      setIsOpen(false); // Ensure the modal does not open on error
     } finally {
       setLoading(false);
       setTimeout(() => {
-        logout()
-      }, 3000)
+        logout();
+      }, 3000);
     }
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      activateAccount();
-    }, 1000)
-  }, []);
+    activateAccount();
+  }, [token]);
 
   return (
     <div style={{ height: '89.3vh' }} className="flex items-center justify-center h-screen bg-gray-100">
       <div className="bg-white rounded-lg shadow-lg p-6 mx-auto max-w-md">
         <h2 className="text-2xl font-semibold mb-4 text-center">Activating Account</h2>
-        {loading ? (
+        {loading && (
           <div className="flex items-center justify-center">
             <Loader />
           </div>
-        ) : null}
-        <>
+        )}
+        {!loading && (
+          <>
             <ToastContainer />
             <p className="text-gray-700 text-lg mb-4">
               Your account is being activated. Please wait while we process your request...
@@ -64,11 +66,11 @@ const ActivateAccount = () => {
               Once your account is activated, you will be redirected to the login page.
             </p>
           </>
+        )}
       </div>
-      {isOpen ? <SuccessModal message={success?.data?.message} onClose={() => setIsopen(false)} isOpen={isOpen}/> : null}
+      {isOpen && <SuccessModal message={successMessage} onClose={() => setIsOpen(false)} isOpen={isOpen} />}
     </div>
   );
 };
 
 export default ActivateAccount;
-
