@@ -46,8 +46,8 @@ const Navbar = () => {
             <a href='/'><LogoSvg /></a>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
-                <a href={user?.seller ? `/${user?.store_name}` : '/seller-signUp'} className="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">{user?.seller ? 'Dashboard' : 'Start selling'}</a>
-                <a href={user?.seller ? `/${user?.store_name}` : '/create-product'} className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Add Product</a>
+                <a href={user?.seller ? `/store/${user?.store_name}` : '/seller-signUp'} className="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">{user?.seller ? 'Dashboard' : 'Start selling'}</a>
+                <a href={user?.seller ? `/store/${user?.store_name}` : '/create-product'} className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Add Product</a>
                 <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Projects</a>
                 <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Calendar</a>
               </div>
@@ -120,7 +120,7 @@ const Navbar = () => {
   {isLoggedin ? null :
   <>
   <a
-    href="/sign-up"
+    href="/signup"
     className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
     role="menuitem"
     id="user-menu-item-1"
@@ -160,7 +160,7 @@ const Navbar = () => {
 
         <div className="space-y-1 px-2 py-1 border border-gray-700 rounded-md">
           <a
-            href={user?.seller ? `/${user?.store_name}` : '/seller-signUp'}
+            href={user?.seller ? `/store/${user?.store_name}` : '/seller-signUp'}
             className="bg-blue-700 text-white block rounded-md px-2 py-1 text-lg font-medium hover:bg-gray-800 hover:text-shadow-sm hover:text-white"
           >
             {user?.seller ? 'Store' : 'Start selling'}

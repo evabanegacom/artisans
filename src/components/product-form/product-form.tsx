@@ -83,7 +83,7 @@ const ProductForm: React.FC = () => {
       // Handle success, redirect, or perform additional actions
       toast.success('Product created successfully');
       setTimeout(() => {
-        window.location.href = `/${user?.store_name}`;
+        <Navigate to={`/store/${user?.store_name}`} />;
       }, 3000)
     } catch (error) {
       // Handle error
@@ -93,6 +93,10 @@ const ProductForm: React.FC = () => {
       setLoading(false); // Set loading state to false regardless of success or failure
     }
   };
+
+  if (!user) {
+    return <Navigate to='/login' />;
+  }
   
   return (
     <div className='bg-gray-200 py-3'>

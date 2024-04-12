@@ -49,12 +49,12 @@ const routes = [
     },
 
     {
-        path: '/:store_name',
+        path: '/store/:store_name',
         element: <UserStore />,
     },
 
     {
-       path: '/sign-up',
+       path: '/signup',
        element: <SignUp />,
     },
 

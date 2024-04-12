@@ -16,18 +16,18 @@ const SellerSignUp = () => {
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
   const fileRef = useRef<any>(null);
   const [ updateSellerModal, setUpdateSellerModal ] = useState(false);
- 
+  const [sending, setSending] = useState(false);
+
   useEffect(() => {
-    if (!isLoggedin) {
-      window.location.href = '/';
-    } else if (isLoggedin && userDetails?.seller === false) {
+    userDetails?.seller === true ? window.location.href = '/' : console.log('do nothing');
+    if (isLoggedin && userDetails?.seller === false) {
       setUpdateSellerModal(true);
     } else {
       console.log('do nothing');
     }
   }, [isLoggedin, userDetails]); // Assuming userDetails is stable, or destructure the necessary properties if it's not
   
-  console.log(userDetails.seller)
+  console.log(userDetails?.seller)
   const toggleShowPasswordConfirmation = () => {
     setShowPasswordConfirmation(!showPasswordConfirmation);
   }
@@ -84,11 +84,36 @@ const SellerSignUp = () => {
       setLoading(false); // Set loading state to false regardless of success or failure
     }
   };
+
+  const generateActivationLink = async (e: any) => {
+    setSending(true)
+    try {
+      const response = await AuthService?.generateActivationLink(userDetails?.email);
+      // Handle success, redirect, or perform additional actions
+      toast.success(response?.message)
+    } catch (error:any) {
+      // Handle error
+      const errorMessages = error?.response?.data?.message
+      toast.error(errorMessages)
+      console.error('Error creating user:', error);
+    } finally {
+      setSending(false); // Set loading state to false regardless of success or failure
+    }
+  };
+
   return (
     <>
     <ToastContainer />
-    {isLoggedin && userDetails?.activated === false ? <div className='text-center text-red-500'>Please activate your account</div> :
-    <div className='bg-gray-900 py-10'>
+     <div className="flex flex-col items-center mb-3 bg-gray-900 py-10">
+  {isLoggedin && userDetails?.activated === false ? (
+    <div className="text-center mt-3">
+      <span className="text-red-500 font-bold text-sm mb-2">Your account is not activated</span>
+      <button onClick={generateActivationLink} className="text-green-500 hover:text-green-700 ml-2">
+        {sending ? <Loader /> : 'Click here'}
+      </button>
+      <span className="text-red-500 font-bold text-sm ml-2">to activate your account</span>
+    </div>
+  ) : 
       <div className="max-w-md mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 py-12 px-4 sm:px-6 lg:px-8">
         <h5 className="font-bold text-center mb-8">Create Account</h5>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -160,8 +185,8 @@ const SellerSignUp = () => {
           </a>
         </div>
       </div>
-    </div>
-    }
+}
+   </div>
     <SellerModal isOpen={updateSellerModal} setIsOpen={setUpdateSellerModal} />
     </>
   )

@@ -28,9 +28,7 @@ const SellerModal = ({ isOpen, setIsOpen }: Props) => {
             setIsOpen(false);
             setTimeout(() => {
                 logout()
-            }
-                , 3000)
-            // Handle success, redirect, or perform additional actions
+            }, 3000)
         } catch (error: any) {
             // Handle error
             toast.error('Invalid credentials')
@@ -40,7 +38,7 @@ const SellerModal = ({ isOpen, setIsOpen }: Props) => {
     };
 
 
-    if (!isOpen) return null;
+    if (!isOpen || !user?.activated) return null;
     return (
         <div className='modal-overlay'>
             <div className='modal-content-body'>
@@ -49,8 +47,8 @@ const SellerModal = ({ isOpen, setIsOpen }: Props) => {
                         <div>
                             <input placeholder='Enter store Name' required type="text" name="store_name" id="store_name" className="mt-1 p-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-b border-gray-300 rounded-md" onChange={handleChange} />
                         </div>
-                        <div className="flex items-center justify-between">
-                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                        <div className="flex items-center justify-between mt-3">
+                            <button className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
                                 {loading ? <Loader /> : 'Submit'}
                             </button>
 

@@ -1,19 +1,20 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
 import AuthService from '../services/auth-service';
-import { useNavigate } from 'react-router-dom';
 import Loader from '../constants/Loader';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const userData = useSelector((state: any) => state?.reducer?.auth);
     const [ loading, setLoading] = useState(false)
-    const navigate = useNavigate();
     const [user, setUser] = useState({
         email: '',
         password: '',
     })
+
+    const navigate = useNavigate()
 
     const handleChange = (e: any) => {
         const { name, value } = e.target;
@@ -33,7 +34,8 @@ const Login = () => {
             localStorage.setItem('user', JSON.stringify(response.jwt_token));
             // Handle success, redirect, or perform additional actions
             setLoading(false)
-            window.location.href='/'
+            navigate('/'); // Navigate to the home page on success
+
         } catch (error:any) {
             // Handle error
             toast.error('Invalid credentials')
@@ -42,7 +44,6 @@ const Login = () => {
         }
     };
 
-    const forgotPassword = () => navigate('/forgot-password');
     return (
         <>
         <ToastContainer />

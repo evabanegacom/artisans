@@ -3,6 +3,7 @@ import { HiOutlineTrash } from "react-icons/hi2";
 import { useState } from 'react';
 import ProductService from '../services/product-service';
 import Loader from '../constants/Loader';
+import { formatAsCurrency } from '../constants';
 
 interface Props {
   product: any;
@@ -10,6 +11,7 @@ interface Props {
 }
 const ProductItem = ({ product, getProducts}: Props) => {
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
+  
   const [ confirmDelete, setConfirmDelete ] = useState(false);
   const [ deleting, setDeleting ] = useState(false);
 
@@ -48,14 +50,14 @@ const ProductItem = ({ product, getProducts}: Props) => {
     // </a> */}
     <div className='lg:w-1/4 md:w-1/2 p-2 w-full shadow-md rounded-lg mb-2'>
       <a href={`/product/${product?.id}`} className='block relative h-48 rounded overflow-hidden'>
-        <img src={product?.pictureTwo?.url} alt={product?.name} className="object-contain object-center w-full h-full block" />
+        <img src={product?.pictureOne?.url} alt={product?.name} className="object-contain object-center w-full h-full block" />
       </a>
       <div className='flex items-center justify-between rounded-lg'>
        <h3 className='text-gray-500 text-xs tracking-widest title-font mb-1 uppercase'>{product?.category}</h3>
        <h2 className='text-gray-900 title-font text-md text-semibold font-medium'>{product?.name}</h2>
       </div>
       <div className='flex justify-between'>
-       <div className='mt-1 font-semibold text-md text-green-600'>{product?.price}</div>
+       <div className='mt-1 font-semibold text-md text-green-600'>{formatAsCurrency(product?.price)}</div>
        {user?.id === product?.user_id && <HiOutlineTrash color='#FF0000' cursor='pointer'  onClick={()=>setConfirmDelete(true)}/>}
       </div>
     </div>

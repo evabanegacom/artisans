@@ -154,7 +154,7 @@ const ProductView = () => {
               <p>Category: {" "}{productDetails?.category}</p>
               <p>{item?.description}</p>
               <DetailsThumb images={item?.src} tab={handleTab} myRef={myRef} />
-              <div className='flex justify-between mt-2'>
+              <div className='flex justify-between mt-2 gap-3'>
                 <button onClick={handleCopyPhoneNumber} className="cart flex items-center text-sm"><FiPhone className="mr-2" /> {productDetails?.contact_number}</button>
                 <button
                   className="cart flex items-center text-sm"
@@ -163,7 +163,7 @@ const ProductView = () => {
                   <AiOutlineWhatsApp className="mr-2" color='#25d366' /> {productDetails?.contact_number}
                 </button>
               </div>
-              <a className='bg-lime-950 text-white p-3 rounded align-center mt-3' href={`/${productDetails?.sold_by}`} style={{ display: 'grid', placeItems: 'center' }}>Visit store</a>
+              <a className='bg-lime-950 text-white p-3 rounded align-center mt-3' href={`/store/${productDetails?.sold_by}`} style={{ display: 'grid', placeItems: 'center' }}>Visit store</a>
               {copied && <p className="text-green-500 text-sm">Contact number copied to clipboard</p>}
             </div>
           </div>
