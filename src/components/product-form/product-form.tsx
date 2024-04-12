@@ -100,7 +100,7 @@ const ProductForm: React.FC = () => {
     <form onSubmit={handleSubmit} className="max-w-lg mx-auto mt-8 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-          Name:
+          Product Name:
         </label>
         <input type="text" name="name" required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
       </div>
@@ -141,30 +141,30 @@ const ProductForm: React.FC = () => {
           Tags:
         </label>
         <input type="text" name="tags" onChange={handleTagsChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-        <small className="text-gray-500">Enter tags separated by commas</small>
+        <small className="text-gray-500">Enter 5 tags separated by commas</small>
       </div>
 
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pictureOne">
-          Picture One:
+          Product Image:
         </label>
-        <input type="file" name="pictureOne" onChange={handleFileChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+        <input type="file" required name="pictureOne" onChange={handleFileChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
       </div>
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pictureTwo">
-          Picture Two:
+          More(Optional):
         </label>
         <input type="file" name="pictureTwo" onChange={handleFileChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
       </div>
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pictureThree">
-          Picture Three:
+          More(Optional):
         </label>
         <input type="file" name="pictureThree" onChange={handleFileChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
       </div>
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pictureFour">
-          Picture Four:
+          More(Optional):
         </label>
         <input type="file" name="pictureFour" onChange={handleFileChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
       </div>

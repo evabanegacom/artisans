@@ -36,7 +36,7 @@ const UserStore = () => {
     <div className="container px-5 py-1 mx-auto">
     <div className="flex flex-wrap -m-4">
             {products.products?.map((product:any) => (
-        <ProductItem product={product} key={product.id} />
+        <ProductItem product={product} key={product.id} getProducts={getProductsByStore}/>
       ))}
     </div>
     </div>
