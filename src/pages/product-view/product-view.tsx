@@ -153,6 +153,14 @@ const ProductView = () => {
               {/* <p>{item?.content}</p> */}
               <p>Category: {" "}{productDetails?.category}</p>
               <p>{item?.description}</p>
+              <div>
+                <div className='font-bold'>Tags</div>
+                <ul>
+                  {productDetails?.tags.map(tag => (
+                    <li key={tag}>{tag}</li>
+                  ))}
+                </ul>
+              </div>
               <DetailsThumb images={item?.src} tab={handleTab} myRef={myRef} />
               <div className='flex justify-between mt-2 gap-3'>
                 <button onClick={handleCopyPhoneNumber} className="cart flex items-center text-sm"><FiPhone className="mr-2" /> {productDetails?.contact_number}</button>
