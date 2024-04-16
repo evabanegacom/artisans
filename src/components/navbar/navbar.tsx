@@ -13,6 +13,7 @@ const Navbar = () => {
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const searchState = useSelector((state:any) => state?.reducer?.search)
   const { searchTerm } = searchState;
+  const pageNumber = useSelector((state:any) => state?.reducer?.search?.pageNumber);
   const dispatch = useDispatch();
 
   const handleSearch = (event:any) => {
@@ -22,7 +23,7 @@ const Navbar = () => {
   const findProducts = (e:any) => {
     e.preventDefault();
     console.log('searching for products');
-    dispatch(searchProducts(searchTerm, 1) as any)
+    dispatch(searchProducts(searchTerm, pageNumber) as any)
 };
 
   return (
@@ -156,36 +157,56 @@ const Navbar = () => {
         </div>
       </div>
 
-      {isExpanded ? <div className="sm:hidden" id="mobile-menu">
+{isExpanded ? (
+  <div className="relative sm:hidden">
+    <div className="absolute w-full z-30 top-0 left-0">
+      <div className="px-2 py-3 border border-gray-700 rounded-lg bg-gray-900 shadow-lg transition duration-300 ease-in-out transform translate-y-0">
+        <a
+          href={user?.seller ? `/store/${user?.store_name}` : '/seller-signUp'}
+          className="block rounded-md px-3 py-2 text-lg font-medium text-white bg-blue-700 hover:bg-blue-800 transition duration-150 ease-in-out"
+        >
+          {user?.seller ? 'Store' : 'Start selling'}
+        </a>
+        <a
+          href="#"
+          className="block rounded-md px-3 py-2 text-lg font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out mt-1"
+        >
+          Team
+        </a>
+        <a
+          href="#"
+          className="block rounded-md px-3 py-2 text-lg font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out mt-1"
+        >
+          Projects
+        </a>
+        <a
+          href="#"
+          className="block rounded-md px-3 py-2 text-lg font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out mt-1"
+        >
+          Calendar
+        </a>
 
-        <div className="space-y-1 px-2 py-1 border border-gray-700 rounded-md">
-          <a
-            href={user?.seller ? `/store/${user?.store_name}` : '/seller-signUp'}
-            className="bg-blue-700 text-white block rounded-md px-2 py-1 text-lg font-medium hover:bg-gray-800 hover:text-shadow-sm hover:text-white"
-          >
-            {user?.seller ? 'Store' : 'Start selling'}
-          </a>
-          <a
-            href="#"
-            className="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-2 py-1 text-lg font-medium"
-          >
-            Team
-          </a>
-          <a
-            href="#"
-            className="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-2 py-1 text-lg font-medium"
-          >
-            Projects
-          </a>
-          <a
-            href="#"
-            className="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-2 py-1 text-lg font-medium"
-          >
-            Calendar
-          </a>
-        </div>
+        <form onSubmit={findProducts} className="md:flex md:flex-1 gap-3 mt-3 w-full">
+              <input
+                type="text"
+                className="bg-gray-700 w-full text-white rounded-md px-3 py-2 text-sm font-medium focus:outline-none focus:ring-transparent ring-transparent flex-1"
+                placeholder="Search..."
+                onChange={handleSearch}
+              />
 
-      </div> : null}
+              <button
+                type="submit"
+                className="mt-3 md:inline-block text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-orange-400 dark:hover:bg-orange-500 dark:focus:ring-orange-600"
+              >
+                Search
+              </button>
+            </form>
+      </div>
+    </div>
+  </div>
+) : null}
+
+
     </nav>
   );
 };

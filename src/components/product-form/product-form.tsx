@@ -82,9 +82,7 @@ const ProductForm: React.FC = () => {
       await ProductService.createProduct(productData);
       // Handle success, redirect, or perform additional actions
       toast.success('Product created successfully');
-      setTimeout(() => {
-        <Navigate to={`/store/${user?.store_name}`} />;
-      }, 3000)
+      window.location.href = `/store/${user?.store_name}`
     } catch (error) {
       // Handle error
       console.error('Error creating product:', error);

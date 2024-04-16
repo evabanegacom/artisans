@@ -14,6 +14,7 @@ const searchReducer = (state = initialState, action:any) => {
     case 'SET_SEARCH_RESULTS':
       // Check if the search term has changed
       const searchTermChanged = action?.payload !== state?.searchTerm;
+      console.log(action?.payload)
       return {
         ...state,
         searchResults: action?.payload,

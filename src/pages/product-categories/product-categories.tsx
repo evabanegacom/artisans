@@ -69,7 +69,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
       <div className="bg-red-950">
         <div className="container mx-auto">
           <div className="flex items-center justify-between py-2">
-            <div className="text-white text-2xl md:text-xl font-bold">{category?.title}</div>
+            <div className="text-white text-1xl md:text-xl text-sm font-bold">{category?.title}</div>
             <a href={`/products/${category?.name}`} className="text-white">View All</a>
           </div>
         </div>

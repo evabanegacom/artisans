@@ -34,8 +34,8 @@ export const searchProducts = (searchTerm: string, page: number) => async (dispa
   try {
     const response = await ProductService.searchProducts(searchTerm, page);
     console.log({response})
-    const searchData = response?.data?.products; // Extract serializable data from the response
-
+    const searchData = response?.data; // Extract serializable data from the response
+    console.log({searchData})
     // Redirect to the '/search-results' page with search data as URL parameters
     window.location.href = `/search-results?searchTerm=${searchTerm}&data=${JSON.stringify(searchData)}`;
   } catch (error) {

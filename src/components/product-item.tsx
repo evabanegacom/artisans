@@ -29,52 +29,56 @@ const ProductItem = ({ product, getProducts}: Props) => {
     }
   }
   return (
-    <>
-    {/* // <a href={`/product/${product?.id}`}>
-    //         <div className="bg-white p-2 shadow-md rounded-lg">
-    //           <img src={product?.pictureTwo?.url} alt={product.name} className="w-full h-48 object-cover rounded-t-lg" />
-    //           <div className="flex items-center justify-between rounded-lg bg-white py-2">
-    //             <div className="flex items-center">
-    //               <h3 className="text-lg font-semibold text-gray-900">
-    //                 {product?.name}
-    //               </h3>
-    //             </div>
-    //             <div className="text-xl font-bold text-green-600">
-    //               ${product?.price}
-    //             </div>
-    //           </div>
-    //           <div className="text-sm text-gray-500">
-    //             Sold by: {" "} {product?.sold_by}
-    //           </div>
-    //         </div>
-    // </a> */}
-    <div className='lg:w-1/4 md:w-1/2 p-2 w-full shadow-md rounded-lg mb-2'>
-      <a href={`/product/${product?.id}`} className='block relative h-48 rounded overflow-hidden'>
-        <img src={product?.pictureOne?.url} alt={product?.name} className="object-contain object-center w-full h-full block" />
-      </a>
-      <div className='flex items-center justify-between rounded-lg'>
-       <h3 className='text-gray-500 text-xs tracking-widest title-font mb-1 uppercase'>{product?.category}</h3>
-       <h2 className='text-gray-900 title-font text-md text-semibold font-medium'>{product?.name}</h2>
+<>
+  <div className="product-card lg:w-1/4 md:w-1/2 sm:w-full p-4 shadow-lg rounded-lg overflow-hidden mb-4 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl">
+    <a href={`/product/${product?.id}`} className="product-image block relative h-48 rounded-lg overflow-hidden">
+      {/* <img src={product.pictureOne.url} alt={product.name} className="object-cover object-center w-full h-full block transition duration-300 ease-in-out" /> */}
+
+      <img
+  src={product?.pictureOne?.url}
+  alt={product?.name}
+  loading="lazy"
+  className="object-cover object-center w-full h-full block transition duration-300 ease-in-out"
+  srcSet={`${product?.pictureOne} 300w, 
+           ${product?.pictureOne} 768w,
+           ${product?.pictureOne} 1280w`}
+  sizes="(max-width: 300px) 280px,
+         (max-width: 768px) 750px,
+         1280px"
+/>
+
+    </a>
+    <div className="product-details flex flex-col justify-between px-4 py-2">
+      <div className="product-info flex justify-between items-center">
+        <h2 className="product-title text-gray-900 title-font text-md font-semibold">{product?.name}</h2>
+        <h3 className="product-category text-gray-500 text-xs tracking-widest title-font mb-1 uppercase">{product?.category}</h3>
       </div>
-      <div className='flex justify-between'>
-       <div className='mt-1 font-semibold text-md text-green-600'>{formatAsCurrency(product?.price)}</div>
-       {user?.id === product?.user_id && <HiOutlineTrash color='#FF0000' cursor='pointer'  onClick={()=>setConfirmDelete(true)}/>}
+      <div className="product-price-actions flex justify-between items-center mt-2">
+        <div className="product-price text-green-600 font-semibold text-md">{formatAsCurrency(product?.price)}</div>
+        {user?.id === product?.user_id && (
+          <button type="button" className="product-delete text-red-500 hover:text-red-700 cursor-pointer focus:outline-none" onClick={() => setConfirmDelete(true)}>
+            <HiOutlineTrash size={20} />
+          </button>
+        )}
       </div>
     </div>
-    {user?.id===product?.user_id && confirmDelete ? 
-    <div className='modal-overlay'>
-    <div className='modal-content-body'>
-      <div>Are you sure you want to delete</div>
-      <div>{product?.name}</div>
-      <div>from your store?</div>
-      <div className='flex justify-between'>
-        <button className='bg-red-500 text-white p-2 rounded' onClick={deleteProduct}>{deleting ? <Loader /> : 'Delete'}</button>
-        <button className='bg-gray-500 text-white p-2 rounded' onClick={() => setConfirmDelete(false)}>Cancel</button>
+  </div>
+
+  {user?.id === product?.user_id && confirmDelete && (
+    <div className="modal-overlay bg-gray-900 opacity-75 fixed inset-0 z-50 flex items-center justify-center">
+      <div className="modal-content bg-white rounded-lg shadow-lg px-8 py-6 text-gray-700">
+        <div className="modal-message text-lg font-medium">Are you sure you want to delete "{product?.name}" from your store?</div>
+        <div className="modal-actions flex justify-between mt-4">
+          <button className="modal-confirm bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700 transition duration-300" type="button" onClick={deleteProduct}>
+            {deleting ? <span className="spinner" /> : 'Delete'}
+          </button>
+          <button className="modal-cancel bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition duration-300" onClick={() => setConfirmDelete(false)}>Cancel</button>
+        </div>
+      </div>
     </div>
-    </div>
-    </div>
-    : null}
-    </>
+  )}
+</>
+
   )
 }
 
