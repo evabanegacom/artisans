@@ -11,20 +11,20 @@ const Navbar = () => {
   const isLoggedin = useSelector((state: any) => state?.reducer?.auth?.isAuth);
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
   const [showOptions, setShowOptions] = useState<boolean>(false);
-  const searchState = useSelector((state:any) => state?.reducer?.search)
+  const searchState = useSelector((state: any) => state?.reducer?.search)
   const { searchTerm } = searchState;
-  const pageNumber = useSelector((state:any) => state?.reducer?.search?.pageNumber);
+  const pageNumber = useSelector((state: any) => state?.reducer?.search?.pageNumber);
   const dispatch = useDispatch();
 
-  const handleSearch = (event:any) => {
+  const handleSearch = (event: any) => {
     dispatch(setSearchTerm(event.target.value));
   };
 
-  const findProducts = (e:any) => {
+  const findProducts = (e: any) => {
     e.preventDefault();
     console.log('searching for products');
     dispatch(searchProducts(searchTerm, pageNumber) as any)
-};
+  };
 
   return (
     <nav className="bg-gray-800">
@@ -98,113 +98,112 @@ const Navbar = () => {
               </div>
 
 
-              {showOptions ? 
-              // <div className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button">
-              //   <a href="#" className="block px-4 py-2 text-sm text-gray-700" role="menuitem" id="user-menu-item-0">Sell your art</a>
-              //   <a href="#" className="block px-4 py-2 text-sm text-gray-700" role="menuitem" id="user-menu-item-1">Create Account</a>
-              //   <a href="#" className="block px-4 py-2 text-sm text-gray-700" role="menuitem" id="user-menu-item-2">Sign out</a>
-              // </div> 
-              <div
-  className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-gray-800 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-  role="menu"
-  aria-orientation="vertical"
-  aria-labelledby="user-menu-button"
->
-  <a
-    href="/seller-signUp"
-    className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
-    role="menuitem"
-    id="user-menu-item-0"
-  >
-    Profile
-  </a>
-  {isLoggedin ? null :
-  <>
-  <a
-    href="/signup"
-    className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
-    role="menuitem"
-    id="user-menu-item-1"
-  >
-    Create Account
-  </a>
-  </>}
-  {isLoggedin ? 
-  <a
-  href="/login" onClick={logout}
-  className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
-  role="menuitem"
-  id="user-menu-item-2"
->
-  Sign out
-</a> :
-  <a
-  href="/login"
-  className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
-  role="menuitem"
-  id="user-menu-item-2"
->
-  Sign in
-</a>}
-  
-  
-</div>
+              {showOptions ?
+                // <div className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button">
+                //   <a href="#" className="block px-4 py-2 text-sm text-gray-700" role="menuitem" id="user-menu-item-0">Sell your art</a>
+                //   <a href="#" className="block px-4 py-2 text-sm text-gray-700" role="menuitem" id="user-menu-item-1">Create Account</a>
+                //   <a href="#" className="block px-4 py-2 text-sm text-gray-700" role="menuitem" id="user-menu-item-2">Sign out</a>
+                // </div> 
+                <div
+                  className="absolute right-0 z-30 mt-2 w-48 origin-top-right rounded-md bg-gray-800 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  role="menu"
+                  aria-orientation="vertical"
+                  aria-labelledby="user-menu-button"
+                >
+                  <a
+                    href="/seller-signUp"
+                    className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
+                    role="menuitem"
+                    id="user-menu-item-0"
+                  >
+                    Profile
+                  </a>
+                  {isLoggedin ? null :
+                    <>
+                      <a
+                        href="/signup"
+                        className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
+                        role="menuitem"
+                        id="user-menu-item-1"
+                      >
+                        Create Account
+                      </a>
+                    </>}
+                  {isLoggedin ?
+                    <a
+                      href="/login" onClick={logout}
+                      className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
+                      role="menuitem"
+                      id="user-menu-item-2"
+                    >
+                      Sign out
+                    </a> :
+                    <a
+                      href="/login"
+                      className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
+                      role="menuitem"
+                      id="user-menu-item-2"
+                    >
+                      Sign in
+                    </a>}
 
-              : null}
+                </div>
+
+                : null}
 
             </div>
           </div>
         </div>
       </div>
 
-{isExpanded ? (
-  <div className="relative sm:hidden">
-    <div className="absolute w-full z-30 top-0 left-0">
-      <div className="px-2 py-3 border border-gray-700 rounded-lg bg-gray-900 shadow-lg transition duration-300 ease-in-out transform translate-y-0">
-        <a
-          href={user?.seller ? `/store/${user?.store_name}` : '/seller-signUp'}
-          className="block rounded-md px-3 py-2 text-lg font-medium text-white bg-blue-700 hover:bg-blue-800 transition duration-150 ease-in-out"
-        >
-          {user?.seller ? 'Store' : 'Start selling'}
-        </a>
-        <a
-          href="#"
-          className="block rounded-md px-3 py-2 text-lg font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out mt-1"
-        >
-          Team
-        </a>
-        <a
-          href="#"
-          className="block rounded-md px-3 py-2 text-lg font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out mt-1"
-        >
-          Projects
-        </a>
-        <a
-          href="#"
-          className="block rounded-md px-3 py-2 text-lg font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out mt-1"
-        >
-          Calendar
-        </a>
-
-        <form onSubmit={findProducts} className="md:flex md:flex-1 gap-3 mt-3 w-full">
-              <input
-                type="text"
-                className="bg-gray-700 w-full text-white rounded-md px-3 py-2 text-sm font-medium focus:outline-none focus:ring-transparent ring-transparent flex-1"
-                placeholder="Search..."
-                onChange={handleSearch}
-              />
-
-              <button
-                type="submit"
-                className="mt-3 md:inline-block text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-orange-400 dark:hover:bg-orange-500 dark:focus:ring-orange-600"
+      {isExpanded ? (
+        <div className="relative sm:hidden">
+          <div className="absolute w-full z-10 top-0 left-0">
+            <div className="px-2 py-3 border border-gray-700 rounded-lg bg-gray-900 shadow-lg transition duration-300 ease-in-out transform translate-y-0">
+              <a
+                href={user?.seller ? `/store/${user?.store_name}` : '/seller-signUp'}
+                className="block rounded-md px-3 py-2 text-lg font-medium text-white bg-blue-700 hover:bg-blue-800 transition duration-150 ease-in-out"
               >
-                Search
-              </button>
-            </form>
-      </div>
-    </div>
-  </div>
-) : null}
+                {user?.seller ? 'Store' : 'Start selling'}
+              </a>
+              <a
+                href="#"
+                className="block rounded-md px-3 py-2 text-lg font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out mt-1"
+              >
+                Team
+              </a>
+              <a
+                href="#"
+                className="block rounded-md px-3 py-2 text-lg font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out mt-1"
+              >
+                Projects
+              </a>
+              <a
+                href="#"
+                className="block rounded-md px-3 py-2 text-lg font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out mt-1"
+              >
+                Calendar
+              </a>
+
+              <form onSubmit={findProducts} className="md:flex md:flex-1 gap-3 mt-3 w-full">
+                <input
+                  type="text"
+                  className="bg-gray-700 w-full text-white rounded-md px-3 py-2 text-sm font-medium focus:outline-none focus:ring-transparent ring-transparent flex-1"
+                  placeholder="Search..."
+                  onChange={handleSearch}
+                />
+
+                <button
+                  type="submit"
+                  className="mt-3 md:inline-block text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-orange-400 dark:hover:bg-orange-500 dark:focus:ring-orange-600 w-full"
+                >
+                  Search
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
 
     </nav>

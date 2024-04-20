@@ -29,7 +29,7 @@ interface Product {
 const ProductView = () => {
   const { id } = useParams();
   const [copied, setCopied] = useState(false);
-
+  console.log(id)
   const [productDetails, setProductDetails] = useState<Product>();
   const products = [
     {
@@ -85,7 +85,7 @@ const ProductView = () => {
   useEffect(() => {
     const getProductDetails = async () => {
       try {
-        const response = await ProductService.getProduct(id as any);
+        const response = await ProductService.getProduct(id as string);
         console.log(response)
         products[0].src = response.data.image_urls;
         products[0].description = response.data.description;

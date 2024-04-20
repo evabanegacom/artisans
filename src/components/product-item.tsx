@@ -28,10 +28,12 @@ const ProductItem = ({ product, getProducts}: Props) => {
       setDeleting(false);
     }
   }
+
+  console.log(product)
   return (
 <>
   <div className="product-card lg:w-1/4 md:w-1/2 sm:w-full p-4 shadow-lg rounded-lg overflow-hidden mb-4 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl">
-    <a href={`/product/${product?.id}`} className="product-image block relative h-48 rounded-lg overflow-hidden">
+    <a href={`/product/${product?.product_number}`} className="product-image block relative h-48 rounded-lg overflow-hidden">
       {/* <img src={product.pictureOne.url} alt={product.name} className="object-cover object-center w-full h-full block transition duration-300 ease-in-out" /> */}
 
       <img

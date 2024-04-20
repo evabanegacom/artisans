@@ -215,7 +215,7 @@ export const logout = () => {
 }
 
 function generateProductNumber(length:number) {
-  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=';
+  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let productNumber = '';
 
   // Generate a random string

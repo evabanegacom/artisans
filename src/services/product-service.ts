@@ -20,8 +20,8 @@ export const getProductsByUserId = async (user_id: number, page:number) => {
   return response;
 };
 
-export const getProduct = async (id: number) => {
-  const response = await api.get(`/products/${id}`);
+export const getProduct = async (product_number: string) => {
+  const response = await api.get(`/products/get_product_by_product_number?product_number=${product_number}`);
   return response;
 };
 
