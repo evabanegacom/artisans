@@ -40,9 +40,9 @@ const SearchResults = () => {
     </h1>
     <div className="container px-5 py-5 mx-auto">
     <div className="flex flex-wrap -m-4">
-      {searchData.products?.map((product:any) => (
+      {searchData.products?.length > 0 ? searchData?.products?.map((product:any) => (
         <ProductItem product={product} key={product.id} />
-      ))}
+      )): <div className='text-center w-full mt-3'>No item matches your search</div>}
     </div>
     </div>
     <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
