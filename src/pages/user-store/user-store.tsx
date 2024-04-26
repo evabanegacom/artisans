@@ -32,7 +32,7 @@ const UserStore = () => {
     <div className=
       "flex justify-between text-sm font-semibold text-white bg-blue-800 py-2 px-3 rounded-md mb-3">
       <div>{store_name}</div>
-      {user && products?.products?.some((product: any) => product?.user_id === user?.id) && (
+      {user && products?.store_name === store_name && (
           <a href='/create-product'>Add product</a>
         )}    </div>
     <div className="container px-5 py-1 mx-auto">
@@ -42,7 +42,7 @@ const UserStore = () => {
       ))}
     </div>
     </div>
-    {products?.products.length === 20 ?<Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} /> : null}
+    {products?.products?.length === 20 ?<Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} /> : null}
   </div>
   )
 }

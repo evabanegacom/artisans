@@ -12,7 +12,7 @@ const ProductForm: React.FC = () => {
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
   const [loading, setLoading] = useState(false);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     name: '',
     description: '',
     price: 0,
@@ -42,6 +42,20 @@ const ProductForm: React.FC = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name;
     const file = e.target.files && e.target.files[0];
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/svg+xml"];
+    const maxSize = 1024 * 1024; // 1 megabyte
+    if (file && !allowedTypes.includes(file.type)) {
+      toast.error("Please select a valid image file (JPEG, JPG, PNG, SVG).");
+      e.target.value = ''; // Clear the input
+      return;
+    }
+
+    if (file && file.size > maxSize) {
+      toast.error("The selected image file is too large. Please select an image file under 1 megabyte.");
+      e.target.value = '';
+      return;
+    }
+
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -92,6 +106,27 @@ const ProductForm: React.FC = () => {
     }
   };
 
+  const PictureInput = ({ name, required }: { name: string, required: boolean }) => (
+    <div className="mb-4">
+      <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={name}>
+        {name === 'pictureOne' ? 'Product Image:' : 'More(Optional):'}
+      </label>
+      <div className="relative border border-gray-300 bg-white rounded-md">
+        <input type="file" required={required} name={name} onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+        <div className="flex items-center justify-center py-2 px-4">
+          <svg className="w-6 h-6 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          </svg>
+          {formData[name] ? (
+            <span className="text-gray-600">{formData[name].name}</span>
+          ) : (
+            <span className="text-gray-600">Choose a file...</span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
   if (!user) {
     return <Navigate to='/login' />;
   }
@@ -101,29 +136,17 @@ const ProductForm: React.FC = () => {
     <h1 className='text-center text-2xl font-bold text-white bg-blue-800 py-4 rounded-md mb-3'>Add Product</h1>
     <form onSubmit={handleSubmit} className="max-w-lg mx-auto mt-8 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-          Product Name:
-        </label>
-        <input type="text" name="name" required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+        <input placeholder='Product Name' type="text" name="name" required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
       </div>
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
-          Description:
-        </label>
-        <textarea name="description" required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+        <textarea placeholder='Product description' name="description" required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
       </div>
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="price">
-          Price:
-        </label>
-        <input type="number" name="price" required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+        <input type="number" placeholder='Product Price' name="price" required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
       </div>
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="category">
-          Category:
-        </label>
-        <select name="category" value={formData.category} required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-          <option value="">Select Category</option>
+        <select name="category" value={formData.category} required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-400 leading-tight focus:outline-none focus:shadow-outline">
+          <option value="">Select Product Category</option>
           {categories.map(category => (
             <option key={category?.id} value={category?.name}>
               {category?.title}
@@ -132,27 +155,38 @@ const ProductForm: React.FC = () => {
         </select>
       </div>
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="quantity">
-          Quantity:
-        </label>
-        <input type="number" name="quantity" required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+        <input placeholder='Quantity' type="number" name="quantity" required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
       </div>
 
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="tags">
-          Tags:
-        </label>
-        <input type="text" name="tags" onChange={handleTagsChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+        <input placeholder='Tags' type="text" name="tags" onChange={handleTagsChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
         <small className="text-gray-500">Enter 5 tags separated by commas</small>
       </div>
 
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pictureOne">
-          Product Image:
-        </label>
-        <input type="file" required name="pictureOne" onChange={handleFileChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+<div className="mb-4">
+      <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pictureOne">
+        Product Image:
+      </label>
+      <div className="relative border border-gray-300 bg-white rounded-md">
+        <input type="file" required name="pictureOne" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+        <div className="flex items-center justify-center py-2 px-4">
+          <svg className="w-6 h-6 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          </svg>
+          {formData?.pictureOne ? (
+            <span className="text-gray-600">{formData?.pictureOne?.name}</span>
+          ) : (
+            <span className="text-gray-600">Choose a file...</span>
+          )}
+        </div>
       </div>
-      <div className="mb-4">
+    </div>
+
+<PictureInput name="pictureTwo" required={false} />
+<PictureInput name="pictureThree" required={false}/>
+<PictureInput name="pictureFour" required={false}/>
+
+      {/* <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pictureTwo">
           More(Optional):
         </label>
@@ -169,8 +203,9 @@ const ProductForm: React.FC = () => {
           More(Optional):
         </label>
         <input type="file" name="pictureFour" onChange={handleFileChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-      </div>
-      {/* <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button> */}
+      </div> */}
+
+      
       <button disabled={loading} type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3">
         {loading ? <Loader /> : 'Submit'} </button>
     </form>

@@ -1,12 +1,12 @@
-import { submitFormData, api } from '../utils/api';
+import { submitFormData, api, updateFormData } from '../utils/api';
 
 export const createProduct = async (product:any) => {
   const response = await submitFormData(product, '/products');
   return response;
 };
 
-export const updateProduct = async (product: any) => {
-  const response = await submitFormData(product, '/products');
+export const updateProduct = async (product: any, id:number) => {
+  const response = await updateFormData(product, `/products/${id}`);
   return response;
 };
 

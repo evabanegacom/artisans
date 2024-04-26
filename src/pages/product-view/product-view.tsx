@@ -7,6 +7,9 @@ import { AiOutlineWhatsApp } from 'react-icons/ai';
 import { FiPhone } from 'react-icons/fi';
 import { useParams } from 'react-router-dom';
 import { formatAsCurrency } from '../../constants';
+import { FaEdit } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
+import { HiOutlineTrash } from 'react-icons/hi2';
 
 
 interface Product {
@@ -24,13 +27,29 @@ interface Product {
   product_number: string;
   tags: string[];
   image_urls: string[];
+  user_id: number;
 }
 
 const ProductView = () => {
   const { id } = useParams();
   const [copied, setCopied] = useState(false);
-  console.log(id)
+  const user = useSelector((state: any) => state?.reducer?.auth?.user);
   const [productDetails, setProductDetails] = useState<Product>();
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const deleteProduct = async () => {
+    setDeleting(true);
+    try {
+      const removeProduct = await ProductService.deleteProduct(productDetails?.id as any);
+      console.log(removeProduct);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setConfirmDelete(false);
+      setDeleting(false);
+    }
+  }
   const products = [
     {
       "id": "1",
@@ -87,13 +106,13 @@ const ProductView = () => {
       try {
         const response = await ProductService.getProduct(id as string);
         console.log(response)
-        products[0].src = response.data.image_urls;
-        products[0].description = response.data.description;
-        products[0].title = response.data.name;
-        products[0].price = response.data.price;
-        products[0].count = response.data.quantity;
+        products[0].src = response?.data.image_urls;
+        products[0].description = response?.data.description;
+        products[0].title = response?.data?.name;
+        products[0].price = response?.data?.price;
+        products[0].count = response?.data?.quantity;
         products[0].colors = generateRandomColors();
-        setProductDetails(response.data);
+        setProductDetails(response?.data);
       } catch (error) {
         console.error(error)
       }
@@ -102,10 +121,10 @@ const ProductView = () => {
     if (productDetails && productDetails?.image_urls.length > 0) {
       const images = myRef.current.children;
       for (let i = 0; i < images.length; i++) {
-        images[i].className = i === product.index ? "active" : "";
+        images[i].className = i === product?.index ? "active" : "";
       }
     }
-  }, [productDetails?.image_urls.length, product.index])
+  }, [productDetails?.image_urls?.length, product?.index])
 
 
   const handleCopyAndWhatsApp = () => {
@@ -152,7 +171,7 @@ const ProductView = () => {
               <p>Sold by: {" "} {productDetails?.sold_by}</p>
               {/* <p>{item?.content}</p> */}
               <p>Category: {" "}{productDetails?.category}</p>
-              <p>{item?.description}</p>
+              <p>Description: {" "}{item?.description}</p>
               <div>
                 <div className='font-bold'>Tags</div>
                 <ul>
@@ -173,7 +192,32 @@ const ProductView = () => {
               </div>
               <a className='bg-lime-950 text-white p-3 rounded align-center mt-3' href={`/store/${productDetails?.sold_by}`} style={{ display: 'grid', placeItems: 'center' }}>Visit store</a>
               {copied && <p className="text-green-500 text-sm">Contact number copied to clipboard</p>}
+              {user?.id === productDetails?.user_id && (
+                <div className='flex justify-between mt-3'>
+                <button type="button" className="product-delete text-red-500 hover:text-red-700 cursor-pointer focus:outline-none" onClick={() => setConfirmDelete(true)}>
+                  <HiOutlineTrash size={20} />
+                </button>
+
+                <a href={`/edit-product/${productDetails?.product_number}`} className="product-delete text-blue-500 hover:text-blue-700 cursor-pointer focus:outline-none">
+                  <FaEdit size={20} />
+                </a>
+                </div>
+              )}
             </div>
+
+            {user?.id === productDetails?.user_id && confirmDelete && (
+              <div className="modal-overlay bg-gray-900 opacity-75 fixed inset-0 z-50 flex items-center justify-center">
+                <div className="modal-content bg-white rounded-lg shadow-lg px-8 py-6 text-gray-700">
+                  <div className="modal-message text-lg font-medium">Are you sure you want to delete "{productDetails?.name}" from your store?</div>
+                  <div className="modal-actions flex justify-between mt-4">
+                    <button className="modal-confirm bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700 transition duration-300" type="button" onClick={deleteProduct}>
+                      {deleting ? <span className="spinner" /> : 'Delete'}
+                    </button>
+                    <button className="modal-cancel bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition duration-300" onClick={() => setConfirmDelete(false)}>Cancel</button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         ))
       }

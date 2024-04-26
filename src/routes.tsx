@@ -12,6 +12,7 @@ const CategoriesPage = lazy(() => import('./pages/categories-page/categories-pag
 const Productview = lazy(() => import('./pages/product-view/product-view'));
 const UserStore = lazy(() => import('./pages/user-store/user-store'));
 const SignUp = lazy(() => import('./auth/sign-up'));
+const EditProduct = lazy(() => import('./pages/product-view/edit-product'));
 
 const routes = [
     {
@@ -66,6 +67,11 @@ const routes = [
     {
         path: '/create-product',
         element: <ProductForm />
+    },
+
+    {
+        path: '/edit-product/:id',
+        element: <EditProduct />
     },
 
     {

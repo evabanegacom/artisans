@@ -29,7 +29,6 @@ const ProductItem = ({ product, getProducts}: Props) => {
     }
   }
 
-  console.log(product)
   return (
 <>
   <div className="product-card lg:w-1/4 md:w-1/2 sm:w-full p-4 shadow-lg rounded-lg overflow-hidden mb-4 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl">
