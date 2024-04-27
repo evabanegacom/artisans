@@ -9,6 +9,7 @@ interface userDataProps {
     store_name: string;
     mobile: string;
     state: string;
+    url: string;
 }
 
 interface authProps {
@@ -41,6 +42,7 @@ if (userData) {
                 store_name: decodedToken?.store_name,
                 mobile: decodedToken?.mobile,
                 state: decodedToken?.state,
+                url: decodedToken?.avatar?.url
             }
         };
     }
