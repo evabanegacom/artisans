@@ -25,7 +25,7 @@ const ProductForm: React.FC = () => {
     sold_by: user?.store_name || '',
     contact_number: user?.mobile || '',
     product_number: '',
-    tags: ['beauty'],
+    tags: ['craft'],
     user_id: user?.id
   });
 

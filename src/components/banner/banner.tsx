@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './banner.css'; // Import CSS for styling
 
 interface Banner {
+  id?: number;
   image: string;
   title: string;
   description: string;
@@ -9,16 +10,19 @@ interface Banner {
 
 const banners: Banner[] = [
   {
+    id: 1,
     image: 'https://res.cloudinary.com/spetsnaz/image/upload/v1603546589/71xsZ9XMCtJtTa1tmKanbeVG.jpg',
-    title: 'Unique Handcrafted Artworks',
-    description: 'Discover exquisite handmade arts and crafts from talented artisans around the world.',
-  },
-  {
-    image: 'https://res.cloudinary.com/spetsnaz/image/upload/v1595343234/Qn5dFd2S3Mc1m6fYnMtKMzQR.jpg',
     title: 'Artisanal Home Decor',
     description: 'Transform your living space with unique artisanal home decor pieces.',
   },
   {
+    id: 2,
+    image: 'https://res.cloudinary.com/spetsnaz/image/upload/v1595343234/Qn5dFd2S3Mc1m6fYnMtKMzQR.jpg',
+    title: 'Unique Handcrafted Artworks',
+    description: 'Discover exquisite handmade arts and crafts from talented artisans around the world.',
+  },
+  {
+    id: 3,
     image: 'https://res.cloudinary.com/spetsnaz/image/upload/v1594730959/samples/landscapes/girl-urban-view.jpg',
     title: 'Handmade Jewelry Collection',
     description: 'Adorn yourself with beautiful handcrafted jewelry made with love and passion.',
@@ -50,8 +54,8 @@ const Carousel: React.FC = () => {
         <div key={index} className={`banner ${index === currentIndex ? 'active' : ''}`}>
           <img src={banner.image} alt={`Banner ${index + 1}`} />
           <div className="content">
-            <h2>{banner.title}</h2>
-            <p>{banner.description}</p>
+            <h2 className={`font-bold ${banner.id===2 ? 'text-blue-950' : ''}`}>{banner.title}</h2>
+            <p className={`font-bold ${banner.id===2 ? 'text-lime-950' : ''}`}>{banner.description}</p>
             <a href="#">Shop Now</a>
           </div>
         </div>
