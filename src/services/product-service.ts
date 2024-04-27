@@ -6,7 +6,7 @@ export const createProduct = async (product:any) => {
 };
 
 export const updateProduct = async (product: any, id:number) => {
-  const response = await updateFormData(product, `/products/${id}`);
+  const response = await updateFormData(product, `products/${id}`);
   return response;
 };
 

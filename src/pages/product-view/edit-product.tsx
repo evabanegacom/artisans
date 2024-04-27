@@ -16,64 +16,23 @@ const EditProduct: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [productDetail, setProductDetail] = useState<any>({});
 
-    const getProduct = async () => {
-        try {
-            const product = await ProductService.getProduct(id as string);
-            setProductDetail(product?.data as any);
-            setFormData({
-                name: product?.data?.name,
-                description: product?.data?.description,
-                price: product?.data?.price,
-                category: product?.data?.category,
-                quantity: product?.data?.quantity,
-                pictureOne: product?.data?.image_urls[0],
-                pictureTwo: product?.data?.image_urls[1],
-                pictureThree: product?.data?.image_urls[2],
-                pictureFour: product?.data?.image_urls[3],
-                sold_by: user?.store_name,
-                contact_number: user?.mobile,
-                product_number: product?.data?.product_number,
-                tags: product?.data?.tags,
-                user_id: user?.id
-            });
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        getProduct();
-    }, []);
-
     const [formData, setFormData] = useState<any>({
         name: productDetail?.name || '',
         description: productDetail?.description || '',
         price: productDetail?.price || '',
         category: productDetail?.category || '',
         quantity: productDetail?.quantity || '',
-        pictureOne: (productDetail?.image_urls && productDetail.image_urls.length > 0) ? productDetail.image_urls[0] : '',
-        pictureTwo: (productDetail?.image_urls && productDetail.image_urls.length > 1) ? productDetail.image_urls[1] : '',
-        pictureThree: (productDetail?.image_urls && productDetail.image_urls.length > 2) ? productDetail.image_urls[2] : '',
-        pictureFour: (productDetail?.image_urls && productDetail.image_urls.length > 3) ? productDetail.image_urls[3] : '',
         sold_by: user?.store_name || '',
         contact_number: user?.mobile || '',
         product_number: productDetail?.product_number || '',
+        pictureOne: '',
+        pictureTwo: '',
+        pictureThree: '',
+        pictureFour: '',
         tags: ['beauty'],
         user_id: user?.id
     });
-
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | any>) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
-
-    const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const tagsValue = e.target.value;
-        setFormData({ ...formData, tags: tagsValue.split(',').map(tag => tag.trim()) });
-    };
+    
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const name = e.target.name;
@@ -103,6 +62,47 @@ const EditProduct: React.FC = () => {
             setFormData({ ...formData, [name]: '' });
         }
     };
+    
+
+    const getProduct = async () => {
+        try {
+            const product = await ProductService.getProduct(id as string);
+            setProductDetail(product?.data as any);
+            setFormData({
+                name: product?.data?.name,
+                description: product?.data?.description,
+                price: product?.data?.price,
+                category: product?.data?.category,
+                quantity: product?.data?.quantity,
+                sold_by: user?.store_name,
+                contact_number: user?.mobile,
+                product_number: product?.data?.product_number,
+                tags: product?.data?.tags,
+                user_id: user?.id
+            });
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        getProduct();
+    }, []);
+
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | any>) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const tagsValue = e.target.value;
+        setFormData({ ...formData, tags: tagsValue.split(',').map(tag => tag.trim()) });
+    };
+
+    
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
@@ -133,6 +133,8 @@ const EditProduct: React.FC = () => {
             for (const [name, file] of Object.entries(formData)) {
                 if (file instanceof File) {
                     productData.append(name, file);
+                }else if(file === '') {
+                    productData.append(name, '');
                 }
             }
 
@@ -140,30 +142,69 @@ const EditProduct: React.FC = () => {
             toast.success('Product updated successfully');
             getProduct();
         } catch (error) {
-            console.error('Error updating product:', error);
             toast.error('Error updating product');
         } finally {
             setLoading(false);
         }
     };
 
-
-
-    const handleDeleteImage = (index: number) => {
-        const updatedImages = productDetail?.image_urls.filter((_: any, i: number) => i !== index);
-        setProductDetail({ ...productDetail, image_urls: updatedImages });
-    };
-
-    const [tags, setTags] = useState<string[]>(productDetail?.tags || []);
-    const [tagInput, setTagInput] = useState('');
-
-    const handleAddTag = () => {
-        // Assuming tagInput is the state variable for the input field where new tags are entered
-        if (tagInput.trim() !== '' && !tags.includes(tagInput)) {
-            setTags([...tags, tagInput]);
-            setTagInput('');
+    const handleDeleteImage = (indexToDelete: number) => {
+        // If indexToDelete is 0 (pictureOne), do nothing
+        if (indexToDelete === 0) {
+            return;
         }
+    
+        const updatedFormData = { ...formData };
+    
+        // Remove the image data corresponding to the indexToDelete
+        switch (indexToDelete) {
+            case 1:
+                updatedFormData.pictureTwo = '';
+                break;
+            case 2:
+                updatedFormData.pictureThree = '';
+                break;
+            case 3:
+                updatedFormData.pictureFour = '';
+                break;
+            default:
+                break;
+        }
+    
+        // Update the state with the modified formData
+        setFormData(updatedFormData);
     };
+    
+    
+
+    // const handleDeleteImage = async (index: number) => {
+    //     try {
+    //         // Make a copy of the image_urls array
+    //         if(productDetail?.image_urls.length === 1) {
+    //             toast.error('You cannot delete the only image of a product');
+    //             return;
+    //         }
+
+    //         if(index === 0) {
+    //            setFormData((prevFormData: any) => ({ ...prevFormData, pictureOne: '' }));
+    //         }else if(index === 1) {
+    //             setFormData((prevFormData: any) => ({ ...prevFormData, pictureTwo: '' }));
+    //         }else if(index === 2) {
+    //             setFormData((prevFormData: any) => ({ ...prevFormData, pictureThree: '' }));
+    //         }else if(index === 3) {
+    //             setFormData((prevFormData: any) => ({ ...prevFormData, pictureFour: '' }));
+    //         }
+
+    //         await ProductService.updateProduct(productDetail?.id as any, productDetail?.id as any);
+    //         getProduct();
+    //         toast.success('Image deleted successfully');
+    //     } catch (error) {
+    //         // Handle errors appropriately
+    //         console.error('Error deleting image:', error);
+    //         toast.error('Error deleting image');
+    //     }
+    // };
+    
 
     const handleRemoveTag = async (tagToRemove: string) => {
         // Filter out the tag to remove from the tags state
@@ -175,16 +216,13 @@ const EditProduct: React.FC = () => {
         try {
             // Call ProductService.updateProduct with the updated formData
             const updatedFormData = { ...formData, tags: updatedTags || [] }; // Ensure tags property is always included
-            const response = await ProductService.updateProduct(updatedFormData, productDetail?.id as any);
-            console.log(response);
+            await ProductService.updateProduct(updatedFormData, productDetail?.id as any);
             getProduct();
         } catch (error) {
             console.error('Error updating product:', error);
             // Handle error appropriately, such as displaying an error message to the user
         }
     };
-
-
 
     if (!user) {
         return <Navigate to='/login' />;
