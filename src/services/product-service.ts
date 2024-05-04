@@ -25,6 +25,11 @@ export const getProduct = async (product_number: string) => {
   return response;
 };
 
+export const getProductToEdit = async (product_number: string) => {
+  const response = await api.get(`/products/get_picture_to_edit?product_number=${product_number}`);
+  return response;
+};
+
 export const getProductsByCategory = async (category: string, page:number) => {
   const response = await api.get(`/products/products_by_category?category=${category}&page=${page}`)
   return response;
@@ -48,7 +53,8 @@ const ProductService = {
   getProduct,
   getProductsByCategory,
   getProductByStore,
-  searchProducts
+  searchProducts,
+  getProductToEdit
 };
 
 export default ProductService;

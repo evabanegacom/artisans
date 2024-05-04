@@ -30,11 +30,12 @@ const Login = () => {
         localStorage.clear();
         try {
             const response = await AuthService.login(user);
-            console.log(response?.data?.error)
             localStorage.setItem('user', JSON.stringify(response.jwt_token));
             // Handle success, redirect, or perform additional actions
             setLoading(false)
-            navigate('/'); // Navigate to the home page on success
+            setTimeout(() => {
+                window.location.href = '/';
+              }, 1000)
 
         } catch (error:any) {
             // Handle error

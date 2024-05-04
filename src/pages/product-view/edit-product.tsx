@@ -66,7 +66,8 @@ const EditProduct: React.FC = () => {
 
     const getProduct = async () => {
         try {
-            const product = await ProductService.getProduct(id as string);
+            const product = await ProductService.getProductToEdit(id as string);
+            console.log({product})
             setProductDetail(product?.data as any);
             setFormData({
                 name: product?.data?.name,
@@ -149,38 +150,6 @@ const EditProduct: React.FC = () => {
             setLoading(false);
         }
     };
-
-    const handleDeleteImage = (indexToDelete: number) => {
-        // If indexToDelete is 0 (pictureOne), do nothing
-        console.log({indexToDelete})
-        if (indexToDelete === 0) {
-            return;
-        }
-    
-        const updatedFormData = { ...formData };
-    
-        // Remove the image data corresponding to the indexToDelete
-        switch (indexToDelete) {
-            case 1:
-                updatedFormData.pictureTwo = null;
-                console.log(indexToDelete)
-                console.log(updatedFormData.pictureTwo)
-                break;
-            case 2:
-                updatedFormData.pictureThree = null;
-                console.log(indexToDelete)
-                break;
-            case 3:
-                updatedFormData.pictureFour = null;
-                console.log(indexToDelete)
-                break;
-            default:
-                break;
-        }
-    
-        // Update the state with the modified formData
-        setFormData(updatedFormData);
-    };
     
     const handleRemoveTag = async (tagToRemove: string) => {
         // Filter out the tag to remove from the tags state
@@ -199,6 +168,24 @@ const EditProduct: React.FC = () => {
             // Handle error appropriately, such as displaying an error message to the user
         }
     };
+
+    const handleDeleteImage = async (index: string) => {
+        if(index === 'One') {
+            toast.error('You cannot delete the main image, you can only replace it with another image.');
+            return;
+        }
+        setLoading(true);
+        try {
+            const updatedFormData = { ...formData, [`picture${index}`]: '' };
+            await ProductService.updateProduct(updatedFormData, productDetail?.id as any);
+            getProduct();
+        } catch (error) {
+            console.error('Error deleting image:', error);
+            // Handle error appropriately, such as displaying an error message to the user
+        } finally {
+            setLoading(false);
+        }
+    }
 
     if (!user) {
         return <Navigate to='/login' />;
@@ -280,8 +267,8 @@ const EditProduct: React.FC = () => {
                                 Product Image:
                             </label>
                             <input type="file" name="pictureOne" onChange={handleFileChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                            {productDetail?.image_urls[0] && <img src={productDetail?.image_urls[0]} alt={productDetail?.name} className="object-cover object-center w-full h-full block transition duration-300 ease-in-out " />}
-                            {productDetail?.image_urls[0] && <button type="button" className="text-red-500 hover:text-red-700" onClick={() => handleDeleteImage(0)}><AiFillDelete /></button>}
+                            {productDetail?.pictureOne?.url && <img src={productDetail?.pictureOne?.url} alt={productDetail?.name} className="object-cover object-center w-full h-full block transition duration-300 ease-in-out " />}
+                            {productDetail?.pictureOne?.url && <button type="button" className="text-red-500 hover:text-red-700" onClick={() => handleDeleteImage('One') }><AiFillDelete /></button>}
                         </div>
 
                         <div className="mb-4">
@@ -289,8 +276,8 @@ const EditProduct: React.FC = () => {
                                 More(Optional):
                             </label>
                             <input type="file" name="pictureTwo" onChange={handleFileChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                            {productDetail?.image_urls[1] && <img src={productDetail?.image_urls[1]} alt={productDetail?.name} className="object-cover object-center w-full h-full block transition duration-300 ease-in-out " />}
-                            {productDetail?.image_urls[1] && <button type="button" className="text-red-500 hover:text-red-700" onClick={() => handleDeleteImage(1)}><AiFillDelete /></button>}
+                            {productDetail?.pictureTwo?.url && <img src={productDetail?.pictureTwo?.url} alt={productDetail?.name} className="object-cover object-center w-full h-full block transition duration-300 ease-in-out " />}
+                            {productDetail?.pictureTwo?.url && <button type="button" className="text-red-500 hover:text-red-700" onClick={() => handleDeleteImage('Two')}><AiFillDelete /></button>}
                         </div>
 
                         <div className="mb-4">
@@ -298,8 +285,8 @@ const EditProduct: React.FC = () => {
                                 More(Optional):
                             </label>
                             <input type="file" name="pictureThree" onChange={handleFileChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                            {productDetail?.image_urls[2] && <img src={productDetail?.image_urls[2]} alt={productDetail?.name} className="object-cover object-center w-full h-full block transition duration-300 ease-in-out " />}
-                            {productDetail?.image_urls[2] && <button type="button" className="text-red-500 hover:text-red-700" onClick={() => handleDeleteImage(2)}><AiFillDelete /></button>}
+                            {productDetail?.pictureThree?.url && <img src={productDetail?.pictureThree?.url} alt={productDetail?.name} className="object-cover object-center w-full h-full block transition duration-300 ease-in-out " />}
+                            {productDetail?.pictureThree?.url && <button type="button" className="text-red-500 hover:text-red-700" onClick={() => handleDeleteImage('Three')}><AiFillDelete /></button>}
                         </div>
 
                         <div className="mb-4">
@@ -307,8 +294,8 @@ const EditProduct: React.FC = () => {
                                 More(Optional):
                             </label>
                             <input type="file" name="pictureFour" onChange={handleFileChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                            {productDetail?.image_urls[3] && <img src={productDetail?.image_urls[3]} alt={productDetail?.name} className="object-cover object-center w-full h-full block transition duration-300 ease-in-out " />}
-                            {productDetail?.image_urls[3] && <button type="button" className="text-red-500 hover:text-red-700" onClick={() => handleDeleteImage(3)}><AiFillDelete /></button>}
+                            {productDetail?.pictureFour?.url && <img src={productDetail?.pictureFour?.url} alt={productDetail?.name} className="object-cover object-center w-full h-full block transition duration-300 ease-in-out " />}
+                            {productDetail?.pictureFour?.url && <button type="button" className="text-red-500 hover:text-red-700" onClick={() => handleDeleteImage('Four')}><AiFillDelete /></button>}
                         </div>
 
                         <div className="mb-4">
