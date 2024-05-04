@@ -35,9 +35,10 @@ const CategoriesPage = () => {
   return (
     <div className="bg-gray-200 p-4">  {/* Base styles */}
       <h1 className=
-        "text-center text-2xl font-bold text-white bg-blue-800 py-4 rounded-md mb-3">
+        "text-center text-1xl font-bold text-white bg-blue-800 py-1 rounded-md mb-3">
         {category}
       </h1>
+      <p className="text-center text-lg text-gray-700 mb-4"> See all products in {category} category</p>
       <div className="container px-5 py-1 mx-auto">
         <div className="flex flex-wrap -m-4">
         {products?.products?.map((product: any) => (

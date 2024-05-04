@@ -128,16 +128,18 @@ const EditProduct: React.FC = () => {
             updatedTags.forEach(tag => {
                 productData.append('tags[]', tag);
             });
-
             // Append file inputs
             for (const [name, file] of Object.entries(formData)) {
                 if (file instanceof File) {
+                    console.log({file})
                     productData.append(name, file);
                 }else if(file === '') {
                     productData.append(name, '');
+                    console.log({file})
                 }
             }
 
+            console.log({productData})
             await ProductService.updateProduct(productData, productDetail?.id as any);
             toast.success('Product updated successfully');
             getProduct();
@@ -150,6 +152,7 @@ const EditProduct: React.FC = () => {
 
     const handleDeleteImage = (indexToDelete: number) => {
         // If indexToDelete is 0 (pictureOne), do nothing
+        console.log({indexToDelete})
         if (indexToDelete === 0) {
             return;
         }
@@ -159,13 +162,17 @@ const EditProduct: React.FC = () => {
         // Remove the image data corresponding to the indexToDelete
         switch (indexToDelete) {
             case 1:
-                updatedFormData.pictureTwo = '';
+                updatedFormData.pictureTwo = null;
+                console.log(indexToDelete)
+                console.log(updatedFormData.pictureTwo)
                 break;
             case 2:
-                updatedFormData.pictureThree = '';
+                updatedFormData.pictureThree = null;
+                console.log(indexToDelete)
                 break;
             case 3:
-                updatedFormData.pictureFour = '';
+                updatedFormData.pictureFour = null;
+                console.log(indexToDelete)
                 break;
             default:
                 break;
@@ -175,37 +182,6 @@ const EditProduct: React.FC = () => {
         setFormData(updatedFormData);
     };
     
-    
-
-    // const handleDeleteImage = async (index: number) => {
-    //     try {
-    //         // Make a copy of the image_urls array
-    //         if(productDetail?.image_urls.length === 1) {
-    //             toast.error('You cannot delete the only image of a product');
-    //             return;
-    //         }
-
-    //         if(index === 0) {
-    //            setFormData((prevFormData: any) => ({ ...prevFormData, pictureOne: '' }));
-    //         }else if(index === 1) {
-    //             setFormData((prevFormData: any) => ({ ...prevFormData, pictureTwo: '' }));
-    //         }else if(index === 2) {
-    //             setFormData((prevFormData: any) => ({ ...prevFormData, pictureThree: '' }));
-    //         }else if(index === 3) {
-    //             setFormData((prevFormData: any) => ({ ...prevFormData, pictureFour: '' }));
-    //         }
-
-    //         await ProductService.updateProduct(productDetail?.id as any, productDetail?.id as any);
-    //         getProduct();
-    //         toast.success('Image deleted successfully');
-    //     } catch (error) {
-    //         // Handle errors appropriately
-    //         console.error('Error deleting image:', error);
-    //         toast.error('Error deleting image');
-    //     }
-    // };
-    
-
     const handleRemoveTag = async (tagToRemove: string) => {
         // Filter out the tag to remove from the tags state
         const updatedTags = productDetail?.tags?.filter((tag: string) => tag !== tagToRemove);

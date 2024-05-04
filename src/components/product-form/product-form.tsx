@@ -7,9 +7,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import Loader from '../../constants/Loader';
 import categories from '../../constants/categories';
 import { Navigate } from 'react-router-dom';
+import AuthService from '../../services/auth-service';
 
 const ProductForm: React.FC = () => {
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
+  const isLoggedin = useSelector((state: any) => state?.reducer?.auth?.isAuth);
+  const [sending, setSending] = useState(false);
+
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState<any>({
@@ -106,6 +110,22 @@ const ProductForm: React.FC = () => {
     }
   };
 
+  const generateActivationLink = async (e: any) => {
+    setSending(true)
+    try {
+      const response = await AuthService?.generateActivationLink(user?.email);
+      // Handle success, redirect, or perform additional actions
+      toast.success(response?.message)
+    } catch (error:any) {
+      // Handle error
+      const errorMessages = error?.response?.data?.message
+      toast.error(errorMessages)
+      console.error('Error creating user:', error);
+    } finally {
+      setSending(false); // Set loading state to false regardless of success or failure
+    }
+  };
+
   const PictureInput = ({ name, required }: { name: string, required: boolean }) => (
     <div className="mb-4">
       <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={name}>
@@ -133,6 +153,16 @@ const ProductForm: React.FC = () => {
   
   return (
     <div className='bg-gray-200 py-3'>
+      {isLoggedin && user?.activated === false ?
+    <div className="text-center mt-3">
+      <span className="text-red-500 font-bold text-sm mb-2">Your account is not activated</span>
+      <button onClick={generateActivationLink} className="text-green-500 hover:text-green-700 ml-2">
+        {sending ? <Loader /> : 'Click here'}
+      </button>
+      <span className="text-red-500 font-bold text-sm ml-2">to activate your account</span>
+    </div>
+  : 
+  <>
     <h1 className='text-center text-2xl font-bold text-white bg-blue-800 py-4 rounded-md mb-3'>Add Product</h1>
     <form onSubmit={handleSubmit} className="max-w-lg mx-auto mt-8 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
       <div className="mb-4">
@@ -209,6 +239,8 @@ const ProductForm: React.FC = () => {
       <button disabled={loading} type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3">
         {loading ? <Loader /> : 'Submit'} </button>
     </form>
+    </>
+    }
     </div>
   );
 };
