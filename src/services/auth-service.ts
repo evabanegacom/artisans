@@ -1,4 +1,4 @@
-import { submitFormData, api } from '../utils/api';
+import { submitFormData, api, updateFormData } from '../utils/api';
 
 const createAccount = async (formData:any) => {
     const response = await submitFormData(formData, 'users')
@@ -37,11 +37,17 @@ const resetPassword = async (token:string) => {
 
 const becomeASeller = async (store_name:string, id:number) => {
     const response = await api.put(`/users/${id}`, { store_name, seller: true })
+    return response?.data
 }
 
 const getUser = async(id: number) => {
     const response = await api.get(`users/${id}`)
     return response?.data
+}
+
+const updateUserInfo = async (data: any, id: number) => {
+    const response = await updateFormData(data, `users/${id}`);
+    return response
 }
 
 const AuthService = {
@@ -53,7 +59,8 @@ const AuthService = {
     activateAccount,
     resetPassword,
     becomeASeller,
-    getUser
+    getUser,
+    updateUserInfo
 }
 
 export default AuthService;

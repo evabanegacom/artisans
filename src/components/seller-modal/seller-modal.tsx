@@ -22,7 +22,6 @@ const SellerModal = ({ isOpen, setIsOpen }: Props) => {
         setLoading(true)
         try {
             const response = await AuthService.becomeASeller(store_name, user?.id);
-            console.log(response)
             setLoading(false)
             toast.success('You are now a seller');
             setIsOpen(false);
