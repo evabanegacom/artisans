@@ -1,17 +1,46 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
+import AuthService from '../services/auth-service';
+import { useSelector } from 'react-redux';
 
 const EditProfile = () => {
   // Initialize state object for user information
+  const [ userInfo, setUserInfo ] = useState<any>({})
+  const isLoggedin = useSelector((state: any) => state?.reducer?.auth?.isAuth);
+  const user = useSelector((state: any) => state?.reducer?.auth?.user);
+
+  const getUser = async () => {
+    const response = await AuthService.getUser(user?.id)
+    console.log(response)
+    setUserInfo(response)
+  }
   const [userData, setUserData] = useState({
-    name: '',
-    email: '',
+    name: userInfo?.name || '',
+    email: userInfo?.email || '',
     password: '',
     seller: false,
     avatar: '',
-    state: '',
-    storeName: '',
-    mobile: ''
+    state: userInfo?.state || '',
+    storeName: userInfo?.store_name || '',
+    mobile: userInfo?.mobile || ''
   });
+
+//   {
+//     "id": 5,
+//     "name": "Helen duke",
+//     "email": "hduke611@gmail.com",
+//     "activation_token": null,
+//     "activated": true,
+//     "reset_token_expires_at": null,
+//     "activation_token_expires_at": "2024-04-14T22:42:00.806Z",
+//     "reset_token": null,
+//     "seller": true,
+//     "avatar": {
+//         "url": null
+//     },
+//     "state": "Lagos",
+//     "store_name": "Helen stores",
+//     "mobile": "09933309273"
+// }
 
   // Function to handle input changes
   const handleInputChange = (e:any) => {
@@ -29,6 +58,10 @@ const EditProfile = () => {
     console.log('Form submitted:', userData);
   };
 
+  useEffect(() => {
+     {isLoggedin ? getUser() : console.log('')}
+  },[])
+
   return (
     <div className="container mx-auto mt-10">
       <h2 className="text-2xl font-bold mb-4">Edit Profile</h2>
@@ -36,7 +69,7 @@ const EditProfile = () => {
         {/* Name */}
         <div className="mb-4">
           <label htmlFor="name" className="block mb-1">Name:</label>
-          <input type="text" id="name" name="name" value={userData.name} onChange={handleInputChange} className="border rounded-md px-3 py-2 w-full" />
+          <input placeholder={userInfo?.name} type="text" id="name" name="name" onChange={handleInputChange} className="border rounded-md px-3 py-2 w-full" />
         </div>
         {/* Email */}
         <div className="mb-4">

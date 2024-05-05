@@ -39,6 +39,11 @@ const becomeASeller = async (store_name:string, id:number) => {
     const response = await api.put(`/users/${id}`, { store_name, seller: true })
 }
 
+const getUser = async(id: number) => {
+    const response = await api.get(`users/${id}`)
+    return response?.data
+}
+
 const AuthService = {
     createAccount,
     login,
@@ -47,7 +52,8 @@ const AuthService = {
     generateActivationLink,
     activateAccount,
     resetPassword,
-    becomeASeller
+    becomeASeller,
+    getUser
 }
 
 export default AuthService;
