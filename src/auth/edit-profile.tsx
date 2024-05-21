@@ -17,7 +17,7 @@ const EditProfile = () => {
     name: user?.name || '',
     email: user?.email || '',
     password: '',
-    seller: false,
+    seller: user?.seller || false,
     avatar: '',
     state: user?.state || '',
     storeName: user?.store_name || '',
@@ -106,7 +106,7 @@ const EditProfile = () => {
         </div>
 
         <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md">
-          {loading ? <Spinner/> : 'Update Profile'}
+          {loading ? <Loader/> : 'Update Profile'}
         </button>
       </form>
     </div>
