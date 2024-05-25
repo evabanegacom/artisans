@@ -130,14 +130,25 @@ const SignUp = () => {
             <button disabled={loading} type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white button-bg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">{loading ? <Loader /> : 'Sign Up'}</button>
           </div>
         </form>
-        <div className="text-center flex justify-between mt-4">
+
+        {/* <div className="text-center flex justify-between mt-4">
           <p className="text-gray-700 ml-2">
             ALready have an account?
           </p>
           <a href="/login" className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800 mr-2">
             Sign in
           </a>
-        </div>
+        </div> */}
+
+<div className="text-center flex justify-center items-center text-xs mt-8">
+                <p className="text-gray-700 ml-2">
+                    Already have an account?
+                </p>
+                <a href="/login" className="dark-text inline-block align-baseline font-bold text-xs hover:text-blue-800 mr-2">
+                    Sign in
+                </a>
+            </div>
+
       </div>
 
     </div>
