@@ -192,10 +192,13 @@ export const formatAsCurrency = (amount: string | number) => {
     return ''; // Return empty string if numericAmount is NaN
   }
 
-  return new Intl.NumberFormat('en-US', {
+  const formattedAmount = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'NGN'
   }).format(numericAmount);
+
+  // Replace "NGN" with the Naira symbol "₦"
+  return formattedAmount.replace('NGN', '₦');
 };
 
 export function formatDateTime(dateTimeString:string) {

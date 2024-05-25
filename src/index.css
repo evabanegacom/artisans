@@ -64,5 +64,7 @@ a {
     color: #091F41;
 }
 
-
+.no-rounded-left {
+  border-radius: 0 0.75rem 0.75rem 0;
+}
 

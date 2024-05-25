@@ -16,7 +16,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
     try {
       const response = await ProductService.getProductsByCategory(category?.name, 1);
       console.log(response)
-      setProducts(response.data?.products.slice(0, 4));
+      setProducts(response.data?.products.slice(0, 5));
     } catch (error) {
       console.error(error);
     }
@@ -63,30 +63,24 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
   console.log(products)
   return (
     <>
-    {/* {products.length > 0 ? */}
-    <div className="flex flex-col mt-3">
-      
-      <div className="bg-red-950">
-        <div className="container mx-auto">
-          <div className="flex items-center justify-between py-2">
-            <div className="text-white text-1xl md:text-xl text-sm font-bold">{category?.title}</div>
-            <a href={`/products/${category?.name}`} className="text-white">View All</a>
-          </div>
+      {/* {products.length > 0 ? */}
+      <div className="flex flex-col mt-3">
+
+        <div className="w-48 sm:w-full lg:w-80 text-center text-xl mb-8 no-rounded-left bg-red-950 text-white">
+          {category?.title}
+          {/* <a href={`/products/${category?.name}`} className="text-white">View All</a> */}
+        </div>
+<div className="container mx-auto grid grid-cols-2 md:grid-cols-5 gap-4">
+          {/* <Slider {...settings} className="container mx-auto grid grid-cols-1 md:grid-cols-4"> */}
+
+          {products.map((product: any) => (
+            // <a href='#' key={product?.id} className="inline-block px-2">
+            <ProductItem product={product} key={product?.id} />
+          ))}
+          {/* </Slider> */}
         </div>
       </div>
-      <div className="container px-5 py-1 mx-auto">
-      <div className="flex flex-wrap -m-4">
-      {/* <Slider {...settings} className="container mx-auto grid grid-cols-1 md:grid-cols-4"> */}
-
-        {products.map((product: any) => (
-          // <a href='#' key={product?.id} className="inline-block px-2">
-          <ProductItem product={product} key={product?.id}/>
-        ))}
-      {/* </Slider> */}
-      </div>
-      </div>
-    </div>
-    {/* // : null */}
+      {/* // : null */}
     </>
   )
 }

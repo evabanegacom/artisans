@@ -33,7 +33,7 @@ const ProductItem = ({ product, getProducts}: Props) => {
 
   return (
 <>
-  <div className="product-card product-item lg:w-1/4 md:w-1/2 sm:w-full rounded-lg overflow-hidden mb-4 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl">
+  <div className="product-card product-item rounded-lg overflow-hidden mb-4 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl">
     <a href={`/product/${product?.product_number}`} className="product-image block relative h-48 rounded-lg overflow-hidden">
       {/* <img src={product.pictureOne.url} alt={product.name} className="object-cover object-center w-full h-full block transition duration-300 ease-in-out" /> */}
 
@@ -55,9 +55,9 @@ const ProductItem = ({ product, getProducts}: Props) => {
       <div className="product-info flex justify-between items-center">
         <h2 className="product-title title-font text-xl font-medium product-name">{product?.name}</h2>
       </div>
-      <div className="product-price-actions flex justify-between items-center mt-2">
+      <div className="product-price-actions flex justify-between items-center mt-2 mb-2 flex-wrap">
         <div className="product-price product-name font-normal text-sm">{formatAsCurrency(product?.price)}</div>
-        <h3 className="product-category text-white text-xs tracking-widest title-font mb-1 uppercase font-bold rounded-2xl p-1">{product?.category}</h3>
+        <h3 className="product-category text-white text-xs tracking-widest title-font uppercase font-bold rounded-3xl px-2 py-1">{product?.category}</h3>
         {user?.id === product?.user_id && (
           <button type="button" className="product-delete text-red-500 hover:text-red-700 cursor-pointer focus:outline-none" onClick={() => setConfirmDelete(true)}>
             <HiOutlineTrash size={20} />
