@@ -8,6 +8,8 @@ interface Banner {
   description: string;
 }
 
+// https://www.figma.com/design/440rv5mCHa4CxKnwLGzMjZ/ART-HUB?m=dev
+
 const banners: Banner[] = [
   {
     id: 1,
