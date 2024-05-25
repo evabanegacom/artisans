@@ -55,3 +55,14 @@ a {
   background: transparent;
   border: none;
 }
+
+.button-bg {
+  background: #091F41;
+}
+
+.dark-text {
+    color: #091F41;
+}
+
+
+

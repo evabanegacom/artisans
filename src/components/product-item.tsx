@@ -4,6 +4,7 @@ import { useState } from 'react';
 import ProductService from '../services/product-service';
 import Loader from '../constants/Loader';
 import { formatAsCurrency } from '../constants';
+import './style.css';
 
 interface Props {
   product: any;
@@ -32,7 +33,7 @@ const ProductItem = ({ product, getProducts}: Props) => {
 
   return (
 <>
-  <div className="product-card lg:w-1/4 md:w-1/2 sm:w-full p-4 shadow-lg rounded-lg overflow-hidden mb-4 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl">
+  <div className="product-card product-item lg:w-1/4 md:w-1/2 sm:w-full rounded-lg overflow-hidden mb-4 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl">
     <a href={`/product/${product?.product_number}`} className="product-image block relative h-48 rounded-lg overflow-hidden">
       {/* <img src={product.pictureOne.url} alt={product.name} className="object-cover object-center w-full h-full block transition duration-300 ease-in-out" /> */}
 
@@ -52,17 +53,18 @@ const ProductItem = ({ product, getProducts}: Props) => {
     </a>
     <div className="product-details flex flex-col justify-between px-4 py-2">
       <div className="product-info flex justify-between items-center">
-        <h2 className="product-title text-gray-900 title-font text-md font-semibold">{product?.name}</h2>
-        <h3 className="product-category text-gray-500 text-xs tracking-widest title-font mb-1 uppercase">{product?.category}</h3>
+        <h2 className="product-title title-font text-xl font-medium product-name">{product?.name}</h2>
       </div>
       <div className="product-price-actions flex justify-between items-center mt-2">
-        <div className="product-price text-green-600 font-semibold text-md">{formatAsCurrency(product?.price)}</div>
+        <div className="product-price product-name font-normal text-sm">{formatAsCurrency(product?.price)}</div>
+        <h3 className="product-category text-white text-xs tracking-widest title-font mb-1 uppercase font-bold rounded-2xl p-1">{product?.category}</h3>
         {user?.id === product?.user_id && (
           <button type="button" className="product-delete text-red-500 hover:text-red-700 cursor-pointer focus:outline-none" onClick={() => setConfirmDelete(true)}>
             <HiOutlineTrash size={20} />
           </button>
         )}
       </div>
+      <button className='button-bg rounded-2xl text-white font-bold text-xs py-1'>Buy</button>
     </div>
   </div>
 
