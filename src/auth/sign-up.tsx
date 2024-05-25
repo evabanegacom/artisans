@@ -5,6 +5,7 @@ import Loader from '../constants/Loader';
 import states from './nigerian-state';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './auth.css';
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -70,9 +71,9 @@ const SignUp = () => {
   return (
     <>
     <ToastContainer />
-    <div className='bg-gray-900 py-10'>
-      <div className="max-w-md mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 py-12 px-4 sm:px-6 lg:px-8">
-        <h5 className="font-bold text-center mb-8">Create Account</h5>
+    <div className="flex items-center justify-center min-h-screen bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div style={{ background: '#EAE3C9' }} className="max-w-lg w-full rounded-lg py-6 px-8 sm:py-8 sm:px-10 md:py-10 md:px-16">
+        <h5 className="font-bold text-start form-color mb-8">Create Account</h5>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <input placeholder='Full Name' required type="text" name="name" id="name" className="mt-1 p-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-b border-gray-300 rounded-md" onChange={handleChange} />
@@ -126,7 +127,7 @@ const SignUp = () => {
 
 
           <div className='mt-4'>
-            <button disabled={loading} type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">{loading ? <Loader /> : 'Sign Up'}</button>
+            <button disabled={loading} type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white button-bg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">{loading ? <Loader /> : 'Sign Up'}</button>
           </div>
         </form>
         <div className="text-center flex justify-between mt-4">

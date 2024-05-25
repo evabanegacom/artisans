@@ -49,7 +49,7 @@ const Login = () => {
     return (
         <>
     <ToastContainer />
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-center min-h-screen bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
     <div style={{ background: '#EAE3C9' }} className="max-w-lg w-full rounded-lg py-6 px-8 sm:py-8 sm:px-10 md:py-10 md:px-16">
             <form onSubmit={handleSubmit} className="">
                 <p className='text-3xl font-semibold form-color mb-10'>Sign in</p>
@@ -71,7 +71,7 @@ const Login = () => {
                     Forgot Password?
                 </a>
                 <div className="flex items-center flex-col justify-between mt-4">
-                    <button style={{ background: '#091F41' }} className="w-full hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline" type="submit">
+                    <button className="button-bg w-full hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline" type="submit">
                         {loading ? <Loader /> : 'Sign In'}
                     </button>
                 </div>
@@ -81,7 +81,7 @@ const Login = () => {
                 <p className="text-gray-700 ml-2">
                     Don't have an account?
                 </p>
-                <a href="/signup" style={{ color: '#091F41' }} className="inline-block align-baseline font-bold text-xs hover:text-blue-800 mr-2">
+                <a href="/signup" className="dark-text inline-block align-baseline font-bold text-xs hover:text-blue-800 mr-2">
                     Sign up
                 </a>
             </div>

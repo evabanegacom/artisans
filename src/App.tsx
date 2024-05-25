@@ -21,7 +21,7 @@ function App() {
     <ErrorBoundary fallback={<div>Something went wrong</div>}>
       <div className='w-full overflow-hidden'>
         <ToastContainer />
-        {window.location.pathname === '/login' ? null : <Navbar />}
+        <Navbar />
         {/* <BrowserRouter> */}
           <Suspense fallback={<Spinner size={16} color="text-blue-500" />}>
             <Routes>
