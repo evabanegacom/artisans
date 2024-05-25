@@ -52,22 +52,22 @@ const Login = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
     <div style={{ background: '#EAE3C9' }} className="max-w-lg w-full rounded-lg py-6 px-8 sm:py-8 sm:px-10 md:py-10 md:px-16">
             <form onSubmit={handleSubmit} className="">
-                <p className='text-3xl font-semibold text-gray-600 mb-10'>Sign in</p>
+                <p className='text-3xl font-semibold form-color mb-10'>Sign in</p>
                 <div className="mb-4">
-                    <label className="block text-gray-600 text-base font-medium">
+                    <label className="block form-color text-base font-medium">
                         Email:
                     </label>
                     <input className="appearance-none border rounded-lg w-full p-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" type="email" name="email" onChange={handleChange} placeholder="Email" />
                 </div>
 
                 <div className="mt-6">
-                    <label className="block text-gray-600 text-base font-medium">
+                    <label className="block form-color text-base font-medium">
                         Password:
                     </label>
                     <input autoComplete='off' className="appearance-none border rounded-lg w-full p-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" name="password" onChange={handleChange} placeholder="Password" />
                 </div>
 
-                <a className="font-medium underline text-base inline-block align-baseline font-bold text-base text-gray-600 hover:text-blue-800" href="/forgot-password">
+                <a className="font-medium underline text-base inline-block align-baseline font-bold text-base form-color hover:text-blue-800" href="/forgot-password">
                     Forgot Password?
                 </a>
                 <div className="flex items-center flex-col justify-between mt-4">

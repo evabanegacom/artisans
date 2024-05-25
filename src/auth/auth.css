@@ -9,6 +9,6 @@ form input {
 }
 
 .form-color {
-  color: #222222;
+    color: rgba(34, 34, 34, 0.6);
   
 }
