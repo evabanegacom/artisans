@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ProductService from "../../services/product-service";
 import Slider from 'react-slick';
+import { useNavigate } from "react-router-dom";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import ProductItem from "../../components/product-item";
@@ -10,8 +11,8 @@ interface ProductCategoriesProps {
 }
 
 const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
-  console.log(products.length)
   const getProducts = async () => {
     try {
       const response = await ProductService.getProductsByCategory(category?.name, 1);
@@ -70,7 +71,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
           {category?.title}
           {/* <a href={`/products/${category?.name}`} className="text-white">View All</a> */}
         </div>
-<div className="container mx-auto grid grid-cols-2 md:grid-cols-5 gap-4">
+<div className="px-1 lg:px-5 md:px-1 mx-auto grid grid-cols-2 md:grid-cols-5 gap-4">
           {/* <Slider {...settings} className="container mx-auto grid grid-cols-1 md:grid-cols-4"> */}
 
           {products.map((product: any) => (
@@ -79,6 +80,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
           ))}
           {/* </Slider> */}
         </div>
+        <button onClick={() => navigate(`/products/${category?.name}`)} className="py-3 text-center mx-auto button-bg text-white font-semibold text-base rounded-lg w-1/3 mt-3">Explore More</button>
       </div>
       {/* // : null */}
     </>

@@ -68,3 +68,6 @@ a {
   border-radius: 0 0.75rem 0.75rem 0;
 }
 
+.product-name {
+  color: rgba(34, 34, 34, 0.7);
+}

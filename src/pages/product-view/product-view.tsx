@@ -10,6 +10,9 @@ import { formatAsCurrency } from '../../constants';
 import { FaEdit } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { HiOutlineTrash } from 'react-icons/hi2';
+import { useNavigate } from 'react-router-dom';
+import ProductCategories from '../product-categories/product-categories';
+import ProductItem from '../../components/product-item';
 
 
 interface Product {
@@ -37,6 +40,8 @@ const ProductView = () => {
   const [productDetails, setProductDetails] = useState<Product>();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [ similarProducts, setSimilarProducts ] = useState([]);
+  const navigate = useNavigate();
 
   const deleteProduct = async () => {
     setDeleting(true);
@@ -113,6 +118,7 @@ const ProductView = () => {
         products[0].count = response?.data?.quantity;
         products[0].colors = generateRandomColors();
         setProductDetails(response?.data);
+        getSimilarProducts(response?.data?.category);
       } catch (error) {
         console.error(error)
       }
@@ -151,6 +157,16 @@ const ProductView = () => {
     // Reset copied feedback after 3 seconds
     setTimeout(() => setCopied(false), 3000);
   };
+
+  const getSimilarProducts = async (productCategory: string) => {
+    try {
+      const response = await ProductService.getProductsByCategory(productCategory, 1);
+      console.log(response)
+      setSimilarProducts(response.data?.products.slice(0, 4));
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
 
   return (
@@ -221,6 +237,18 @@ const ProductView = () => {
           </div>
         ))
       }
+  <div className='font-medium product-name text-2xl sm:text-xl md:text-3xl'>Explore Similar Products</div>
+      <div className="flex flex-col mt-3">
+<div className="mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
+
+  {similarProducts.map((product: any) => (
+    // <a href='#' key={product?.id} className="inline-block px-2">
+    <ProductItem product={product} key={product?.id} />
+  ))}
+  {/* </Slider> */}
+</div>
+<button onClick={() => navigate(`/products/${productDetails?.category}`)} className="py-3 text-center mx-auto button-bg text-white font-semibold text-base rounded-lg w-1/3 mt-3">Explore More</button>
+</div>
     </div>
   );
 }

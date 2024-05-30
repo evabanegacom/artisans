@@ -10,7 +10,7 @@ const Home = () => {
   const { searchTerm, searchResults } = searchState;
   return (
     <div>
-      <Carousel />
+      {/* <Carousel /> */}
       {categories.map((category) => (
         <ProductCategories category={category} key={category?.id} />
       ))}

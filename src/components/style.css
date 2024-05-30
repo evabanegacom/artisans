@@ -41,10 +41,6 @@
     border: 1px solid rgba(9, 31, 65, 0.2)
   }
 
-  .product-name {
-    color: rgba(34, 34, 34, 0.7);
-  }
-
   .product-category {
     background: rgba(85, 220, 51, 0.7);
   }
