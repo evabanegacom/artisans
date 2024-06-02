@@ -34,8 +34,9 @@ const ProductItem = ({ product, getProducts}: Props) => {
   return (
 <>
   <div className="product-card product-item rounded-lg overflow-hidden mb-4 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl">
-    <a href={`/product/${product?.product_number}`} className="product-image block relative h-48 rounded-lg overflow-hidden">
+    {/* <a href={`/product/${product?.product_number}`} className="product-image block relative h-48 rounded-lg overflow-hidden"> */}
       {/* <img src={product.pictureOne.url} alt={product.name} className="object-cover object-center w-full h-full block transition duration-300 ease-in-out" /> */}
+      <a href={`/product/${product?.product_number}`} className="product-image block relative h-48 overflow-hidden custom-rounded">
 
       <img
   src={product?.pictureOne?.url}

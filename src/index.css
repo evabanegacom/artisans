@@ -71,3 +71,11 @@ a {
 .product-name {
   color: rgba(34, 34, 34, 0.7);
 }
+
+.custom-rounded {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+

@@ -38,8 +38,8 @@ const SearchResults = () => {
       "text-center text-2xl font-bold text-white bg-blue-800 py-4 rounded-md">
       results for {searchTerm}
     </h1>
-    <div className="container px-5 py-5 mx-auto">
-    <div className="flex flex-wrap -m-4">
+    <div className="py-5 mx-auto">
+    <div className="px-1 lg:px-5 md:px-1 mx-auto grid grid-cols-2 md:grid-cols-5 gap-4">
       {searchData.products?.length > 0 ? searchData?.products?.map((product:any) => (
         <ProductItem product={product} key={product.id} />
       )): <div className='text-center w-full mt-3'>No item matches your search</div>}

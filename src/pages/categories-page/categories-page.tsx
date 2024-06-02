@@ -39,8 +39,8 @@ const CategoriesPage = () => {
         {category}
       </h1>
       <p className="text-center text-lg text-gray-700 mb-4"> See all products in {category} category</p>
-      <div className="container px-5 py-1 mx-auto">
-        <div className="flex flex-wrap -m-4">
+      <div className="py-1 mx-auto">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {products?.products?.map((product: any) => (
           <ProductItem product={product} key={product.id} />
         ))}
