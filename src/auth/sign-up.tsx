@@ -53,21 +53,25 @@ const SignUp = () => {
     });
     try {
       const response = await AuthService.createAccount(formData);
-      // Handle success, redirect, or perform additional actions
-      toast.success(response?.message)
+      toast.success(response?.message);
       localStorage.setItem('user', JSON.stringify(response?.jwt_token));
       setTimeout(() => {
         window.location.href = '/';
-      }, 2000)
-    } catch (error:any) {
-      // Handle error
-      const errorMessages = error?.response?.data?.errors
-      toast.error(`${errorMessages[0]} OR ${errorMessages[1]} OR ${errorMessages[2]} OR An error occurred`)
+      }, 2000);
+    } catch (error: any) {
+      // Improved error handling
+      const errorMessages = error?.response?.data?.errors;
+      if (errorMessages && errorMessages.length > 0) {
+        toast.error(errorMessages.join(' OR '));
+      } else {
+        toast.error('An error occurred');
+      }
       console.error('Error creating user:', error);
     } finally {
       setLoading(false); // Set loading state to false regardless of success or failure
     }
   };
+  
   return (
     <>
     <ToastContainer />
