@@ -34,10 +34,10 @@ const SearchResults = () => {
   
   return (
     <div className="bg-gray-200 p-3">  {/* Base styles */}
-    <h1 className=
-      "text-center text-2xl font-bold text-white bg-blue-800 py-4 rounded-md">
-      results for {searchTerm}
-    </h1>
+    <div className="w-48 sm:w-full lg:w-80 text-center text-xl no-rounded-left bg-red-950 text-white">
+    results for {searchTerm}
+        </div>
+   
     <div className="py-5 mx-auto">
     <div className="px-1 lg:px-5 md:px-1 mx-auto grid grid-cols-2 md:grid-cols-5 gap-4">
       {searchData.products?.length > 0 ? searchData?.products?.map((product:any) => (

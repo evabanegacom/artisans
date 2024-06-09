@@ -31,6 +31,8 @@ const ProductItem = ({ product, getProducts}: Props) => {
     }
   }
 
+  console.log(window.location.pathname)
+
   return (
 <>
   <div className="product-card product-item rounded-lg overflow-hidden mb-4 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl">
@@ -59,7 +61,7 @@ const ProductItem = ({ product, getProducts}: Props) => {
       <div className="product-price-actions flex justify-between items-center mt-2 mb-2 flex-wrap">
         <div className="product-price product-name font-normal text-sm">{formatAsCurrency(product?.price)}</div>
         <h3 className="product-category text-white text-xs tracking-widest title-font uppercase font-bold rounded-3xl px-2 py-1">{product?.category}</h3>
-        {user?.id === product?.user_id && (
+        {user?.id === product?.user_id && window.location.pathname.includes('/store/') && (
           <button type="button" className="product-delete text-red-500 hover:text-red-700 cursor-pointer focus:outline-none" onClick={() => setConfirmDelete(true)}>
             <HiOutlineTrash size={20} />
           </button>
@@ -69,7 +71,7 @@ const ProductItem = ({ product, getProducts}: Props) => {
     </div>
   </div>
 
-  {user?.id === product?.user_id && window.location.pathname !=='/' && confirmDelete && (
+  {user?.id === product?.user_id && confirmDelete && (
     <div className="modal-overlay bg-gray-900 opacity-75 fixed inset-0 z-50 flex items-center justify-center">
       <div className="modal-content bg-white rounded-lg shadow-lg px-8 py-6 text-gray-700">
         <div className="modal-message text-lg font-medium">Are you sure you want to delete "{product?.name}" from your store?</div>

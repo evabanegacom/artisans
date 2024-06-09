@@ -13,7 +13,7 @@ interface Banner {
 const banners: Banner[] = [
   {
     id: 1,
-    image: 'https://res.cloudinary.com/spetsnaz/image/upload/v1603546589/71xsZ9XMCtJtTa1tmKanbeVG.jpg',
+    image: 'https://res.cloudinary.com/spetsnaz/image/upload/v1717930214/pikaso_texttoimage_hand-crafted-artworks_2_z43oqd.svg',
     title: 'Artisanal Home Decor',
     description: 'Transform your living space with unique artisanal home decor pieces.',
   },
@@ -27,7 +27,7 @@ const banners: Banner[] = [
   {
     id: 3,
     // image: 'https://res.cloudinary.com/spetsnaz/image/upload/v1594730959/samples/landscapes/girl-urban-view.jpg',
-        image: 'https://res.cloudinary.com/spetsnaz/image/upload/v1595343234/Qn5dFd2S3Mc1m6fYnMtKMzQR.jpg',
+        image: 'https://res.cloudinary.com/spetsnaz/image/upload/v1717930104/jan-sh-opener_2_a137ot.svg',
 
     title: 'Handmade Jewelry Collection',
     description: 'Adorn yourself with beautiful handcrafted jewelry made with love and passion.',
