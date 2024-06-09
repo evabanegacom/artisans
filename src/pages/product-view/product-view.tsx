@@ -238,7 +238,7 @@ const ProductView = () => {
       }
   <div className='font-medium product-name text-2xl sm:text-xl md:text-3xl'>Explore Similar Products</div>
       <div className="flex flex-col mt-3">
-<div className="mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
+<div className=" grid grid-cols-2 md:grid-cols-4 gap-4">
 
   {similarProducts.map((product: any) => (
     // <a href='#' key={product?.id} className="inline-block px-2">

@@ -59,8 +59,8 @@ const Carousel: React.FC = () => {
         <div key={index} className={`banner ${index === currentIndex ? 'active' : ''}`}>
           <img src={banner.image} alt={`Banner ${index + 1}`} />
           <div className="content">
-            <h2 className={`font-bold ${banner.id===2 ? 'text-white' : ''}`}>{banner.title}</h2>
-            <p className={`font-bold ${banner.id===2 ? 'text-white' : ''}`}>{banner.description}</p>
+            <h2 className={`font-bold ${banner.id===3 ? 'text-gray-950' : ''}`}>{banner.title}</h2>
+            <p className={`font-bold ${banner.id===3 ? 'text-gray-950' : ''}`}>{banner.description}</p>
             <a href="#">Shop Now</a>
           </div>
         </div>

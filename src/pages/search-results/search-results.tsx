@@ -39,7 +39,7 @@ const SearchResults = () => {
         </div>
    
     <div className="py-5 mx-auto">
-    <div className="px-1 lg:px-5 md:px-1 mx-auto grid grid-cols-2 md:grid-cols-5 gap-4">
+    <div className="px-1 lg:px-5 md:px-1 mx-auto grid grid-cols-2 md:grid-cols-5 gap-4 w-full">
       {searchData.products?.length > 0 ? searchData?.products?.map((product:any) => (
         <ProductItem product={product} key={product.id} />
       )): <div className='text-center w-full mt-3'>No item matches your search</div>}

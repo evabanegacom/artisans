@@ -71,7 +71,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
           {category?.title}
           {/* <a href={`/products/${category?.name}`} className="text-white">View All</a> */}
         </div>
-<div className="px-1 lg:px-5 md:px-1 mx-auto grid grid-cols-2 md:grid-cols-5 gap-4">
+<div className="px-1 lg:px-5 md:px-1 mx-auto grid grid-cols-2 md:grid-cols-5 gap-4 w-full">
           {/* <Slider {...settings} className="container mx-auto grid grid-cols-1 md:grid-cols-4"> */}
 
           {products.map((product: any) => (
