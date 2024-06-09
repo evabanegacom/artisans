@@ -19,13 +19,16 @@ const banners: Banner[] = [
   },
   {
     id: 2,
-    image: 'https://res.cloudinary.com/spetsnaz/image/upload/v1595343234/Qn5dFd2S3Mc1m6fYnMtKMzQR.jpg',
+    // image: 'https://res.cloudinary.com/spetsnaz/image/upload/v1595343234/Qn5dFd2S3Mc1m6fYnMtKMzQR.jpg',
+    image : 'https://res.cloudinary.com/spetsnaz/image/upload/v1717927175/ancient-terracotta-crockery-collection-store-generated-by-ai_2_znuvbk.png',
     title: 'Unique Handcrafted Artworks',
     description: 'Discover exquisite handmade arts and crafts from talented artisans around the world.',
   },
   {
     id: 3,
-    image: 'https://res.cloudinary.com/spetsnaz/image/upload/v1594730959/samples/landscapes/girl-urban-view.jpg',
+    // image: 'https://res.cloudinary.com/spetsnaz/image/upload/v1594730959/samples/landscapes/girl-urban-view.jpg',
+        image: 'https://res.cloudinary.com/spetsnaz/image/upload/v1595343234/Qn5dFd2S3Mc1m6fYnMtKMzQR.jpg',
+
     title: 'Handmade Jewelry Collection',
     description: 'Adorn yourself with beautiful handcrafted jewelry made with love and passion.',
   },
@@ -56,8 +59,8 @@ const Carousel: React.FC = () => {
         <div key={index} className={`banner ${index === currentIndex ? 'active' : ''}`}>
           <img src={banner.image} alt={`Banner ${index + 1}`} />
           <div className="content">
-            <h2 className={`font-bold ${banner.id===2 ? 'text-blue-950' : ''}`}>{banner.title}</h2>
-            <p className={`font-bold ${banner.id===2 ? 'text-lime-950' : ''}`}>{banner.description}</p>
+            <h2 className={`font-bold ${banner.id===2 ? 'text-white' : ''}`}>{banner.title}</h2>
+            <p className={`font-bold ${banner.id===2 ? 'text-white' : ''}`}>{banner.description}</p>
             <a href="#">Shop Now</a>
           </div>
         </div>
