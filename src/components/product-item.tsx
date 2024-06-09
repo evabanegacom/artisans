@@ -69,7 +69,7 @@ const ProductItem = ({ product, getProducts}: Props) => {
     </div>
   </div>
 
-  {user?.id === product?.user_id && confirmDelete && (
+  {user?.id === product?.user_id && window.location.pathname !=='/' && confirmDelete && (
     <div className="modal-overlay bg-gray-900 opacity-75 fixed inset-0 z-50 flex items-center justify-center">
       <div className="modal-content bg-white rounded-lg shadow-lg px-8 py-6 text-gray-700">
         <div className="modal-message text-lg font-medium">Are you sure you want to delete "{product?.name}" from your store?</div>

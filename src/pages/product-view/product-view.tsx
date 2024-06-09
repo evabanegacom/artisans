@@ -161,7 +161,6 @@ const ProductView = () => {
   const getSimilarProducts = async (productCategory: string) => {
     try {
       const response = await ProductService.getProductsByCategory(productCategory, 1);
-      console.log(response)
       setSimilarProducts(response.data?.products.slice(0, 4));
     } catch (error) {
       console.error(error);
