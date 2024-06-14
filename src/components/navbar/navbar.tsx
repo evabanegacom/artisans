@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setSearchTerm } from "../../redux/actions";
 import { searchProducts } from "../../redux/actions";
 import { logout } from "../../constants";
+import categories from "../../constants/categories";
 
 const Navbar = () => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -14,8 +15,15 @@ const Navbar = () => {
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const searchState = useSelector((state: any) => state?.reducer?.search)
   const { searchTerm } = searchState;
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
   const pageNumber = useSelector((state: any) => state?.reducer?.search?.pageNumber);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const navigateToCategory = (category: string) => {
+    setSelectedCategory(category);
+    navigate(`/products/${category}`);
+  }
 
   const handleSearch = (event: any) => {
     dispatch(setSearchTerm(event.target.value));
@@ -51,8 +59,20 @@ const Navbar = () => {
               <div className="flex space-x-4">
                 <a href={user?.seller ? `/store/${user?.store_name}` : '/seller-signUp'} className="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">{user?.seller ? 'Dashboard' : 'Start selling'}</a>
                 <a href={user?.seller ? `/store/${user?.store_name}` : '/create-product'} className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Add Product</a>
-                <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Projects</a>
-                <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Calendar</a>
+                {/* <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Categories</a> */}
+                <select
+                onChange={(e) => navigateToCategory(e.target.value)}
+                value={selectedCategory}
+                className="bg-transparent outline-none text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                >
+                  <option value="all">All Categories</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.name}>
+                      {category.title}
+                    </option>
+                  ))}
+                </select>
+                <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Get Help</a>
               </div>
             </div>
             <form onSubmit={findProducts} className="hidden md:flex md:flex-1 gap-3">
@@ -115,14 +135,15 @@ const Navbar = () => {
                   aria-orientation="vertical"
                   aria-labelledby="user-menu-button"
                 >
-                  <a
+                  {isLoggedin ? <a
                     href={`/profile/${user?.name}`}
                     className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
                     role="menuitem"
                     id="user-menu-item-0"
                   >
                     Profile
-                  </a>
+                  </a> : null}
+
                   {isLoggedin ? null :
                     <>
                       <a
@@ -160,7 +181,8 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-
+      
+ {/* {mobile} */}
       {isExpanded ? (
         <div className="relative sm:hidden">
           <div className="absolute w-full z-10 top-0 left-0">

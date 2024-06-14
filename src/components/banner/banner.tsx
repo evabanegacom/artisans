@@ -32,6 +32,13 @@ const banners: Banner[] = [
     title: 'Handmade Jewelry Collection',
     description: 'Adorn yourself with beautiful handcrafted jewelry made with love and passion.',
   },
+
+  {
+    id: 4,
+    image: 'https://res.cloudinary.com/spetsnaz/image/upload/v1718342666/digital-painting_qrq1ai.svg',
+    title: 'Digital Artworks',
+    description: 'Explore a wide range of digital artworks created by talented artists.',
+  }
 ];
 
 const Carousel: React.FC = () => {
