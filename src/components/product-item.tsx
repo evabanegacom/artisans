@@ -56,11 +56,11 @@ const ProductItem = ({ product, getProducts}: Props) => {
     </a>
     <div className="product-details flex flex-col justify-between px-4 py-2">
       <div className="product-info flex justify-between items-center">
-        <h2 className="product-title title-font text-xl font-medium product-name">{product?.name}</h2>
+        <h2 className="product-title title-font text-base font-medium product-name">{product?.name}</h2>
       </div>
       <div className="product-price-actions flex justify-between items-center mt-2 mb-2 flex-wrap">
         <div className="product-price product-name font-normal text-sm">{formatAsCurrency(product?.price)}</div>
-        <h3 className="product-category text-white text-xs tracking-widest title-font uppercase font-bold rounded-3xl px-2 py-1">{product?.category}</h3>
+        <h6 className="product-category text-white text-xs tracking-widest title-font uppercase font-bold rounded-3xl px-2 py-1">{product?.sold_by}</h6>
         {user?.id === product?.user_id && window.location.pathname.includes('/store/') && (
           <button type="button" className="product-delete text-red-500 hover:text-red-700 cursor-pointer focus:outline-none" onClick={() => setConfirmDelete(true)}>
             <HiOutlineTrash size={20} />

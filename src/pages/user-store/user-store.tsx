@@ -28,14 +28,14 @@ const UserStore = () => {
   const totalPages = Math.ceil(totalData / itemsPerPage);
   
   return (
-    <div className="bg-gray-200 p-4">
+    <div className="bg-gray-200 py-4">
     <div className=
       "flex justify-between text-sm font-semibold text-white bg-blue-800 py-2 px-3 rounded-md mb-3">
       <div>{store_name}</div>
       {user && products?.store_name === store_name && (
           <a href='/create-product'>Add product</a>
         )}    </div>
-    <div className="px-1 lg:px-5 md:px-1 mx-auto grid grid-cols-2 md:grid-cols-5 gap-4">
+<div className="px-1 lg:px-5 md:px-1 mx-auto grid grid-cols-2 md:grid-cols-5 gap-4 w-full">
             {products.products?.map((product:any) => (
         <ProductItem product={product} key={product.id} getProducts={getProductsByStore}/>
       ))}
