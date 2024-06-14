@@ -65,7 +65,7 @@ const Navbar = () => {
                 value={selectedCategory}
                 className="bg-transparent outline-none text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
                 >
-                  <option value="all">All Categories</option>
+                  <option value="all">Categories</option>
                   {categories.map((category) => (
                     <option key={category.id} value={category.name}>
                       {category.title}
@@ -189,27 +189,39 @@ const Navbar = () => {
             <div className="px-2 py-3 border border-gray-700 rounded-lg bg-gray-900 shadow-lg transition duration-300 ease-in-out transform translate-y-0">
               <a
                 href={user?.seller ? `/store/${user?.store_name}` : '/seller-signUp'}
-                className="block rounded-md px-3 py-2 text-lg font-medium text-white bg-blue-700 hover:bg-blue-800 transition duration-150 ease-in-out"
+                className="block rounded-md px-3 py-2 text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 transition duration-150 ease-in-out"
               >
                 {user?.seller ? 'Store' : 'Start selling'}
               </a>
               <a
                 href="#"
-                className="block rounded-md px-3 py-2 text-lg font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out mt-1"
+                className="block rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out mt-1"
               >
-                Team
+                Get Started
               </a>
-              <a
+              {/* <a
                 href="#"
                 className="block rounded-md px-3 py-2 text-lg font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out mt-1"
               >
                 Projects
-              </a>
+              </a> */}
+              <select 
+              className="bg-transparent w-full outline-none text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+              onChange={(e) => navigateToCategory(e.target.value)}
+              value={selectedCategory}
+              >
+                <option value="all">Categories</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.name}>
+                    {category.title}
+                  </option>
+                ))}
+              </select>
               <a
                 href="#"
-                className="block rounded-md px-3 py-2 text-lg font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out mt-1"
+                className="block rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out mt-1"
               >
-                Calendar
+                Get Help
               </a>
 
               <form onSubmit={findProducts} className="md:flex md:flex-1 gap-3 mt-3 w-full">
