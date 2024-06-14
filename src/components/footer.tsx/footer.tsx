@@ -5,7 +5,10 @@ const Footer = () => {
         <div className="flex flex-wrap -mx-4">
           <div className="w-full lg:w-1/4 px-4 mb-8">
             <h3 className="text-lg font-semibold mb-4">About Us</h3>
-            <p className="leading-relaxed">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut purus sem. Nam vulputate lacinia pulvinar.</p>
+            <p className="leading-relaxed">
+              Artisans Hub is a marketplace for unique handcrafted arts, crafts and digital arts from talented artisans around the world.
+              {/* We aim to connect artisans with art lovers and collectors while promoting the preservation of traditional art forms. */}
+            </p>
           </div>
           <div className="w-full lg:w-1/4 px-4 mb-8">
             <h3 className="text-lg font-semibold mb-4">Categories</h3>
@@ -18,7 +21,7 @@ const Footer = () => {
           </div>
           <div className="w-full lg:w-1/4 px-4 mb-8">
             <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
-            <p className="leading-relaxed">123, Main Street<br />New York, NY 10001<br />contact@example.com<br />+1 (123) 456-7890</p>
+            <p className="leading-relaxed">123, Main Street<br />New York, NY 10001<br />contact@example.com<br />+234(806) 6698252</p>
           </div>
           <div className="w-full lg:w-1/4 px-4 mb-8">
             <h3 className="text-lg font-semibold mb-4">Newsletter</h3>
@@ -30,7 +33,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="border-t border-gray-700 mt-8 pt-8">
-          <p className="text-center text-sm">&copy; 2024 Your Website. All rights reserved.</p>
+          <p className="text-center text-sm">&copy; 2024 Artisans Hub. All rights reserved.</p>
         </div>
       </div>
     </footer>
