@@ -72,7 +72,7 @@ const Navbar = () => {
                     </option>
                   ))}
                 </select>
-                <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Get Help</a>
+                <a href="/support" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Get Help</a>
               </div>
             </div>
             <form onSubmit={findProducts} className="hidden md:flex md:flex-1 gap-3">
@@ -218,7 +218,7 @@ const Navbar = () => {
                 ))}
               </select>
               <a
-                href="#"
+                href="/support"
                 className="block rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out mt-1"
               >
                 Get Help

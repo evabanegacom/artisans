@@ -14,6 +14,7 @@ const UserStore = lazy(() => import('./pages/user-store/user-store'));
 const SignUp = lazy(() => import('./auth/sign-up'));
 const EditProduct = lazy(() => import('./pages/product-view/edit-product'));
 const EditProfile = lazy(() => import('./auth/edit-profile'));
+const SupportPage = lazy(() => import('./pages/support-pages/support-page'));
 
 const routes = [
     {
@@ -78,6 +79,11 @@ const routes = [
     {
         path: '/profile/:id',
         element: <EditProfile />
+    },
+
+    {
+        path: '/support',
+        element: <SupportPage />
     },
 
     {
