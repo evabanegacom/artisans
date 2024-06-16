@@ -50,6 +50,11 @@ const updateUserInfo = async (data: any, id: number) => {
     return response
 }
 
+const findUserByStoreName = async (storeName: string) => {
+    const response = await api.get(`user_by_storename?store_name=${storeName}`)
+    return response?.data
+}
+// http://localhost:3001/api/v1/user_by_storename?store_name=Helen stores
 const AuthService = {
     createAccount,
     login,
@@ -60,7 +65,8 @@ const AuthService = {
     resetPassword,
     becomeASeller,
     getUser,
-    updateUserInfo
+    updateUserInfo,
+    findUserByStoreName
 }
 
 export default AuthService;

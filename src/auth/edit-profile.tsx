@@ -202,6 +202,18 @@ const EditProfile = () => {
       {loading ? <Loader /> : 'Update Profile'}
     </button>
   </form>
+
+  {/* <div>
+    <p>Close your account</p>
+    <p className='text-red-700 text-lg'>
+      By closing your account, you will lose all your data and you will not be able to recover it.
+
+    </p>
+    <button className="w-full bg-red-500 text-white px-4 py-2 rounded-lg transition duration-300 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">
+      {loading ? <Spinner /> : 'Close Account'}
+    </button>
+  </div> */}
+  
 </div>
 
   );

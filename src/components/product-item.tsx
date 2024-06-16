@@ -12,7 +12,6 @@ interface Props {
 }
 const ProductItem = ({ product, getProducts}: Props) => {
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
-  console.log(user);
   
   const [ confirmDelete, setConfirmDelete ] = useState(false);
   const [ deleting, setDeleting ] = useState(false);
@@ -21,7 +20,6 @@ const ProductItem = ({ product, getProducts}: Props) => {
     setDeleting(true);
     try{
       const removeProduct = await ProductService.deleteProduct(product?.id);
-      console.log(removeProduct);
       getProducts();
     }catch(err){
       console.log(err);
@@ -31,7 +29,6 @@ const ProductItem = ({ product, getProducts}: Props) => {
     }
   }
 
-  console.log(window.location.pathname)
 
   return (
 <>
