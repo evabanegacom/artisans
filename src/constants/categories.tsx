@@ -1,5 +1,5 @@
 import { CgWebsite } from 'react-icons/cg';
-import { FaPalette, FaCamera, FaBook, FaFile, FaPlug, FaPaintBrush, FaGlobe, FaCube, FaHandsHelping, FaLayerGroup } from 'react-icons/fa';
+import { FaPalette, FaCamera, FaBook, FaFile, FaPlug, FaPaintBrush, FaGlobe, FaCube, FaHandsHelping, FaLayerGroup, FaRocket } from 'react-icons/fa';
 
 const categories = [
   {
@@ -68,7 +68,14 @@ const categories = [
     name: 'WebDesign',
     title: 'Web Design',
     icon: <CgWebsite />
+  },
+  {
+    id: 12,
+    name: 'TechStartups',
+    title: 'Tech Startups',
+    icon: <FaRocket />
   }
+  
 ];
 
 export default categories;
