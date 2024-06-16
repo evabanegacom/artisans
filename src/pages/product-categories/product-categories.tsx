@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import ProductService from "../../services/product-service";
-import Slider from 'react-slick';
 import { useNavigate } from "react-router-dom";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import ProductItem from "../../components/product-item";
+import Loader from "../../constants/Loader";
 
 interface ProductCategoriesProps {
   category: any;
@@ -13,13 +13,17 @@ interface ProductCategoriesProps {
 const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
+  const [loading, setLoading ] = useState(false);
   const getProducts = async () => {
+    setLoading(true);
     try {
       const response = await ProductService.getProductsByCategory(category?.name, 1);
       console.log(response)
       setProducts(response.data?.products.slice(0, 5));
     } catch (error) {
       console.error(error);
+    }finally{
+      setLoading(false);
     }
   }
   useEffect(() => {
@@ -61,7 +65,6 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
     ]
   };
 
-  console.log(products)
   return (
     <>
       {/* {products.length > 0 ? */}
@@ -73,8 +76,8 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
         </div>
 <div className="px-1 lg:px-5 md:px-1 mx-auto grid grid-cols-2 md:grid-cols-5 gap-4 w-full">
           {/* <Slider {...settings} className="container mx-auto grid grid-cols-1 md:grid-cols-4"> */}
-
-          {products.map((product: any) => (
+          
+          {loading ? <Loader /> : products.map((product: any) => (
             // <a href='#' key={product?.id} className="inline-block px-2">
             <ProductItem product={product} key={product?.id} />
           ))}

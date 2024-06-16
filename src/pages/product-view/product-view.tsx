@@ -47,7 +47,6 @@ const ProductView = () => {
     setDeleting(true);
     try {
       const removeProduct = await ProductService.deleteProduct(productDetails?.id as any);
-      console.log(removeProduct);
     } catch (err) {
       console.log(err);
     } finally {
