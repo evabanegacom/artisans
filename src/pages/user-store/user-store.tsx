@@ -15,8 +15,8 @@ const UserStore = () => {
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
   console.log({ storeOwner })
   const getProductsByStore = async () => {
-    await AuthService.findUserByStoreName(store_name as string).then((response) => {
-      setStoreOwner(response?.user);
+    await AuthService.findUserByStoreName(store_name as string).then((storeInfo) => {
+      setStoreOwner(storeInfo?.user);
     });
     const response = await ProductService.getProductByStore(store_name as string, currentPage);
     setProducts(response.data || []);
