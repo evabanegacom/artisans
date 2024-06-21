@@ -38,6 +38,13 @@ const banners: Banner[] = [
     image: 'https://res.cloudinary.com/spetsnaz/image/upload/v1718342666/digital-painting_qrq1ai.svg',
     title: 'Digital Artworks',
     description: 'Explore a wide range of digital artworks created by talented artists.',
+  },
+
+  {
+    id: 5,
+    image: 'https://res.cloudinary.com/spetsnaz/image/upload/v1719001445/start-ups_q8fuym.svg',
+    title: 'Sell your startup',
+    description: 'Sell your startup and get the best price for it.',
   }
 ];
 

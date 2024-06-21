@@ -13,6 +13,7 @@ import { HiOutlineTrash } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 import ProductCategories from '../product-categories/product-categories';
 import ProductItem from '../../components/product-item';
+import Spinner from '../../constants/spinner';
 
 
 interface Product {
@@ -35,6 +36,7 @@ interface Product {
 
 const ProductView = () => {
   const { id } = useParams();
+  const [ loading, setLoading ] = useState(false);
   const [copied, setCopied] = useState(false);
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
   const [productDetails, setProductDetails] = useState<Product>();
@@ -106,6 +108,7 @@ const ProductView = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
     const getProductDetails = async () => {
       try {
         const response = await ProductService.getProduct(id as string);
@@ -120,6 +123,8 @@ const ProductView = () => {
         getSimilarProducts(response?.data?.category);
       } catch (error) {
         console.error(error)
+      }finally {
+        setLoading(false);
       }
     }
     getProductDetails()
@@ -168,6 +173,8 @@ const ProductView = () => {
 
 
   return (
+    <>
+    {loading && <Spinner /> }
     <div className="app">
       {
         productDetails && productDetails?.image_urls?.length > 0 && product.item?.map((item: any) => (
@@ -248,6 +255,8 @@ const ProductView = () => {
 <button onClick={() => navigate(`/products/${productDetails?.category}`)} className="py-3 text-center mx-auto button-bg text-white font-semibold text-base rounded-lg w-1/3 mt-3">Explore More</button>
 </div>
     </div>
+    </>
+    
   );
 }
 

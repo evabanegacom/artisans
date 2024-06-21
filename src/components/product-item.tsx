@@ -3,6 +3,7 @@ import { HiOutlineTrash } from "react-icons/hi2";
 import { useState } from 'react';
 import ProductService from '../services/product-service';
 import Loader from '../constants/Loader';
+import { useNavigate } from 'react-router-dom';
 import { formatAsCurrency } from '../constants';
 import './style.css';
 
@@ -12,7 +13,8 @@ interface Props {
 }
 const ProductItem = ({ product, getProducts}: Props) => {
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
-  
+  const navigate = useNavigate();
+
   const [ confirmDelete, setConfirmDelete ] = useState(false);
   const [ deleting, setDeleting ] = useState(false);
 
@@ -64,7 +66,7 @@ const ProductItem = ({ product, getProducts}: Props) => {
           </button>
         )}
       </div>
-      <button className='button-bg rounded-2xl text-white font-bold text-xs py-1'>Buy</button>
+      <button onClick={ () => navigate(`/product/${product?.product_number}`)} className='button-bg rounded-2xl text-white font-bold text-xs py-1'>Buy</button>
     </div>
   </div>
 
