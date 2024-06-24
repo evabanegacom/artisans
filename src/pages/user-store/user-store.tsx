@@ -6,20 +6,24 @@ import ProductItem from '../../components/product-item';
 import { useSelector } from 'react-redux';
 import AuthService from '../../services/auth-service';
 import { FaWhatsapp } from 'react-icons/fa';
+import Spinner from '../../constants/spinner';
 
 const UserStore = () => {
   const { store_name } = useParams();
   const [products, setProducts] = useState<any>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [storeOwner, setStoreOwner] = useState<any>({})
+  const [ loading, setLoading ] = useState(false);
+
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
-  console.log({ storeOwner })
   const getProductsByStore = async () => {
+    setLoading(true)
     await AuthService.findUserByStoreName(store_name as string).then((storeInfo) => {
       setStoreOwner(storeInfo?.user);
     });
     const response = await ProductService.getProductByStore(store_name as string, currentPage);
     setProducts(response.data || []);
+    setLoading(false)
   }
 
   const handlePageChange = (pageNumber: number) => {
@@ -35,8 +39,10 @@ const UserStore = () => {
   const totalPages = Math.ceil(totalData / itemsPerPage);
 
   return (
+    <>
+    {loading && <Spinner /> }
     <div className="bg-gray-200 py-4">
-
+    
       <div className=
         "flex justify-between text-sm items-center bg-white font-semibold product-name py-2 px-3 rounded-md mb-3">
 
@@ -68,6 +74,7 @@ const UserStore = () => {
       </div>
       {products?.products?.length === 20 ? <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} /> : null}
     </div>
+    </>
   )
 }
 
