@@ -18,7 +18,6 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
     setLoading(true);
     try {
       const response = await ProductService.getProductsByCategory(category?.name, 1);
-      console.log(response)
       setProducts(response.data?.products.slice(0, 5));
     } catch (error) {
       console.error(error);

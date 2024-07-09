@@ -1,6 +1,7 @@
 import { lazy } from 'react';
 import SearchResults from './pages/search-results/search-results';
 import ProductForm from './components/product-form/product-form';
+import path from 'path';
 
 const ActivateAccount = lazy(() => import('./auth/activate-account'));
 const ForgotPassword = lazy(() => import('./auth/forgot-password'));
@@ -15,6 +16,7 @@ const SignUp = lazy(() => import('./auth/sign-up'));
 const EditProduct = lazy(() => import('./pages/product-view/edit-product'));
 const EditProfile = lazy(() => import('./auth/edit-profile'));
 const SupportPage = lazy(() => import('./pages/support-pages/support-page'));
+const Preview = lazy(() => import('./components/print-on-demand/preview'));
 
 const routes = [
     {
@@ -84,6 +86,11 @@ const routes = [
     {
         path: '/support',
         element: <SupportPage />
+    },
+
+    {
+        path: '/preview',
+        element: <Preview />
     },
 
     {

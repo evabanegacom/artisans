@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import ProductCategories from '../product-categories/product-categories';
 import ProductItem from '../../components/product-item';
 import Spinner from '../../constants/spinner';
+import Preview from '../../components/print-on-demand/preview';
 
 
 interface Product {
@@ -242,6 +243,8 @@ const ProductView = () => {
           </div>
         ))
       }
+
+      {productDetails?.category==='DigitalArt' || productDetails?.category==='Photography' ? <Preview preferred={productDetails?.image_urls[0]} fill={false} /> : null}
   <div className='font-medium product-name text-2xl sm:text-xl md:text-3xl'>Explore Similar Products</div>
       <div className="flex flex-col mt-3">
 <div className=" grid grid-cols-2 md:grid-cols-4 gap-4">

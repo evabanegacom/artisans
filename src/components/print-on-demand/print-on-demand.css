@@ -1,0 +1,33 @@
+
+
+.color-options {
+  display: flex;
+  gap: 10px;
+}
+
+.circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid white;
+  transition: transform 0.6s cubic-bezier(0.85, 0, 0.15, 1);
+}
+
+.circle:hover {
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+
+
+
+@media screen and (max-width: 600px) {
+  .color-options {
+    margin-bottom: 20px;
+    flex-direction: column;
+    position: absolute;
+    top: 50%;
+    right: 40px;
+    transform: translateY(-50%);
+  }
+}

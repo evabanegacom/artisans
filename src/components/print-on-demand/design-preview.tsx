@@ -1,50 +1,66 @@
-import React, { useRef, useEffect } from 'react';
-import { fabric } from 'fabric';
+import { Logo } from '@pmndrs/branding'
+import { motion, AnimatePresence } from 'framer-motion'
+import { AiFillCamera, AiOutlineArrowLeft, AiOutlineHighlight, AiOutlineShopping } from 'react-icons/ai'
+import { useSnapshot } from 'valtio'
+import { state } from './store'
+import { useEffect } from 'react'
 
-interface DesignPreviewProps {
-  itemImage: string;
-  designImage: string;
-}
+export function Overlay() {
+  const snap = useSnapshot(state)
+  const transition = { type: 'spring', duration: 0.8 }
+  const config = {
+    initial: { x: -100, opacity: 0, transition: { ...transition, delay: 0.5 } },
+    animate: { x: 0, opacity: 1, transition: { ...transition, delay: 0 } },
+    exit: { x: -100, opacity: 0, transition: { ...transition, delay: 0 } }
+  }
 
-const DesignPreview: React.FC<DesignPreviewProps> = ({ itemImage, designImage }) => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  useEffect(() => {
-    if (canvasRef.current) {
-      const canvas = new fabric.Canvas(canvasRef.current, {
-        width: 300,
-        height: 400,
-        backgroundColor: 'transparent' // Ensure canvas itself is transparent
-      });
-
-      // Load the t-shirt image (with transparent background)
-      fabric.Image.fromURL(itemImage, (img) => {
-        img.scaleToWidth(canvas.width as number);
-        img.scaleToHeight(canvas.height as number);
-        canvas.add(img);
-        img.set({ selectable: false }); // Make sure the t-shirt image is not selectable
-
-        // Load the design image with transparent background and add it to the canvas
-        fabric.Image.fromURL(designImage, (designImg) => {
-          designImg.scaleToWidth(150); // Adjust the size of the design
-          designImg.set({ top: 100, left: 75 }); // Position the design on the t-shirt
-          canvas.add(designImg);
-          canvas.renderAll();
-        });
-      });
-
-      // Cleanup function to dispose of the canvas
-      return () => {
-        canvas.dispose();
-      };
-    }
-  }, [itemImage, designImage]);
 
   return (
-    <div className="relative w-72 h-96">
-      <canvas ref={canvasRef} className="absolute inset-0" />
+    <div className="overlay-container">
+      {/* <AnimatePresence> */}
+        {/* <motion.section key="custom" {...config}> */}
+          <Customizer />
+        {/* </motion.section> */}
+      {/* </AnimatePresence> */}
     </div>
-  );
-};
+  )
+}
 
-export default DesignPreview;
+function Customizer() {
+  const snap = useSnapshot(state)
+
+  return (
+    <div style={{ background: state?.color }} className='flex items-center justify-between px-3'>
+      <div className="color-options">
+        {snap.colors.map((color: string) => (
+          <div key={color} className={`circle`} style={{ background: color }} onClick={() => (state.color = color)}></div>
+        ))}
+      </div>
+      {/* <div className="decals">
+        <div className="decals--container">
+          {snap.decals.map((decal: any) => (
+            <div key={decal} className={`decal`} onClick={() => (state.decal = decal)}>
+              <img src={decal + '_thumb.png'} alt="brand" />
+            </div>
+          ))}
+        </div>
+      </div> */}
+      <button
+        className="flex gap-2 p-3 rounded"
+        style={{ background: snap.color }}
+        onClick={() => {
+          const link = document.createElement('a')
+          link.setAttribute('download', 'canvas.png')
+          link.setAttribute('href', document?.querySelector('canvas' as any)?.toDataURL('image/png').replace('image/png', 'image/octet-stream'))
+          link.click()
+        }}>
+        DOWNLOAD
+        <AiFillCamera size="1.3em" />
+      </button>
+      {/* <button className="exit" style={{ background: snap.color }} onClick={() => (state.intro = true)}>
+        GO BACK
+        <AiOutlineArrowLeft size="1.3em" />
+      </button> */}
+    </div>
+  )
+}
