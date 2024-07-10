@@ -53,7 +53,7 @@ function Shirt(props: any) {
   const { preferred, fill } = props;
   const snap = useSnapshot(state);
   const texture = useTexture(preferred || '/react.png');
-  const { nodes, materials } = useGLTF('/shirt_baked_collapsed.glb') as any;
+  const { nodes, materials } = useGLTF('https://res.cloudinary.com/spetsnaz/image/upload/v1720597938/shirt_baked_collapsed_vh9b56.glb') as any;
 
   useFrame((state, delta) => {
     if (materials && materials.lambert1) {
