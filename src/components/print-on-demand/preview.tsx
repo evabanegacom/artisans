@@ -7,7 +7,7 @@ const Preview = ({preferred, fill}:any) => {
   return (
     <div className=''>
     <CanvasApp preferred={preferred} fill={fill}/>
-    <Overlay />
+    {/* <Overlay /> */}
     </div>
   )
 }
