@@ -1,7 +1,7 @@
 import CanvasApp from './canvas'
 import { Overlay } from './design-preview'
 
-// import './print-on-demand.css';
+import './print-on-demand.css';
 
 const Preview = ({preferred, fill}:any) => {
   return (

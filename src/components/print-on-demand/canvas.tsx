@@ -18,7 +18,7 @@ const CanvasApp = ({ position = [0, 0, 5], fov = 35, preferred, fill }: any) => 
         </Center>
       </CameraRig>
     </Canvas>
-    <Overlay />
+    {/* <Overlay /> */}
   </div>
 );
 
