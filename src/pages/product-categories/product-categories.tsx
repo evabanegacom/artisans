@@ -82,7 +82,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
           ))}
           {/* </Slider> */}
         </div>
-        <button onClick={() => navigate(`/products/${category?.name}`)} className="py-3 text-center mx-auto button-bg text-white font-semibold text-base rounded-lg w-1/3 mt-3">Explore More</button>
+        {products?.length > 5 ? <button onClick={() => navigate(`/products/${category?.name}`)} className="py-3 text-center mx-auto button-bg text-white font-semibold text-base rounded-lg w-1/3 mt-3">Explore More</button> : null}
       </div>
       {/* // : null */}
     </>
