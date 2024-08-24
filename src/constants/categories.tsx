@@ -40,14 +40,14 @@ const categories = [
   },
   {
     id: 7,
-    name: 'DigitalAssets',
-    title: 'Digital Assets',
+    name: 'Printables',
+    title: 'Printables',
     icon: <FaGlobe />,
   },
   {
     id: 8,
-    name: 'VirtualGoods',
-    title: 'Virtual Goods',
+    name: 'Stickers',
+    title: 'Stickers',
     icon: <FaCube />,
   },
   {
