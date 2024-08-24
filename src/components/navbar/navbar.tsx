@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import LogoSvg from "../../logo-svg";
+// import LogoSvg from "../../logo-svg";
 import logo from '../../assets/logo.svg';
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
