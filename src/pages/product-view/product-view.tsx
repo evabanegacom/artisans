@@ -244,7 +244,7 @@ const ProductView = () => {
         ))
       }
 
-      {productDetails?.category==='DigitalArt' || productDetails?.category==='Photography' ? <Preview preferred={productDetails?.image_urls[0]} fill={false} /> : null}
+      {productDetails?.category==='Printables' || productDetails?.category==='Photography' ? <Preview preferred={productDetails?.image_urls[0]} fill={false} /> : null}
   <div className='font-medium product-name text-2xl sm:text-xl md:text-3xl'>Explore Similar Products</div>
       <div className="flex flex-col mt-3">
 <div className=" grid grid-cols-2 md:grid-cols-4 gap-4">
