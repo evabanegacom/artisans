@@ -13,6 +13,7 @@ import RenameDataset from './components/manuscript/rename-dataset';
 import RespecifyVariable from './components/manuscript/respecify-variable';
 import RespecifyDatasetMultiple from './components/manuscript/respecify-dataset-multiple';
 import CloneVariable from './components/manuscript/clone-variable';
+import RenameVariable from './components/manuscript/rename-variable';
 
 function App() {
   const isLoggedin = useSelector((state:any) => state.reducer.auth.isAuth);
@@ -58,6 +59,7 @@ function App() {
         {/* <RespecifyVariable variables={variables}/> */}
         {/* <RespecifyDatasetMultiple variables={variables} /> */}
         {/* <CloneVariable variables={variables} /> */}
+        {/* <RenameVariable initialVariableName='Age' /> */}
           <Suspense fallback={<Spinner size={16} color="text-blue-500" />}>
             <Routes>
               {routes.map((route, index) => (
