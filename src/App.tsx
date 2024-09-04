@@ -14,6 +14,8 @@ import RespecifyVariable from './components/manuscript/respecify-variable';
 import RespecifyDatasetMultiple from './components/manuscript/respecify-dataset-multiple';
 import CloneVariable from './components/manuscript/clone-variable';
 import RenameVariable from './components/manuscript/rename-variable';
+import Relabel from './components/manuscript/relabel';
+import DeleteVariable from './components/manuscript/delete-variable';
 
 function App() {
   const isLoggedin = useSelector((state:any) => state.reducer.auth.isAuth);
@@ -25,27 +27,32 @@ function App() {
   const variables = [
     {
       id: 1,
-      name: 'Age(Numeric)'
+      name: 'Age(Numeric)',
+      type: "Numeric"
     },
 
     {
       id: 2,
-      name: 'Grade(Numeric)'
+      name: 'Grade(Numeric)',
+      type: "Numeric"
     },
 
     {
       id: 3,
-      name: 'BMI(categorical)'
+      name: 'BMI(categorical)',
+      type: "Categorical"
     },
 
     {
       id: 4,
-      name: 'hours_of_study(Numeric)'
+      name: 'hours_of_study(Numeric)',
+      type: "Numeric"
     },
 
     {
       id: 5,
-      name: 'survey_details(String)'
+      name: 'survey_details(String)',
+      type: "String"
     },
 
   ]
@@ -60,6 +67,8 @@ function App() {
         {/* <RespecifyDatasetMultiple variables={variables} /> */}
         {/* <CloneVariable variables={variables} /> */}
         {/* <RenameVariable initialVariableName='Age' /> */}
+        {/* <DeleteVariable variables={variables} /> */}
+        <Relabel variables={variables}/>
           <Suspense fallback={<Spinner size={16} color="text-blue-500" />}>
             <Routes>
               {routes.map((route, index) => (
