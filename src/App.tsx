@@ -68,7 +68,7 @@ function App() {
         {/* <CloneVariable variables={variables} /> */}
         {/* <RenameVariable initialVariableName='Age' /> */}
         {/* <DeleteVariable variables={variables} /> */}
-        <Relabel variables={variables}/>
+        {/* <Relabel variables={variables}/> */}
           <Suspense fallback={<Spinner size={16} color="text-blue-500" />}>
             <Routes>
               {routes.map((route, index) => (
