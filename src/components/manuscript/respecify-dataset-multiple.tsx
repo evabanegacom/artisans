@@ -9,9 +9,10 @@ type RespecifyDatasetMultipleProps = {
 
 const RespecifyDatasetMultiple: React.FC<RespecifyDatasetMultipleProps> = ({ variables }) => {
     const variableType = ['Numeric', 'String', 'Categorical', 'Date', 'Other'];
-
+    
     const [showFilter, setShowFilter] = useState(false);
     const [selectedFilter, setSelectedFilter] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');  // State to track the search query
 
     const handleFilterClick = () => {
         setShowFilter(!showFilter);
@@ -21,6 +22,12 @@ const RespecifyDatasetMultiple: React.FC<RespecifyDatasetMultipleProps> = ({ var
         setSelectedFilter(e.target.value);
         // You can add logic here to filter the data based on the selected filter
     };
+
+    // Filter the variables based on the search query (matching by name or id)
+    const filteredVariables = variables.filter(variable =>
+        variable.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        variable.id.toString().includes(searchQuery)
+    );
 
     return (
         <div>
@@ -38,6 +45,8 @@ const RespecifyDatasetMultiple: React.FC<RespecifyDatasetMultipleProps> = ({ var
                         type="text"
                         className='bg-[#F8FAFC] border text-sm border-[#CBD5E1] rounded-lg pl-10 pr-3 py-2 shadow-md outline-none w-full'
                         placeholder='Search by name, id, or keyword'
+                        value={searchQuery}  // Bind input value to search query state
+                        onChange={(e) => setSearchQuery(e.target.value)}  // Update search query on input change
                     />
                     <BiSearch color='#475569' className='absolute left-3 top-1/2 transform -translate-y-1/2 text-[#475569]' />
                 </div>
@@ -50,9 +59,8 @@ const RespecifyDatasetMultiple: React.FC<RespecifyDatasetMultipleProps> = ({ var
 
             {showFilter && (
                 <div className='absolute right-0 bg-white border border-[#CBD5E1] rounded-lg shadow-md p-4 z-10'>
-                    {/* <div className='text-sm font-semibold mb-2'>Filter by Type</div> */}
                     <div className='flex flex-col gap-2 bg-white'>
-                        {['Numeric', 'String', 'Categorical', 'Date', 'Other'].map(type => (
+                        {variableType.map(type => (
                             <label key={type} className='flex items-center text-sm text-[#94A3B8]'>
                                 <input
                                     type="radio"
@@ -75,21 +83,28 @@ const RespecifyDatasetMultiple: React.FC<RespecifyDatasetMultipleProps> = ({ var
                     <div className='text-sm font-semibold'>Choose Variable Type</div>
                 </div>
 
-                {variables.map((variable, index) => (
-                    <div
-                        key={variable.id}
-                        className={`grid grid-cols-2 gap-4 text-sm p-2 border-b border-[#CBD5E1] items-center ${index % 2 === 1 ? 'bg-white' : 'bg-[#F8FAFC]'}`}
-                    >
-                        <div className='text-sm text-[#334155] font-medium'>{variable.name}</div>
-                        <select
-                            className='border text-sm border-[#CBD5E1] rounded-lg p-2 shadow-md outline-none w-full text-[#94A3B8]'
-                        >   <option value=''>Select</option>
-                            {variableType.map(type => (
-                                <option key={type} value={type}>{type}</option>
-                            ))}
-                        </select>
+                {filteredVariables.length > 0 ? (
+                    filteredVariables.map((variable, index) => (
+                        <div
+                            key={variable.id}
+                            className={`grid grid-cols-2 gap-4 text-sm p-2 border-b border-[#CBD5E1] items-center ${index % 2 === 1 ? 'bg-white' : 'bg-[#F8FAFC]'}`}
+                        >
+                            <div className='text-sm text-[#334155] font-medium'>{variable.name}</div>
+                            <select
+                                className='border text-sm border-[#CBD5E1] rounded-lg p-2 shadow-md outline-none w-full text-[#94A3B8]'
+                            >
+                                <option value=''>Select</option>
+                                {variableType.map(type => (
+                                    <option key={type} value={type}>{type}</option>
+                                ))}
+                            </select>
+                        </div>
+                    ))
+                ) : (
+                    <div className='text-center text-sm text-[#64748B] py-5'>
+                        No variables found
                     </div>
-                ))}
+                )}
             </div>
 
             <div className='flex gap-3 mt-10 justify-end border-t-2 border-[#E2E8F0] py-5'>
@@ -108,6 +123,6 @@ const RespecifyDatasetMultiple: React.FC<RespecifyDatasetMultipleProps> = ({ var
             </div>
         </div>
     );
-}
+};
 
 export default RespecifyDatasetMultiple;

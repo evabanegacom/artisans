@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { GoTrash } from 'react-icons/go';
 
 interface RelabelItemPropertiesProps {
     setRelabelledProperty: (item: string) => void;
@@ -79,7 +80,7 @@ const RelabelItemProperties = ({ setRelabelledProperty }: RelabelItemPropertiesP
                         )}
                     </div>
 
-                    <div className='text-sm font-normal text-[#64748B]'>Actions</div>
+                    <div className='text-sm font-normal text-[#64748B]'><GoTrash color='#F43F5E' /></div>
                 </div>
             ))}
         </div>
