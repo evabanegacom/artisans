@@ -21,20 +21,28 @@ const Relabel: React.FC<RelabelProps> = ({ variables }) => {
 
     const handleCancel = () => {
         setDatasetName(variables);
+        setSelectedVariable(null);
     };
 
+    const toggleShowOptions = () => {
+        setShowOptions(!showOptions);
+        if (!showOptions) {
+            setSelectedVariable(null);
+        }
+    }
+
     return (
-        <div className='relative z-10 m-10'>
+        <div className='relative m-10'>
             <div className='flex text-sm font-medium items-center gap-3 my-3'>
                 <div className='text-[#94A3B8]'>Sample description</div>
                 <div className='text-[#03CDAA] flex items-center gap-1'><GoInfo /><span className='underline'>Learn More</span></div>
             </div>
             <div>
                 <button 
-                onClick={() => setShowOptions(!showOptions)}
+                onClick={toggleShowOptions}
                 className='border w-full border-gray-300 rounded-lg p-3 shadow-md flex items-center justify-between'>
                     <div className='text-sm text-[#64748B] font-normal'>{selectedVariable ? selectedVariable?.name : 'Select variable'}</div>
-                    {showOptions ? <MdKeyboardArrowDown onClick={() => setShowOptions(!showOptions)} size={20}/> : <MdKeyboardArrowUp onClick={() => setShowOptions(!showOptions)} size={20} />}
+                    {showOptions ? <MdKeyboardArrowDown onClick={toggleShowOptions} size={20}/> : <MdKeyboardArrowUp onClick={toggleShowOptions} size={20} />}
                 </button>
                 { selectedVariable && <RelabelItemProperties setRelabelledProperty={setRelabelledProperty}/> }
                 <div className='flex gap-3 mt-10 justify-end border-t-2 border-[#E2E8F0] py-5'>
@@ -42,14 +50,14 @@ const Relabel: React.FC<RelabelProps> = ({ variables }) => {
                         className='bg-[#E3FFFA] text-[#03CDAA] text-sm font-bold px-5 py-3 rounded-lg' 
                         type="button" 
                         onClick={handleCancel}
-                        disabled={datasetName === variables} // Disable if unchanged
+                        disabled={!selectedVariable}
                     >
                         Cancel
                     </button>
                     <button 
                         className='bg-[#03CDAA] text-white font-bold text-sm px-5 py-3 rounded-lg' 
                         type="submit"
-                        disabled={datasetName === variables} // Disable if unchanged
+                        disabled={datasetName === variables}
                     >
                         Rename
                     </button>

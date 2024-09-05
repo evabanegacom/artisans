@@ -70,7 +70,7 @@ const RelabelItemProperties = ({ setRelabelledProperty }: RelabelItemPropertiesP
                                 onBlur={() => handleBlur(property.id)} // Save when input loses focus
                                 onKeyDown={(e) => e.key === 'Enter' && handleSaveLabel(property.id)} // Save on Enter
                                 autoFocus
-                                className='border-b border-[#94A3B8] rounded-lg p-2 text-[#475569] outline-none'
+                                className='border border-[#94A3B8] rounded-lg p-2 text-[#475569] outline-none'
                             />
                         ) : (
                             <span onClick={() => handleEditLabel(property)} className="cursor-pointer">

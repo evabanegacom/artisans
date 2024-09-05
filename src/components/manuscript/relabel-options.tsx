@@ -28,7 +28,7 @@ const RelabelOptions = ({ setShowOptions, variables, selectedVariable, setSelect
     );
 
     return (
-        <div className='absolute top-20 w-full bg-white rounded-lg '>
+        <div className='absolute top-20 w-full bg-white rounded-lg z-10'>
             <div className='relative w-full mb-5'>
                 <input
                     type="text"
@@ -49,13 +49,16 @@ const RelabelOptions = ({ setShowOptions, variables, selectedVariable, setSelect
                 {filteredVariables.map((variable, index) => (
                     <div
                         key={variable.id}
-                        className={`flex items-center gap-3 p-2 ${index % 2 === 0 ? 'bg-white' : 'bg-[#F8FAFC]'
+                        onClick={() => handleSelectVariable(variable)}
+                        className={`flex items-center gap-3 p-2 cursor-pointer ${index % 2 === 0 ? 'bg-white' : 'bg-[#F8FAFC]'
                             }`}
                     >
                         <input
                             type="checkbox"
                             checked={selectedVariable?.id === variable.id}
-                            onChange={() => handleSelectVariable(variable)}
+                            // onChange={() => handleSelectVariable(variable)}
+                            onChange={(e) => { e.stopPropagation(); handleSelectVariable(variable); }} // Prevent double firing
+
                         />
                         <div className='flex-1 text-sm font-normal text-[#64748B]'>{variable.name}</div>
                         <div className='text-sm font-normal text-[#64748B] text-left w-20'>{variable.type}</div>
