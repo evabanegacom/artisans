@@ -16,6 +16,7 @@ import CloneVariable from './components/manuscript/clone-variable';
 import RenameVariable from './components/manuscript/rename-variable';
 import Relabel from './components/manuscript/relabel';
 import DeleteVariable from './components/manuscript/delete-variable';
+import DeleteRecords from './components/manuscript/delete-records';
 
 function App() {
   const isLoggedin = useSelector((state:any) => state.reducer.auth.isAuth);
@@ -69,6 +70,7 @@ function App() {
         {/* <RenameVariable initialVariableName='Age' /> */}
         {/* <DeleteVariable variables={variables} /> */}
         {/* <Relabel variables={variables}/> */}
+        {/* <DeleteRecords variables={variables}/> */}
           <Suspense fallback={<Spinner size={16} color="text-blue-500" />}>
             <Routes>
               {routes.map((route, index) => (
