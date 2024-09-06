@@ -255,7 +255,7 @@ const DeleteRecords = ({ variables }: DeleteRecordsProps) => {
     };
 
     return (
-        <div className="w-full max-w-lg mx-auto bg-white rounded-lg shadow-lg relative">
+        <div className="w-full max-w-lg mx-auto bg-white rounded-lg shadow-lg relative p-8">
             <h2 className="text-lg font-bold mb-4">Delete Records</h2>
 
             <p className="text-sm mb-3 text-[#94A3B8] font-normal">Choose what you want to delete</p>
@@ -302,14 +302,14 @@ const DeleteRecords = ({ variables }: DeleteRecordsProps) => {
 
             {(deleteOption === 'rows' || deleteOption === 'both') && (
                 <>
-                    <div>Select the variables that define rows to be selected</div>
+                    <div className='text-[#1E293B] text-sm font-medium'>Select the variables that define rows to be selected</div>
                     <button
                         onClick={() => setShowRowOptions(!showRowOptions)}
-                        className='border w-full border-gray-300 rounded-lg p-3 shadow-md flex items-center justify-between mb-4'>
+                        className='border mt-2 w-full border-gray-300 rounded-lg p-2 shadow-md flex items-center justify-between mb-4'>
                         <div className='flex items-center gap-2'>
                             {selectedRowVariable ? (
-                                <div className='text-[#64748B] rounded-full flex items-center gap-2'>
-                                    <span className='text-sm text-[#64748B] font-normal'>{selectedRowVariable}</span>
+                                <div className='text-sm text-[#475569] p-2 rounded-lg font-medium bg-[#F1F5F9] flex items-center'>
+                                    <span className=''>{selectedRowVariable}</span>
                                     <FaTimes
                                         size={12}
                                         className='cursor-pointer'
@@ -354,14 +354,14 @@ const DeleteRecords = ({ variables }: DeleteRecordsProps) => {
 
             {(deleteOption === 'columns' || deleteOption === 'both') && (
                 <>
-                    <div>Select the variables that define columns to be selected</div>
+                    <div className='text-[#1E293B] text-sm font-medium mt-5'>Select the variables that define columns to be selected</div>
                     <button
                         onClick={() => setShowColumnOptions(!showColumnOptions)}
-                        className='border w-full border-gray-300 rounded-lg p-3 shadow-md flex items-center justify-between mb-4'>
+                        className='border w-full mt-2 border-gray-300 rounded-lg p-2 shadow-md flex items-center justify-between mb-4'>
                         <div className='flex items-center gap-2'>
                             {selectedColumnVariable ? (
-                                <div className='bg-blue-100 text-blue-700 px-3 py-1 rounded-full flex items-center gap-2'>
-                                    <span className='text-sm text-[#64748B] font-normal'>{selectedColumnVariable}</span>
+                                <div className='text-sm text-[#475569] p-2 rounded-lg font-medium bg-[#F1F5F9] flex items-center'>
+                                    <span className=''>{selectedColumnVariable}</span>
                                     <FaTimes
                                         size={12}
                                         className='cursor-pointer'
@@ -406,16 +406,16 @@ const DeleteRecords = ({ variables }: DeleteRecordsProps) => {
 
             <div className="flex justify-end space-x-3 mt-4">
                 <button
-                    className="py-2 px-4 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+                    className="py-2 px-4 text-sm font-bold bg-[#FFF1F2] text-[#F43F5E] rounded-md hover:bg-gray-300"
                     onClick={() => console.log('Cancel')}
                 >
                     Cancel
                 </button>
                 <button
-                    className="py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700"
+                    className="py-2 px-4 bg-[#f43f5e] text-white text-sm rounded-md hover:bg-red-700"
                     onClick={handleDeleteRecords}
                 >
-                    Delete
+                    Delete Record
                 </button>
             </div>
         </div>

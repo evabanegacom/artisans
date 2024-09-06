@@ -23,26 +23,19 @@ const DeleteRecordOptions = ({
     setSelectedColumnVariable,
     setConditions,
     conditions,
-
 }: DeleteRecordOptionsProps) => {
     const [searchQuery, setSearchQuery] = useState('');
-
-    console.log({conditions})
 
     const handleSelectVariable = (variable: { id: number; name: string; type: string }) => {
         if (deleteOption === 'rows') {
             setSelectedRowVariable(variable.name);
-            // Set conditions with the selected variable immediately
             setConditions([...conditions, { variable: variable.name, value: '' }]);
-    
         } else if (deleteOption === 'columns') {
             setSelectedColumnVariable(variable.name);
-            // Set conditions with the selected variable immediately
             setConditions([...conditions, { variable: variable.name, value: '' }]);
-    
         }
         setShowOptions(false); // Close the dropdown
-    };    
+    };
 
     const filteredVariables = variables.filter(variable =>
         variable.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -51,7 +44,7 @@ const DeleteRecordOptions = ({
     );
 
     return (
-        <div className='absolute top-30 w-full bg-white rounded-lg z-10 border border-red-500 mx-auto'>
+        <div style={{width: '88%', top: '280px'}} className='px-3 absolute bg-white rounded-lg z-10 mx-auto shadow-lg py-5'>
             <div className='relative w-full mb-5'>
                 <input
                     type="text"
@@ -63,7 +56,7 @@ const DeleteRecordOptions = ({
                 <BiSearch color='#475569' className='absolute left-3 top-1/2 transform -translate-y-1/2 text-[#475569]' />
             </div>
 
-            <div className='flex flex-col px-2'>
+            <div className='flex flex-col px-2 max-h-60 overflow-y-auto'>
                 <div className='flex bg-[#F8FAFC] items-center gap-3 font-semibold text-sm p-2'>
                     <div className='flex-1 text-left text-[#475569]'>Variable Name</div>
                     <div className='text-right text-[#475569]'>Variable Type</div>
@@ -73,8 +66,7 @@ const DeleteRecordOptions = ({
                     <div
                         key={variable.id}
                         onClick={() => handleSelectVariable(variable)}
-                        className={`flex items-center gap-3 p-2 cursor-pointer ${index % 2 === 0 ? 'bg-white' : 'bg-[#F8FAFC]'
-                            }`}
+                        className={`flex items-center gap-3 p-2 cursor-pointer ${index % 2 === 0 ? 'bg-white' : 'bg-[#F8FAFC]'}`}
                     >
                         <input
                             type="radio"
@@ -95,6 +87,6 @@ const DeleteRecordOptions = ({
             </div>
         </div>
     );
-}
+};
 
 export default DeleteRecordOptions;
