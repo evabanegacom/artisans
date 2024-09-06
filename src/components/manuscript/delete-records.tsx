@@ -115,6 +115,7 @@ const DeleteRecords = ({ variables }: DeleteRecordsProps) => {
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setSelectedRowVariable(null);
+                                    setConditions([]);
                                 }}
                             />
                         </div>
@@ -127,6 +128,7 @@ const DeleteRecords = ({ variables }: DeleteRecordsProps) => {
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setSelectedColumnVariable(null);
+                                    setConditions([]);
                                 }}
                             />
                         </div>
