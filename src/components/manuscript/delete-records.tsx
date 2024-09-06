@@ -248,6 +248,9 @@ const DeleteRecords = ({ variables }: DeleteRecordsProps) => {
     const handleDeleteRecords = () => {
         console.log('Selected Rows:', selectedRowVariable);
         console.log('Selected Columns:', selectedColumnVariable);
+        console.log('Row Conditions:', rowConditions);
+        console.log('Column Conditions:', columnConditions);
+        
         alert('Delete logic executed');
     };
 
