@@ -1,4 +1,0 @@
-
-npx eslint . || exit 1
-yarn test
-yarn build
