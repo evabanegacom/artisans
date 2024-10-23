@@ -10,7 +10,7 @@ type RelabelProps = {
 const Relabel: React.FC<RelabelProps> = ({ variables }) => {
     const [datasetName, setDatasetName] = useState(variables);
     const [ showOptions, setShowOptions ] = useState(false);
-    const [selectedVariables, setSelectedVariables] = useState<Array<{ id: number; name: string; type: string }>>([]);
+    const [selectedVariable, setSelectedVariable] = useState<{ id: number; name: string; type: string } | null>(null);
     // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     //     setDatasetName(e.target.value);
     // };
@@ -56,8 +56,9 @@ const Relabel: React.FC<RelabelProps> = ({ variables }) => {
             <RelabelOptions 
             showOptions={showOptions} 
             variables={variables}
-            selectedVariables={selectedVariables}
-            setSelectedVariables={setSelectedVariables}
+            setShowOptions={setShowOptions}
+            selectedVariable={selectedVariable}
+            setSelectedVariable={setSelectedVariable}
             />
         </div>
     );
