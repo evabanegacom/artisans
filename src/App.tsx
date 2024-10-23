@@ -111,7 +111,7 @@ function App() {
         </ReactMarkdown> */}
         {/* <AIToolkit /> */}
         {/* <MarkdownDemo /> */}
-        {/* <GenerateIntroduction /> */}
+        <GenerateIntroduction />
           <Suspense fallback={<Spinner size={16} color="text-blue-500" />}>
             <Routes>
               {routes.map((route, index) => (

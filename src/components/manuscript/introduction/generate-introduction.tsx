@@ -61,7 +61,7 @@ const GenerateIntroduction: React.FC = () => {
       </div>
 
       {/* Reasons Accordion */}
-      <div className="mb-4">
+      <div className="mb-4 relative">
         <label className="text-xs text-[#334155] mb-2 block">
           What makes this issue important? Please select 4-10 reasons below and briefly explain
         </label>
@@ -82,7 +82,7 @@ const GenerateIntroduction: React.FC = () => {
       </div>
 
       {/* Gaps Accordion */}
-      <div className="mb-4">
+      <div className="mb-4 relative">
         <label className="text-xs text-[#334155] mb-2 block">
           What’s the gap on this issue? Please select 1-2 checkboxes below and briefly explain
         </label>
