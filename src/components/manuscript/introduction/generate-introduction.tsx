@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { AiOutlineArrowRight, AiOutlineDown, AiOutlineUp } from "react-icons/ai"; // Icons for arrow toggle
 import Accordion from "./accordion";
+import AiIcon from "./ai-icon";
+import GeneratedIntroduction from "./generated-introduction";
 
 const GenerateIntroduction: React.FC = () => {
   const [skipAI, setSkipAI] = useState(false);
@@ -42,15 +44,15 @@ const GenerateIntroduction: React.FC = () => {
       <div className="flex items-center justify-center mb-4">
         <button
           onClick={() => setSkipAI(!skipAI)}
-          className={`bg-[#FFF0F7] p-2 rounded-md flex items-center gap-2 font-medium ${skipAI ? "underline" : ""}`}
+          className={`bg-[#FFF0F7] px-2 py-1 rounded-md flex items-center gap-2 font-medium ${skipAI ? "underline" : ""}`}
         >
-          <span className="bg-gradient-to-r from-[#9A00FF] via-[#CF03B7] to-[#F8057F] bg-clip-text text-transparent">
-            ✍️ Skip manual input & Autogenerate with AI
+          <span className="flex text-xs font-medium gap-2 items-center bg-gradient-to-r from-[#9A00FF] via-[#CF03B7] to-[#F8057F] bg-clip-text text-transparent">
+            <AiIcon /> Skip manual input & Autogenerate with AI
           </span>
         </button>
       </div>
 
-      <p className="text-center text-sm mb-6 text-[#475569]">
+      <p className="text-center text-sm mb-6 text-[#475569] px-5">
         This would skip manual input and let AI draft the introduction without assistance.
       </p>
 
@@ -112,6 +114,7 @@ const GenerateIntroduction: React.FC = () => {
           <AiOutlineArrowRight />
         </button>
       </div>
+      <GeneratedIntroduction />
     </div>
   );
 };
