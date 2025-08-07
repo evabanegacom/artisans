@@ -1,0 +1,49 @@
+/* sliderStyles.css */
+
+input[type="range"].custom-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  border-radius: 999px;
+  outline: none;
+  position: relative;
+}
+  
+  input[type="range"].custom-slider::-webkit-slider-runnable-track {
+    height: 8px;
+    background: transparent; /* Allow gradient from inline style */
+    border-radius: 999px;
+}
+  
+  input[type="range"].custom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background-color: white;
+    border: 4px solid #03CDAA;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: -8px; /* Centers the thumb */
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  input[type="range"].custom-slider:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 8px rgba(0, 205, 170, 0.5);
+  }
+  
+  input[type="range"].custom-slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background-color: white;
+    border: 4px solid #03CDAA;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* input[type="range"].custom-slider::-moz-range-track {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+  } */
+  
