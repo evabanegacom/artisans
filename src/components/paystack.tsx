@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
-
+import { Button } from './ui/button';
 interface PaystackPayButtonProps {
   email: string;
   amount: number;
@@ -104,12 +104,12 @@ const PaystackPayButton = forwardRef((props: PaystackPayButtonProps, ref) => {
   }));
 
   return (
-    <button
+    <Button
       className={className}
       onClick={buttonTrigger} // Call the buttonTrigger function when the button is clicked
     >
       {text}
-    </button>
+    </Button>
   );
 });
 

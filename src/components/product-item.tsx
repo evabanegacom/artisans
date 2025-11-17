@@ -1,126 +1,169 @@
+// components/product-item.tsx
 import { useSelector } from 'react-redux';
 import { HiOutlineTrash } from "react-icons/hi2";
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ProductService from '../services/product-service';
 import { useNavigate } from 'react-router-dom';
+import PaystackPayButton from '../components/paystack';
+import BuyerInfoModal from '../components/buyer-info-modal';
 import { formatAsCurrency } from '../constants';
-import './style.css';
-import PaystackPayButton from './paystack';
-import BuyerInfoModal from './buyer-info-modal';
+import { motion } from "framer-motion";
+import { FiShoppingBag, FiStar } from "react-icons/fi";
 
 interface Props {
   product: any;
-  getProducts?: any;
+  getProducts?: () => void;
 }
 
-const ProductItem = ({ product, getProducts }: Props) => {
+const ProductItem: React.FC<Props> = ({ product, getProducts }) => {
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
   const navigate = useNavigate();
-console.log(user)
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [email, setEmail] = useState(user?.email || '');
   const [name, setName] = useState(user?.name || '');
   const [phone, setPhone] = useState(user?.mobile || '');
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isPaymentReady, setPaymentReady] = useState(false); // New state to track when payment should be triggered
-  const paystackButtonRef: any = useRef<{ triggerPayment: () => void } | null>(null);
+  const [isPaymentReady, setPaymentReady] = useState(false);
+  const paystackButtonRef = useRef<{ triggerPayment: () => void } | null>(null);
 
   const deleteProduct = async () => {
     setDeleting(true);
     try {
       await ProductService.deleteProduct(product?.id);
-      getProducts();
+      getProducts?.();
     } catch (err) {
-      console.log(err);
+      console.error(err);
     } finally {
       setConfirmDelete(false);
       setDeleting(false);
     }
   };
 
-  // Function to generate order number
-  const generateOrderNumber = () => {
-    return `ORD-${new Date().getTime()}-${Math.floor(Math.random() * 1000)}`;
-  };
+  const generateOrderNumber = () => `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
   const handleSuccess = (reference: any) => {
     const orderNumber = generateOrderNumber();
-    console.log(`Order Number: ${orderNumber}`);
-    console.log(reference);
     navigate(`/product/${product?.product_number}/success`, {
       state: { orderNumber: reference?.reference || orderNumber },
     });
   };
 
-  const handleClose = () => {
-    console.log('Transaction was not completed, window closed.');
-  };
+  const handleClose = () => console.log('Payment closed');
 
   const handleButtonClick = () => {
     if (user) {
-      paystackButtonRef?.current.triggerPayment();
+      paystackButtonRef.current?.triggerPayment();
     } else {
       setModalOpen(true);
     }
   };
 
-  const handleModalSubmit = (name: string, email: string, phone: string) => {
-    setName(name);
-    setEmail(email);
-    setPhone(phone);
+  const handleModalSubmit = (n: string, e: string, p: string) => {
+    setName(n);
+    setEmail(e);
+    setPhone(p);
     setModalOpen(false);
-    setPaymentReady(true); // Set payment ready state to true
+    setPaymentReady(true);
   };
 
   useEffect(() => {
     if (isPaymentReady) {
-      paystackButtonRef?.current.triggerPayment();
-      setPaymentReady(false); // Reset payment ready state
+      paystackButtonRef.current?.triggerPayment();
+      setPaymentReady(false);
     }
   }, [isPaymentReady]);
 
+  const rating = 4.5; // Replace with real rating later
+
   return (
     <>
-      <div className="product-card product-item rounded-lg overflow-hidden mb-4 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl">
-        <a href={`/product/${product?.product_number}`} className="product-image block relative h-48 overflow-hidden custom-rounded">
+      <motion.article
+        layout
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -8 }}
+        transition={{ type: "spring", stiffness: 300 }}
+        className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100"
+      >
+        {/* Image */}
+        <a href={`/product/${product?.product_number}`} className="block relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
           <img
-            src={product?.pictureOne?.url}
+            src={product?.pictureOne?.url || "/api/placeholder/400/400"}
             alt={product?.name}
             loading="lazy"
-            className="object-cover object-center w-full h-full block transition duration-300 ease-in-out"
-            srcSet={`${product?.pictureOne} 300w, 
-                     ${product?.pictureOne} 768w,
-                     ${product?.pictureOne} 1280w`}
-            sizes="(max-width: 300px) 280px,
-                   (max-width: 768px) 750px,
-                   1280px"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           />
+
+          {/* Delete Button (Owner) */}
+          {user?.id === product?.user_id && window.location.pathname.includes('/store/') && (
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={(e) => {
+                e.preventDefault();
+                setConfirmDelete(true);
+              }}
+              className="absolute top-4 right-4 p-2.5 bg-white/90 backdrop-blur-md rounded-full shadow-lg text-red-600 hover:bg-red-50 z-10 opacity-0 group-hover:opacity-100 transition-all"
+            >
+              <HiOutlineTrash size={18} />
+            </motion.button>
+          )}
+
+          {/* Sale Badge */}
+          {product?.onSale && (
+            <motion.div
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="absolute top-4 left-4 bg-gradient-to-r from-red-600 to-pink-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md"
+            >
+              SALE
+            </motion.div>
+          )}
         </a>
-        <div className="product-details flex flex-col justify-between px-4 py-2">
-          <div className="product-info flex justify-between items-center">
-            <h2 className="product-title title-font text-base font-medium product-name">{product?.name}</h2>
+
+        {/* Content */}
+        <div className="p-5 space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-3 py-1 rounded-full">
+              {product?.sold_by}
+            </span>
           </div>
-          <div className="product-price-actions flex justify-between items-center mt-2 mb-2 flex-wrap">
-            <div className="product-price product-name font-normal text-sm">{formatAsCurrency(product?.price)}</div>
-            <h6 className="product-category text-white text-xs tracking-widest title-font uppercase font-bold rounded-3xl px-2 py-1">{product?.sold_by}</h6>
-            {user?.id === product?.user_id && window.location.pathname.includes('/store/') && (
-              <button type="button" className="product-delete text-red-500 hover:text-red-700 cursor-pointer focus:outline-none" onClick={() => setConfirmDelete(true)}>
-                <HiOutlineTrash size={20} />
-              </button>
+
+          <h3 className="font-bold text-lg text-gray-900 line-clamp-2 group-hover:text-red-950 transition-colors">
+            <a href={`/product/${product?.product_number}`} className="after:absolute after:inset-0">
+              {product?.name}
+            </a>
+          </h3>
+
+          {/* Rating */}
+          <div className="flex items-center gap-1">
+            {[...Array(5)].map((_, i) => (
+              <FiStar
+                key={i}
+                size={16}
+                className={i < Math.floor(rating) ? "text-yellow-500 fill-current" : "text-gray-300"}
+              />
+            ))}
+            <span className="ml-1 text-xs text-gray-600">({rating})</span>
+          </div>
+
+          {/* Price */}
+          <div className="flex items-center justify-between">
+            <p className="text-2xl font-bold text-red-950">
+              {formatAsCurrency(product?.price)}
+            </p>
+            {product?.original_price && (
+              <span className="text-sm text-gray-500 line-through">
+                {formatAsCurrency(product.original_price)}
+              </span>
             )}
           </div>
 
-          {/* <button
-            onClick={handleButtonClick}
-            className="button-bg rounded-2xl text-white font-bold text-xs py-1"
-          >
-            Buy Now
-          </button> */}
-
+          {/* Buy Button */}
           <PaystackPayButton
             email={email}
-            amount={product?.price * 100} // Convert to kobo
+            amount={product?.price * 100}
             publicKey="pk_test_2c676d6b01cea0704354f1a486590a28da55a341"
             productId={product?.id}
             phone={phone}
@@ -132,29 +175,58 @@ console.log(user)
             onSuccess={handleSuccess}
             onClose={handleClose}
             ref={paystackButtonRef}
-            text='Buy now'
             name={name}
             buttonTrigger={handleButtonClick}
-            className="button-bg rounded-2xl text-white font-bold text-xs py-1"
+            text={
+              <span className="flex items-center justify-center gap-2 font-bold">
+                <FiShoppingBag size={18} />
+                Buy Now
+              </span> as any
+            }
+            className="w-full bg-gradient-to-r from-red-950 to-red-800 text-white py-3 rounded-xl shadow-md hover:shadow-xl transform hover:scale-105 transition-all duration-300"
           />
         </div>
-      </div>
 
-      {user?.id === product?.user_id && confirmDelete && (
-        <div className="modal-overlay bg-gray-900 opacity-75 fixed inset-0 z-50 flex items-center justify-center">
-          <div className="modal-content bg-white rounded-lg shadow-lg px-8 py-6 text-gray-700">
-            <div className="modal-message text-lg font-medium">Are you sure you want to delete "{product?.name}" from your store?</div>
-            <div className="modal-actions flex justify-between mt-4">
-              <button className="modal-confirm bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700 transition duration-300" type="button" onClick={deleteProduct}>
-                {deleting ? <span className="spinner" /> : 'Delete'}
+        {/* Glass Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-2xl"></div>
+      </motion.article>
+
+      {/* Delete Modal */}
+      {confirmDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
+          >
+            <h2 className="text-xl font-bold text-gray-900">Delete Product?</h2>
+            <p className="mt-2 text-sm text-gray-600">
+              Are you sure you want to delete <strong>“{product?.name}”</strong>? This cannot be undone.
+            </p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => setConfirmDelete(false)}
+                className="rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
+              >
+                Cancel
               </button>
-              <button className="modal-cancel bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition duration-300" onClick={() => setConfirmDelete(false)}>Cancel</button>
+              <button
+                onClick={deleteProduct}
+                disabled={deleting}
+                className="rounded-xl bg-red-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50 transition"
+              >
+                {deleting ? 'Deleting...' : 'Delete'}
+              </button>
             </div>
-          </div>
+          </motion.div>
         </div>
       )}
 
-      <BuyerInfoModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} onSubmit={handleModalSubmit} />
+      <BuyerInfoModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleModalSubmit}
+      />
     </>
   );
 };
