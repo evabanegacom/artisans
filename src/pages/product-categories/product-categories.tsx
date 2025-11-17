@@ -81,14 +81,15 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ category }) => {
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900">{category?.title}</h2>
           <div className="mt-3 h-1 w-24 bg-gradient-to-r from-red-600 to-red-900 mx-auto rounded-full"></div>
-          <p className="mt-3 text-lg text-gray-600">Discover premium picks curated just for you.</p>
+          <p className="mt-3 text-lg text-gray-600">{category?.description}</p>
         </motion.div>
 
+        { products.length > 5 && (
         <div className="flex justify-end mb-6">
           <a href={`/products/${category?.name}`} className="group inline-flex items-center text-red-950 font-semibold hover:text-red-700">
             View All <FiArrowRight className="ml-2 group-hover:translate-x-1 transition" />
           </a>
-        </div>
+        </div>)}
 
         {loading ? (
           <div className="flex justify-center py-20"><Loader /></div>

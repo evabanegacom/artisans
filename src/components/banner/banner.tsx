@@ -27,7 +27,7 @@ const banners: Banner[] = [
     title: "Artisanal Home Decor",
     description: "Elevate your space with handcrafted luxury pieces made with passion.",
     cta: "Shop Decor",
-    ctaLink: "/category/home-decor",
+    ctaLink: "/products/Printables",
     overlayColor: "from-black/70",
   },
   {
@@ -37,7 +37,7 @@ const banners: Banner[] = [
     title: "Handcrafted Artworks",
     description: "Unique pieces from global artisans — art that tells a story.",
     cta: "Explore Art",
-    ctaLink: "/category/artworks",
+    ctaLink: "/products/DigitalArt",
     overlayColor: "from-slate-900/70",
   },
   {
@@ -47,7 +47,7 @@ const banners: Banner[] = [
     title: "Handmade Jewelry",
     description: "Timeless elegance. Each piece crafted with love and precision.",
     cta: "View Collection",
-    ctaLink: "/category/jewelry",
+    ctaLink: "/products/HandCrafted",
     overlayColor: "from-indigo-900/70",
   },
   {
@@ -57,7 +57,7 @@ const banners: Banner[] = [
     title: "Digital Masterpieces",
     description: "Modern art meets technology. Own a piece of the future.",
     cta: "Browse Digital",
-    ctaLink: "/category/digital-art",
+    ctaLink: "/products/TechStartups",
     overlayColor: "from-purple-900/70",
   },
   {

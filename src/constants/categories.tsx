@@ -6,7 +6,8 @@ const categories = [
     id: 1,
     name: 'TechStartups',
     title: 'Tech Startups',
-    icon: <FaRocket />
+    icon: <FaRocket />,
+    description: 'Resources and tools for launching and growing technology startups.'
   },
 
   {
@@ -14,6 +15,7 @@ const categories = [
     name: 'Printables',
     title: 'Printables',
     icon: <FaGlobe />,
+    description: 'Printable resources and materials for various needs.'
   },
 
   {
@@ -21,13 +23,15 @@ const categories = [
     name: 'Templates',
     title: 'Templates',
     icon: <FaFile />,
+    description: 'Pre-designed templates for various projects and purposes.'
   },
 
   {
     id: 4,
     name: 'ProductDesign',
     title: 'Product Design',
-    icon: <CgWebsite />
+    icon: <CgWebsite />,
+    description: 'Design resources and tools for creating digital products.'
   },
 
   {
@@ -35,6 +39,7 @@ const categories = [
     name: 'E-books',
     title: 'E-books',
     icon: <FaBook />,
+    description: 'A wide range of electronic books across various genres and topics.'
   },
 
   {
@@ -42,6 +47,7 @@ const categories = [
     name: 'Themes',
     title: 'Themes',
     icon: <FaPaintBrush />,
+    description: 'Themes and design resources for websites and applications.'
   },
 
  
@@ -50,6 +56,7 @@ const categories = [
     name: 'DigitalArt',
     title: 'Digital Art',
     icon: <FaPalette />,
+    description: 'Digital artwork and illustrations for various uses.'
   },
   {
     id: 8,
@@ -63,6 +70,7 @@ const categories = [
     name: 'Plugins',
     title: 'Plugins',
     icon: <FaPlug />,
+    description: 'Plugins and extensions to enhance software functionality.'
   },
   
   
@@ -77,6 +85,7 @@ const categories = [
     name: 'HandCrafted',
     title: 'Hand Crafted',
     icon: <FaHandsHelping />,
+    description: 'Unique hand-crafted digital products and resources.'
   },
   // {
   //   id: 10,

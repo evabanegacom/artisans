@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 
 const baseURL = import.meta.env.VITE_BASE_URL || 'https://artisans.fly.dev/api/v1';
-export const api: AxiosInstance = axios.create({
+export const api: any = axios.create({
   baseURL: baseURL,
 });
 
@@ -9,7 +9,7 @@ const token = localStorage.getItem('user');
 
 // Request interceptor
 api.interceptors.request.use(
-  (config): InternalAxiosRequestConfig => {
+  (config): any => {
     // Modify the config as needed (e.g., add headers, authentication tokens, etc.)
     config.headers = config.headers || {
       Accept: "application/json",

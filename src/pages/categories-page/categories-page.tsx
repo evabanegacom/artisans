@@ -59,7 +59,7 @@ const CategoriesPage = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
-        <div className="relative z-10 container mx-auto px-4">
+        <div className="relative container mx-auto px-4">
           <motion.div
             initial={{ scale: 0.8, y: -50 }}
             animate={{ scale: 1, y: 0 }}
@@ -100,7 +100,7 @@ const CategoriesPage = () => {
       </motion.section>
 
       {/* ===== PRODUCT GRID ===== */}
-      <section className="relative z-10 container mx-auto px-4 pb-20">
+      <section className="relative container mx-auto px-4 pb-20">
         {products?.products?.length > 0 ? (
           <motion.div
             initial={{ opacity: 0 }}

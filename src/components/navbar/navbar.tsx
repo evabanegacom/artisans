@@ -17,6 +17,7 @@ import {
   FiChevronDown,
   FiShoppingBag,
 } from "react-icons/fi";
+import { getInitials } from "@/lib/utils";
 
 const Navbar = () => {
   /* ------------------------------------------------------------------ */
@@ -137,6 +138,16 @@ const findProducts = (e: React.FormEvent) => {
             </a>
           </div>
 
+          <button 
+          onClick={() => setProfileOpen(!profileOpen)}  
+          className="lg:hidden">
+           <img
+                    src={user?.url || "https://i.pravatar.cc/80"}
+                    alt={user?.name}
+                    className="h-8 w-8 rounded-full object-cover"
+                  />
+          </button>
+
           {/* ───── CENTER (DESKTOP) ───── */}
           <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-center space-x-6">
             {/* Primary actions */}
@@ -241,7 +252,7 @@ const findProducts = (e: React.FormEvent) => {
                     alt={user?.name}
                     className="h-8 w-8 rounded-full object-cover"
                   />
-                  <span>{user?.name}</span>
+                  <span className="font-semibold">{getInitials(user?.name)}</span>
                   <FiChevronDown className="h-4 w-4" />
                 </button>
               ) : (
