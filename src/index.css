@@ -1,4 +1,4 @@
-@import url("htxtps://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -77,5 +77,155 @@ a {
   border-top-right-radius: 0.5rem;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
+}
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 210 20% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 20% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 20% 15%;
+
+    --primary: 200 85% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 15% 95%;
+    --secondary-foreground: 210 20% 15%;
+
+    --muted: 210 15% 96%;
+    --muted-foreground: 210 12% 50%;
+
+    --accent: 15 85% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 15% 88%;
+    --input: 210 15% 88%;
+    --ring: 200 85% 45%;
+
+    --radius: 0.75rem;
+
+    /* E-commerce specific tokens */
+    --product-card-bg: 0 0% 100%;
+    --product-card-hover-shadow: 210 20% 80%;
+    --price-color: 210 20% 15%;
+    --badge-bg: 200 85% 45%;
+    --badge-text: 0 0% 100%;
+    --success-bg: 142 71% 45%;
+    --success-text: 0 0% 100%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(200 85% 45%) 0%, hsl(200 75% 55%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(15 85% 60%) 0%, hsl(15 75% 70%) 100%);
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(210 20% 15% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(210 20% 15% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(210 20% 15% / 0.1);
+    --shadow-hover: 0 20px 25px -5px hsl(210 20% 15% / 0.15);
+    
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 210 25% 8%;
+    --foreground: 210 10% 95%;
+
+    --card: 210 20% 12%;
+    --card-foreground: 210 10% 95%;
+
+    --popover: 210 20% 12%;
+    --popover-foreground: 210 10% 95%;
+
+    --primary: 200 85% 55%;
+    --primary-foreground: 210 25% 8%;
+
+    --secondary: 210 15% 18%;
+    --secondary-foreground: 210 10% 95%;
+
+    --muted: 210 15% 15%;
+    --muted-foreground: 210 10% 65%;
+
+    --accent: 15 85% 65%;
+    --accent-foreground: 210 25% 8%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 15% 20%;
+    --input: 210 15% 20%;
+    --ring: 200 85% 55%;
+
+    --product-card-bg: 210 20% 12%;
+    --product-card-hover-shadow: 210 20% 5%;
+    --price-color: 210 10% 95%;
+    --badge-bg: 200 85% 55%;
+    --badge-text: 210 25% 8%;
+    --success-bg: 142 71% 45%;
+    --success-text: 0 0% 100%;
+    
+    --gradient-primary: linear-gradient(135deg, hsl(200 85% 55%) 0%, hsl(200 75% 65%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(15 85% 65%) 0%, hsl(15 75% 75%) 100%);
+    
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.3);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.4);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.5);
+    --shadow-hover: 0 20px 25px -5px hsl(0 0% 0% / 0.6);
+    
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+}
+
+@layer utilities {
+  .product-card-shadow {
+    box-shadow: var(--shadow-md);
+  }
+  
+  .product-card-hover-shadow {
+    box-shadow: var(--shadow-hover);
+  }
+  
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+  
+  .gradient-accent {
+    background: var(--gradient-accent);
+  }
 }
 

@@ -1,266 +1,312 @@
-import React, { useState, useEffect } from 'react';
-import './Details.css';
-import ProductService from '../../services/product-service';
-import Colors from './Colors';
-import DetailsThumb from './DetailsThumb';
-import { AiOutlineWhatsApp } from 'react-icons/ai';
-import { FiPhone } from 'react-icons/fi';
-import { useParams } from 'react-router-dom';
-import { formatAsCurrency } from '../../constants';
-import { FaEdit } from 'react-icons/fa';
-import { useSelector } from 'react-redux';
-import { HiOutlineTrash } from 'react-icons/hi2';
-import { useNavigate } from 'react-router-dom';
-import ProductCategories from '../product-categories/product-categories';
-import ProductItem from '../../components/product-item';
-import Spinner from '../../constants/spinner';
-import Preview from '../../components/print-on-demand/preview';
-
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: string;
-  category: string;
-  pictureOne: { url: string };
-  pictureTwo: { url: string };
-  pictureThree: { url: string };
-  pictureFour: { url: string };
-  sold_by: string;
-  contact_number: string;
-  product_number: string;
-  tags: string[];
-  image_urls: string[];
-  user_id: number;
-}
+import React, { useState, useEffect } from "react";
+import ProductService from "../../services/product-service";
+import { useParams, useNavigate } from "react-router-dom";
+import { formatAsCurrency } from "../../constants";
+import { useSelector } from "react-redux";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiPhone, FiShare2, FiEdit3, FiTrash2, FiEye, FiDownload } from "react-icons/fi";
+import { FaWhatsapp, FaStore, FaStar } from "react-icons/fa";
+import { AiOutlineCopy } from "react-icons/ai";
+import Spinner from "../../constants/spinner";
+import Preview from "../../components/print-on-demand/preview";
+import ProductItem from "../../components/product-item";
+import { FacebookShareButton, TwitterShareButton, WhatsappShareButton, FacebookIcon, TwitterIcon, WhatsappIcon } from "react-share";
 
 const ProductView = () => {
   const { id } = useParams();
-  const [ loading, setLoading ] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const navigate = useNavigate();
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
-  const [productDetails, setProductDetails] = useState<Product>();
+  const [productDetails, setProductDetails] = useState<any>(null);
+  const [similarProducts, setSimilarProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
+  const [activeImg, setActiveImg] = useState(0);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [ similarProducts, setSimilarProducts ] = useState([]);
-  const navigate = useNavigate();
+  const [showShare, setShowShare] = useState(false);
+
+  const shareUrl = window.location.href;
+  const title = productDetails?.name || "Check out this amazing artwork!";
+
+  const getProduct = async () => {
+    setLoading(true);
+    try {
+      const res = await ProductService.getProduct(id as string);
+      setProductDetails(res?.data);
+      getSimilarProducts(res?.data?.category);
+      setActiveImg(0);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getSimilarProducts = async (category: string) => {
+    try {
+      const res = await ProductService.getProductsByCategory(category, 1);
+      setSimilarProducts(res.data?.products?.filter((p: any) => p.id !== Number(id)).slice(0, 8) || []);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const deleteProduct = async () => {
     setDeleting(true);
     try {
-      const removeProduct = await ProductService.deleteProduct(productDetails?.id as any);
+      await ProductService.deleteProduct(productDetails?.id);
+      navigate("/");
     } catch (err) {
-      console.log(err);
+      console.error(err);
     } finally {
-      setConfirmDelete(false);
       setDeleting(false);
-    }
-  }
-  const products = [
-    {
-      "id": "1",
-      "title": "Nike Shoes",
-      "src": productDetails?.image_urls || [],
-      "description": "UI/UX designing, html css tutorials",
-      "content": " Browse through our selection of items and find what you need. If you have any questions\
-    or wish to purchase an item, feel free to contact the owner directly.",
-      "price": 23,
-      "colors": ["red", "black", "crimson", "teal"],
-      "count": 1
-    }
-  ]
-
-  const [product, setProduct] = useState({
-    item: products,
-    index: 0
-  })
-
-  const myRef: any = React.createRef();
-
-  const handleTab = (index: number) => {
-    setProduct({
-      ...product,
-      index: index
-    });
-
-    const images = myRef?.current?.children;
-    if (productDetails && productDetails?.image_urls?.length > 0) {
-      for (let i = 0; i < images.length; i++) {
-        images[i].className = images[i].className.replace("active", "");
-      }
-      images[index].className = "active";
+      setConfirmDelete(false);
     }
   };
 
-  const generateRandomColors = () => {
-    const colors = [
-      'red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink',
-      'cyan', 'magenta', 'teal', 'lime', 'brown', 'indigo', 'gray', 'black', 'white'
-    ];
-    const randomColors: string[] = [];
-    while (randomColors.length < 4) {
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      if (!randomColors.includes(color)) {
-        randomColors.push(color);
-      }
-    }
-    return randomColors;
+  const copyNumber = () => {
+    navigator.clipboard.writeText(productDetails?.contact_number);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   useEffect(() => {
-    setLoading(true);
-    const getProductDetails = async () => {
-      try {
-        const response = await ProductService.getProduct(id as string);
-        console.log(response)
-        products[0].src = response?.data.image_urls;
-        products[0].description = response?.data.description;
-        products[0].title = response?.data?.name;
-        products[0].price = response?.data?.price;
-        products[0].count = response?.data?.quantity;
-        products[0].colors = generateRandomColors();
-        setProductDetails(response?.data);
-        getSimilarProducts(response?.data?.category);
-      } catch (error) {
-        console.error(error)
-      }finally {
-        setLoading(false);
-      }
-    }
-    getProductDetails()
-    if (productDetails && productDetails?.image_urls.length > 0) {
-      const images = myRef.current.children;
-      for (let i = 0; i < images.length; i++) {
-        images[i].className = i === product?.index ? "active" : "";
-      }
-    }
-  }, [productDetails?.image_urls?.length, product?.index])
+    getProduct();
+  }, [id]);
 
+  if (loading) return <Spinner />;
 
-  const handleCopyAndWhatsApp = () => {
-    if (!productDetails?.contact_number) return;
-
-    // Copy the contact number to the clipboard
-    navigator.clipboard.writeText(productDetails?.contact_number);
-    setCopied(true);
-
-    // Open WhatsApp link in a new tab
-    window.open(`https://wa.me/${productDetails?.contact_number}`, '_blank');
-
-    // Reset copied feedback after 3 seconds
-    setTimeout(() => setCopied(false), 3000);
-  };
-
-  const handleCopyPhoneNumber = () => {
-    if (!productDetails?.contact_number) return;
-
-    // Copy the contact number to the clipboard
-    navigator.clipboard.writeText(productDetails?.contact_number);
-    setCopied(true);
-
-    // Reset copied feedback after 3 seconds
-    setTimeout(() => setCopied(false), 3000);
-  };
-
-  const getSimilarProducts = async (productCategory: string) => {
-    try {
-      const response = await ProductService.getProductsByCategory(productCategory, 1);
-      setSimilarProducts(response.data?.products.slice(0, 4));
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
+  if (!productDetails) return <div className="text-center py-20 text-2xl">Product not found</div>;
 
   return (
     <>
-    {loading && <Spinner /> }
-    <div className="app">
-      {
-        productDetails && productDetails?.image_urls?.length > 0 && product.item?.map((item: any) => (
-          <div className="details" key={item?.id}>
-            <div className="big-img">
-              <img src={item.src[product?.index]} alt="" />
-            </div>
+      {/* ===== BREADCRUMB ===== */}
+      <div className="bg-gray-100 py-4 border-b">
+        <div className="container mx-auto px-4 text-sm breadcrumbs">
+          <a href="/" className="text-gray-600 hover:text-red-950">Home</a> →{" "}
+          <a href={`/products/${productDetails.category}`} className="text-gray-600 hover:text-red-950">
+            {productDetails.category}
+          </a>{" "}
+          → <span className="text-red-950 font-medium">{productDetails.name}</span>
+        </div>
+      </div>
 
-            <div className="box">
-              <div className="row">
-                <h2><b>{item?.title}</b></h2>
-                <span>{formatAsCurrency(item?.price)}</span>
-              </div>
-              <Colors colors={item.colors} />
-              <p>Sold by: {" "} {productDetails?.sold_by}</p>
-              {/* <p>{item?.content}</p> */}
-              <p>Category: {" "}{productDetails?.category}</p>
-              <p>Description: {" "}{item?.description}</p>
-              <div>
-                <div className='font-bold'>Tags</div>
-                <ul>
-                  {productDetails?.tags.map(tag => (
-                    <li key={tag}>{tag}</li>
-                  ))}
-                </ul>
-              </div>
-              <DetailsThumb images={item?.src} tab={handleTab} myRef={myRef} />
-              <div className='flex justify-between mt-2 gap-3'>
-                <button onClick={handleCopyPhoneNumber} className="cart flex items-center text-sm"><FiPhone className="mr-2" /> {productDetails?.contact_number}</button>
-                <button
-                  className="cart flex items-center text-sm"
-                  onClick={handleCopyAndWhatsApp}
+      <div className="container mx-auto px-4 py-8 lg:py-16">
+        <div className="grid lg:grid-cols-2 gap-10">
+          {/* ===== IMAGE GALLERY ===== */}
+          <div className="space-y-4">
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              className="relative overflow-hidden rounded-2xl shadow-2xl bg-white"
+            >
+              <img
+                src={productDetails.image_urls?.[activeImg] || "/placeholder.jpg"}
+                alt={productDetails.name}
+                className="w-full h-96 md:h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition" />
+            </motion.div>
+
+            {/* Thumbnails */}
+            <div className="grid grid-cols-5 gap-3">
+              {productDetails.image_urls?.map((img: string, i: number) => (
+                <motion.button
+                  key={i}
+                  whileHover={{ scale: 1.1 }}
+                  onClick={() => setActiveImg(i)}
+                  className={`rounded-xl overflow-hidden border-4 ${activeImg === i ? "border-red-950" : "border-transparent"}`}
                 >
-                  <AiOutlineWhatsApp className="mr-2" color='#25d366' /> {productDetails?.contact_number}
-                </button>
-              </div>
-              <a className='bg-lime-950 text-white p-3 rounded align-center mt-3' href={`/store/${productDetails?.sold_by}`} style={{ display: 'grid', placeItems: 'center' }}>Visit store</a>
-              {copied && <p className="text-green-500 text-sm">Contact number copied to clipboard</p>}
-              {user?.id === productDetails?.user_id && (
-                <div className='flex justify-between mt-3'>
-                <button type="button" className="product-delete text-red-500 hover:text-red-700 cursor-pointer focus:outline-none" onClick={() => setConfirmDelete(true)}>
-                  <HiOutlineTrash size={20} />
-                </button>
-
-                <a href={`/edit-product/${productDetails?.product_number}`} className="product-delete text-blue-500 hover:text-blue-700 cursor-pointer focus:outline-none">
-                  <FaEdit size={20} />
-                </a>
-                </div>
-              )}
+                  <img src={img} alt="" className="w-full h-24 object-cover" />
+                </motion.button>
+              ))}
             </div>
+          </div>
 
-            {user?.id === productDetails?.user_id && confirmDelete && (
-              <div className="modal-overlay bg-gray-900 opacity-75 fixed inset-0 z-50 flex items-center justify-center">
-                <div className="modal-content bg-white rounded-lg shadow-lg px-8 py-6 text-gray-700">
-                  <div className="modal-message text-lg font-medium">Are you sure you want to delete "{productDetails?.name}" from your store?</div>
-                  <div className="modal-actions flex justify-between mt-4">
-                    <button className="modal-confirm bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700 transition duration-300" type="button" onClick={deleteProduct}>
-                      {deleting ? <span className="spinner" /> : 'Delete'}
-                    </button>
-                    <button className="modal-cancel bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 transition duration-300" onClick={() => setConfirmDelete(false)}>Cancel</button>
+          {/* ===== PRODUCT DETAILS ===== */}
+          <div className="space-y-6">
+            <div className="bg-white/80 backdrop-blur-lg rounded-3xl p-8 shadow-2xl border border-white/30">
+              <h1 className="text-4xl font-bold text-gray-900 mb-3">{productDetails.name}</h1>
+
+              <div className="flex items-center gap-4 mb-6">
+                <span className="text-4xl font-bold text-red-950">{formatAsCurrency(productDetails.price)}</span>
+                <div className="flex text-yellow-500">
+                  {[...Array(5)].map((_, i) => (
+                    <FaStar key={i} />
+                  ))}
+                </div>
+              </div>
+
+              <p className="text-gray-700 leading-relaxed mb-6">{productDetails.description}</p>
+
+              {/* Tags */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                {productDetails.tags?.map((tag: string) => (
+                  <span key={tag} className="px-4 py-2 bg-gradient-to-r from-red-950 to-red-800 text-white text-sm rounded-full">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              {/* Owner Card */}
+              <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-2xl p-5 mb-6">
+                <div className="flex items-center gap-4">
+                  <img
+                    src={productDetails.user?.avatar?.url || "https://i.pravatar.cc/80"}
+                    alt={productDetails.sold_by}
+                    className="w-16 h-16 rounded-full ring-4 ring-white shadow-lg"
+                  />
+                  <div>
+                    <p className="font-semibold text-lg">{productDetails.sold_by}</p>
+                    <a href={`/store/${productDetails.sold_by}`} className="text-red-950 hover:underline flex items-center gap-1">
+                      <FaStore /> Visit Store
+                    </a>
                   </div>
                 </div>
               </div>
-            )}
+
+              {/* Action Buttons */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={copyNumber}
+                  className="flex items-center justify-center gap-3 px-6 py-4 bg-blue-600 text-white rounded-xl shadow-lg hover:shadow-xl"
+                >
+                  <FiPhone /> Call {productDetails.contact_number}
+                  {copied && <AiOutlineCopy className="text-green-400" />}
+                </motion.button>
+
+                <motion.a
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  href={`https://wa.me/${productDetails.contact_number}`}
+                  target="_blank"
+                  className="flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl shadow-lg hover:shadow-xl"
+                >
+                  <FaWhatsapp size={24} /> Chat on WhatsApp
+                </motion.a>
+              </div>
+
+              {/* Share & Owner Actions */}
+              <div className="flex justify-between items-center mt-6 pt-6 border-t">
+                <button
+                  onClick={() => setShowShare(!showShare)}
+                  className="flex items-center gap-2 text-gray-600 hover:text-red-950"
+                >
+                  <FiShare2 /> Share
+                </button>
+
+                {user?.id === productDetails.user_id && (
+                  <div className="flex gap-4">
+                    <a href={`/edit-product/${productDetails.product_number}`} className="text-blue-600 hover:text-blue-800">
+                      <FiEdit3 size={22} />
+                    </a>
+                    <button onClick={() => setConfirmDelete(true)} className="text-red-600 hover:text-red-800">
+                      <FiTrash2 size={22} />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Share Buttons */}
+              <AnimatePresence>
+                {showShare && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="flex gap-3 mt-4"
+                  >
+                    <FacebookShareButton url={shareUrl}>
+                      <FacebookIcon size={40} round />
+                    </FacebookShareButton>
+                    <TwitterShareButton url={shareUrl} title={title}>
+                      <TwitterIcon size={40} round />
+                    </TwitterShareButton>
+                    <WhatsappShareButton url={shareUrl} title={title}>
+                      <WhatsappIcon size={40} round />
+                    </WhatsappShareButton>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
-        ))
-      }
+        </div>
 
-      {productDetails?.category==='Printables' || productDetails?.category==='Photography' ? <Preview preferred={productDetails?.image_urls[0]} fill={false} /> : null}
-  <div className='font-medium product-name text-2xl sm:text-xl md:text-3xl'>Explore Similar Products</div>
-      <div className="flex flex-col mt-3">
-<div className=" grid grid-cols-2 md:grid-cols-4 gap-4">
+        {/* ===== PRINTABLES / PHOTOGRAPHY PREVIEW ===== */}
+        {(productDetails.category === "Printables" || productDetails.category === "Photography") && (
+          <div className="mt-16">
+            <Preview preferred={productDetails.image_urls[0]} fill={false} />
+          </div>
+        )}
 
-  {similarProducts.map((product: any) => (
-    // <a href='#' key={product?.id} className="inline-block px-2">
-    <ProductItem product={product} key={product?.id} />
-  ))}
-  {/* </Slider> */}
-</div>
-<button onClick={() => navigate(`/products/${productDetails?.category}`)} className="py-3 text-center mx-auto button-bg text-white font-semibold text-base rounded-lg w-1/3 mt-3">Explore More</button>
-</div>
-    </div>
+        {/* ===== SIMILAR PRODUCTS ===== */}
+        {similarProducts.length > 0 && (
+          <section className="mt-20">
+            <h2 className="text-3xl font-bold text-center mb-10 text-gray-900">You May Also Like</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+              {similarProducts.map((p) => (
+                <motion.div
+                  key={p.id}
+                  whileHover={{ y: -8, scale: 1.03 }}
+                  transition={{ type: "spring" }}
+                >
+                  <ProductItem product={p} />
+                </motion.div>
+              ))}
+            </div>
+            <div className="text-center mt-10">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                onClick={() => navigate(`/products/${productDetails.category}`)}
+                className="px-10 py-4 bg-gradient-to-r from-red-950 to-red-800 text-white font-bold rounded-full shadow-xl hover:shadow-2xl"
+              >
+                Explore All {productDetails.category}
+              </motion.button>
+            </div>
+          </section>
+        )}
+      </div>
+
+      {/* ===== DELETE CONFIRMATION MODAL ===== */}
+      <AnimatePresence>
+        {confirmDelete && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl"
+            >
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Delete Product?</h3>
+              <p className="text-gray-600 mb-8">
+                Are you sure you want to delete <strong>"{productDetails.name}"</strong>? This action cannot be undone.
+              </p>
+              <div className="flex gap-4">
+                <button
+                  onClick={deleteProduct}
+                  disabled={deleting}
+                  className="flex-1 py-4 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 disabled:opacity-70"
+                >
+                  {deleting ? "Deleting..." : "Yes, Delete"}
+                </button>
+                <button
+                  onClick={() => setConfirmDelete(false)}
+                  className="flex-1 py-4 bg-gray-200 text-gray-800 rounded-xl font-bold hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
-    
   );
-}
+};
 
 export default ProductView;

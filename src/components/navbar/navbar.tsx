@@ -1,244 +1,453 @@
+/*  components/Navbar.tsx  */
 import { useNavigate } from "react-router-dom";
-// import LogoSvg from "../../logo-svg";
-import logo from '../../assets/logo.svg';
-import { useState } from "react";
+import logo from "../../assets/logo.svg";
+import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setSearchTerm } from "../../redux/actions";
-import { searchProducts } from "../../redux/actions";
+import { setSearchTerm, searchProducts } from "../../redux/actions";
 import { logout } from "../../constants";
 import categories from "../../constants/categories";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  FiMenu,
+  FiX,
+  FiSearch,
+  FiUser,
+  FiLogOut,
+  FiHelpCircle,
+  FiChevronDown,
+  FiShoppingBag,
+} from "react-icons/fi";
+import { getInitials } from "@/lib/utils";
 
 const Navbar = () => {
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const isLoggedin = useSelector((state: any) => state?.reducer?.auth?.isAuth);
-  const user = useSelector((state: any) => state?.reducer?.auth?.user);
-  const [showOptions, setShowOptions] = useState<boolean>(false);
-  const searchState = useSelector((state: any) => state?.reducer?.search)
-  const { searchTerm } = searchState;
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const pageNumber = useSelector((state: any) => state?.reducer?.search?.pageNumber);
+  /* ------------------------------------------------------------------ */
+  /*   STATE & SELECTORS                                                */
+  /* ------------------------------------------------------------------ */
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [sticky, setSticky] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const isLoggedin = useSelector((s: any) => s?.reducer?.auth?.isAuth);
+  const user = useSelector((s: any) => s?.reducer?.auth?.user);
+  const { searchTerm } = useSelector((s: any) => s?.reducer?.search);
+  const pageNumber = useSelector((s: any) => s?.reducer?.search?.pageNumber);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
+const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm || "");
+  const profileRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const navigateToCategory = (category: string) => {
-    setSelectedCategory(category);
-    navigate(`/products/${category}`);
-  }
+  useEffect(() => {
+  setLocalSearchTerm(searchTerm || "");
+}, [searchTerm]);
 
-  const handleSearch = (event: any) => {
-    dispatch(setSearchTerm(event.target.value));
+  /* ------------------------------------------------------------------ */
+  /*   HELPERS                                                          */
+  /* ------------------------------------------------------------------ */
+  const navigateToCategory = (cat: string) => {
+    setSelectedCategory(cat);
+    navigate(`/products/${cat}`);
   };
 
-  const findProducts = (e: any) => {
-    e.preventDefault();
-    console.log('searching for products');
-    dispatch(searchProducts(searchTerm, pageNumber) as any)
-  };
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const value = e.target.value;
+  setLocalSearchTerm(value);        // Update local input
+  dispatch(setSearchTerm(value));   // Update Redux
+};
 
-  const amazonLink = 'https://www.amazon.com?&linkCode=ll2&tag=evabanega-20&linkId=e69b5062aba095bdea7257c6930ddc9c&language=en_US&ref_=as_li_ss_tl';
+const findProducts = (e: React.FormEvent) => {
+  e.preventDefault();
+  const term = localSearchTerm.trim();
+  if (!term) return;
+
+  dispatch(setSearchTerm(term));
+  
+  // Navigate immediately
+  navigate(`/search-results?q=${encodeURIComponent(term)}`);
+  
+  // Then trigger search
+  dispatch(searchProducts(term, 1) as any);
+};
+
+  /* ------------------------------------------------------------------ */
+  /*   CLOSE DROPDOWNS ON OUTSIDE CLICK                                 */
+  /* ------------------------------------------------------------------ */
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  /* ------------------------------------------------------------------ */
+  /*   STICKY NAVBAR                                                    */
+  /* ------------------------------------------------------------------ */
+  useEffect(() => {
+    const onScroll = () => setSticky(window.scrollY > 50);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  /* ------------------------------------------------------------------ */
+  /*   FOCUS SEARCH INPUT WHEN OPENED                                   */
+  /* ------------------------------------------------------------------ */
+  useEffect(() => {
+    if (searchOpen && searchInputRef.current) searchInputRef.current.focus();
+  }, [searchOpen]);
+
+  /* ------------------------------------------------------------------ */
+  /*   RENDER                                                           */
+  /* ------------------------------------------------------------------ */
   return (
-    <nav className="bg-gray-800 py-2">
-      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-        <div className="relative flex h-16 items-center justify-between">
-          <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-            <button onClick={() => setIsExpanded(!isExpanded)} type="button" className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
-              <span className="absolute -inset-0.5"></span>
+    <nav
+      className={`relative transition-all duration-300 z-10 ${
+        sticky ? "sticky top-0 z-40 shadow-xl" : ""
+      } bg-gradient-to-b from-gray-900 to-gray-800`}
+    >
+      {/* Glass backdrop */}
+      <div className="absolute inset-0 bg-white/5 backdrop-blur-md pointer-events-none" />
 
-              <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-              </svg>
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
 
-              <svg className="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+          {/* ───── LEFT ───── */}
+          <div className="flex items-center">
+            {/* Mobile toggle */}
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="lg:hidden rounded-lg p-2 text-gray-300 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/30"
+              aria-label="Toggle menu"
+            >
+              {mobileOpen ? <FiX className="h-6 w-6" /> : <FiMenu className="h-6 w-6" />}
             </button>
+
+            {/* Logo */}
+            <a href="/" className="ml-2 lg:ml-0 flex items-center">
+              <motion.img
+                whileHover={{ scale: 1.05 }}
+                src={logo}
+                alt="Logo"
+                className="h-10 w-auto drop-shadow-md"
+              />
+            </a>
           </div>
-          <div className="flex flex-1 items-center justify-center sm:justify-start">
-            {/* <a href='/'><LogoSvg /></a> */}
-            <a href='/'><img src={logo} alt='logo' /></a>
-            {/* <a href={amazonLink} className="">Amazon</a> */}
-            <div className="hidden sm:ml-6 sm:block">
-              <div className="flex space-x-4">
-                <a href={user?.seller ? `/store/${user?.store_name}` : '/seller-signUp'} className="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">{user?.seller ? 'Dashboard' : 'Start selling'}</a>
-                <a href={user?.seller ? `/store/${user?.store_name}` : '/create-product'} className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Add Product</a>
-                {/* <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Categories</a> */}
-                <select
-                onChange={(e) => navigateToCategory(e.target.value)}
-                value={selectedCategory}
-                className="bg-transparent outline-none text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                >
-                  <option value="all">Categories</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.name}>
-                      {category.title}
-                    </option>
+
+          <button 
+          onClick={() => setProfileOpen(!profileOpen)}  
+          className="lg:hidden">
+           <img
+                    src={user?.url || "https://i.pravatar.cc/80"}
+                    alt={user?.name}
+                    className="h-8 w-8 rounded-full object-cover"
+                  />
+          </button>
+
+          {/* ───── CENTER (DESKTOP) ───── */}
+          <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-center space-x-6">
+            {/* Primary actions */}
+            <a
+              href={user?.seller ? `/store/${user?.store_name}` : "/seller-signUp"}
+              className="rounded-lg bg-gradient-to-r from-red-950 to-red-800 px-5 py-2 text-sm font-semibold text-white shadow-md hover:shadow-xl transition"
+            >
+              {user?.seller ? "Dashboard" : "Start selling"}
+            </a>
+
+            <a
+              href={user?.seller ? `/store/${user?.store_name}` : "/create-product"}
+              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-200 hover:bg-white/10 hover:text-white transition"
+            >
+              Add Product
+            </a>
+
+            {/* Mega‑menu for categories */}
+            <div className="relative group">
+              <button className="flex items-center space-x-1 rounded-lg px-4 py-2 text-sm font-medium text-gray-200 hover:bg-white/10 transition">
+                <span>Categories</span>
+                <FiChevronDown className="h-4 w-4" />
+              </button>
+
+              <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
+                <div className="rounded-xl bg-gray-800/95 backdrop-blur-md shadow-2xl ring-1 ring-white/10 p-2">
+                  {categories.map((c) => (
+                    <a
+                      key={c.id}
+                      href={`/products/${c.name}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigateToCategory(c.name);
+                      }}
+                      className="block rounded-lg px-4 py-2 text-sm text-gray-200 hover:bg-white/10 transition"
+                    >
+                      {c.title}
+                    </a>
                   ))}
-                </select>
-                <a href="/support" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Get Help</a>
+                </div>
               </div>
             </div>
-            <form onSubmit={findProducts} className="hidden md:flex md:flex-1 gap-3">
-              <input
-                type="text"
-                className="bg-gray-700 text-white rounded-md px-3 py-2 text-sm font-medium focus:outline-none focus:ring-transparent ring-transparent flex-1"
-                placeholder="Search..."
-                onChange={handleSearch}
-              />
 
-              <button
-                type="submit"
-                className="hidden md:inline-block text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-orange-400 dark:hover:bg-orange-500 dark:focus:ring-orange-600"
-              >
-                Search
-              </button>
-            </form>
+            <a
+              href="/support"
+              className="flex items-center space-x-1 rounded-lg px-4 py-2 text-sm font-medium text-gray-200 hover:bg-white/10 transition"
+            >
+              <FiHelpCircle className="h-4 w-4" />
+              <span>Get Help</span>
+            </a>
           </div>
-          <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            
 
-            <div className="relative ml-3">
-              <div>
-                <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-                  {!isLoggedin ?  <button onClick={() => setShowOptions(!showOptions)} type="button" className="hidden md:inline-block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Get started</button>:
+          {/* ───── RIGHT (DESKTOP) ───── */}
+          <div className="hidden lg:flex items-center space-x-4">
+            {/* Search – icon → expands */}
+            <div className="relative">
+              <button
+                onClick={() => setSearchOpen(!searchOpen)}
+                className="rounded-full p-2 text-gray-300 hover:bg-white/10 transition"
+              >
+                <FiSearch className="h-5 w-5" />
+              </button>
 
-
-                  <button onClick={() => setShowOptions(!showOptions)} type="button" className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
-              <span className="absolute -inset-1.5"></span>
-              <span className="sr-only">Open user menu</span>
-              <img className="h-8 w-8 rounded-full" src={user?.url || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"} alt="" />
-            </button>}
-
-
-                  {!isLoggedin ? <button onClick={() => setShowOptions(!showOptions)} data-collapse-toggle="navbar-sticky" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">
-                    <span className="sr-only">Open main menu</span>
-                    <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h15M1 7h15M1 13h15" />
-                    </svg>
-                  </button>: null}
-                </div>
-              </div>
-
-
-              {showOptions ?
-               
-                <div
-                  className="absolute right-0 z-30 mt-2 w-48 origin-top-right rounded-md bg-gray-800 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                  role="menu"
-                  aria-orientation="vertical"
-                  aria-labelledby="user-menu-button"
-                >
-                  {isLoggedin ? <a
-                    href={`/profile/${user?.name}`}
-                    className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
-                    role="menuitem"
-                    id="user-menu-item-0"
+              <AnimatePresence>
+                {searchOpen && (
+                  <motion.form
+                    initial={{ width: 0, opacity: 0 }}
+                    animate={{ width: "280px", opacity: 1 }}
+                    exit={{ width: 0, opacity: 0 }}
+                    transition={{ type: "tween", duration: 0.25 }}
+                    onSubmit={findProducts}
+                    className="absolute right-0 top-12 flex items-center overflow-hidden rounded-full bg-white/10 backdrop-blur-sm"
                   >
-                    Profile
-                  </a> : null}
-
-                  {isLoggedin ? null :
-                    <>
-                      <a
-                        href="/signup"
-                        className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
-                        role="menuitem"
-                        id="user-menu-item-1"
-                      >
-                        Create Account
-                      </a>
-                    </>}
-                  {isLoggedin ?
-                    <a
-                      href="/login" onClick={logout}
-                      className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
-                      role="menuitem"
-                      id="user-menu-item-2"
+                    <input
+                      ref={searchInputRef}
+                      type="text"
+                      value={searchTerm}
+                      onChange={handleSearch}
+                      placeholder="Search products..."
+                      className="w-full bg-transparent py-2 pl-4 pr-10 text-sm text-gray-200 placeholder-gray-400 focus:outline-none"
+                    />
+                    <button
+                      type="submit"
+                      className="absolute right-1 top-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-orange-600 to-orange-500 p-2 text-white"
                     >
-                      Sign out
-                    </a> :
-                    <a
-                      href="/login"
-                      className="block px-4 py-2 text-sm text-white hover:text-gray-200 focus:text-gray-100 focus:bg-gray-700"
-                      role="menuitem"
-                      id="user-menu-item-2"
-                    >
-                      Sign in
-                    </a>}
+                      <FiSearch className="h-4 w-4" />
+                    </button>
+                  </motion.form>
+                )}
+              </AnimatePresence>
+            </div>
 
-                </div>
+            {/* User profile */}
+            <div ref={profileRef} className="relative">
+              {isLoggedin ? (
+                <button
+                  onClick={() => setProfileOpen(!profileOpen)}
+                  className="flex items-center space-x-2 rounded-full bg-white/10 p-1 pr-3 text-sm font-medium text-gray-200 backdrop-blur-sm hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/30"
+                >
+                  <img
+                    src={user?.url || "https://i.pravatar.cc/80"}
+                    alt={user?.name}
+                    className="h-8 w-8 rounded-full object-cover"
+                  />
+                  <span className="font-semibold">{getInitials(user?.name)}</span>
+                  <FiChevronDown className="h-4 w-4" />
+                </button>
+              ) : (
+                <button
+                  onClick={() => setProfileOpen(!profileOpen)}
+                  className="rounded-full bg-gradient-to-r from-blue-700 to-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-md hover:shadow-lg transition"
+                >
+                  Get started
+                </button>
+              )}
 
-                : null}
-
+              {/* Desktop dropdown */}
+              <AnimatePresence>
+                {profileOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute right-0 mt-2 w-56 rounded-xl bg-gray-800/95 backdrop-blur-md shadow-2xl ring-1 ring-white/10"
+                  >
+                    <div className="py-2">
+                      {isLoggedin ? (
+                        <>
+                          <a
+                            href={`/profile/${user?.name}`}
+                            className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-200 hover:bg-white/10"
+                          >
+                            <FiUser className="h-4 w-4" /> <span>Profile</span>
+                          </a>
+                          <a
+                            href="/login"
+                            onClick={logout}
+                            className="flex items-center space-x-2 px-4 py-2 text-sm text-red-400 hover:bg-red-900/20"
+                          >
+                            <FiLogOut className="h-4 w-4" /> <span>Sign out</span>
+                          </a>
+                        </>
+                      ) : (
+                        <>
+                          <a
+                            href="/signup"
+                            className="block px-4 py-2 text-sm text-gray-200 hover:bg-white/10"
+                          >
+                            Create Account
+                          </a>
+                          <a
+                            href="/login"
+                            className="block px-4 py-2 text-sm text-gray-200 hover:bg-white/10"
+                          >
+                            Sign in
+                          </a>
+                        </>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
       </div>
-      
- {/* {mobile} */}
-      {isExpanded ? (
-        <div className="relative sm:hidden">
-          <div className="absolute w-full z-10 top-0 left-0">
-            <div className="px-2 py-3 border border-gray-700 rounded-lg bg-gray-900 shadow-lg transition duration-300 ease-in-out transform translate-y-0">
-              <a
-                href={user?.seller ? `/store/${user?.store_name}` : '/seller-signUp'}
-                className="block rounded-md px-3 py-2 text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 transition duration-150 ease-in-out"
-              >
-                {user?.seller ? 'Store' : 'Start selling'}
-              </a>
-              <a
-                href="#"
-                className="block rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out mt-1"
-              >
-                Get Started
-              </a>
 
-              <select 
-              className="bg-transparent w-full outline-none text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-              onChange={(e) => navigateToCategory(e.target.value)}
-              value={selectedCategory}
+      {/* ───── MOBILE FULL‑SCREEN MENU ───── */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ x: "-100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            transition={{ type: "tween", duration: 0.3 }}
+            className="fixed inset-0 z-50 bg-gray-900/95 backdrop-blur-lg lg:hidden"
+          >
+            <div className="flex h-full flex-col px-6 pt-20">
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="absolute right-6 top-6 text-gray-300 hover:text-white"
               >
-                <option value="all">Categories</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.name}>
-                    {category.title}
-                  </option>
-                ))}
-              </select>
-              <a
-                href="/support"
-                className="block rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition duration-150 ease-in-out mt-1"
-              >
-                Get Help
-              </a>
+                <FiX className="h-8 w-8" />
+              </button>
 
-              <form onSubmit={findProducts} className="md:flex md:flex-1 gap-3 mt-3 w-full">
-                <input
-                  type="text"
-                  className="bg-gray-700 w-full text-white rounded-md px-3 py-2 text-sm font-medium focus:outline-none focus:ring-transparent ring-transparent flex-1"
-                  placeholder="Search..."
-                  onChange={handleSearch}
-                />
-
-                <button
-                  type="submit"
-                  className="mt-3 md:inline-block text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-orange-400 dark:hover:bg-orange-500 dark:focus:ring-orange-600 w-full"
+              <div className="space-y-4">
+                <a
+                  href={user?.seller ? `/store/${user?.store_name}` : "/seller-signUp"}
+                  className="block rounded-lg bg-gradient-to-r from-red-950 to-red-800 px-5 py-3 text-lg font-semibold text-white"
                 >
-                  Search
-                </button>
-              </form>
+                  {user?.seller ? "Dashboard" : "Start selling"}
+                </a>
+
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => {
+                    navigateToCategory(e.target.value);
+                    setMobileOpen(false);
+                  }}
+                  className="w-full rounded-lg bg-white/10 px-5 py-3 text-lg text-gray-200 backdrop-blur-sm"
+                >
+                  <option value="all">Categories</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.name}>
+                      {c.title}
+                    </option>
+                  ))}
+                </select>
+
+                <a href="/support" className="block rounded-lg px-5 py-3 text-lg text-gray-200 hover:bg-white/10">
+                  <FiHelpCircle className="inline-block h-5 w-5 mr-2" /> Get Help
+                </a>
+
+                {/* Mobile search */}
+                <form onSubmit={findProducts} className="mt-6 space-y-3">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={searchTerm}
+                      onChange={handleSearch}
+                      placeholder="Search..."
+                      className="w-full rounded-full bg-white/10 py-3 pl-12 pr-4 text-gray-200 placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/30"
+                    />
+                    <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full rounded-full bg-gradient-to-r from-orange-600 to-orange-500 py-3 font-semibold text-white shadow-md"
+                  >
+                    Search
+                  </button>
+                </form>
+
+                {/* Mobile auth */}
+                {!isLoggedin ? (
+                  <>
+                    <a href="/signup" className="block rounded-lg bg-blue-700 px-5 py-3 text-lg font-semibold text-white">
+                      Create Account
+                    </a>
+                    <a href="/login" className="block rounded-lg bg-gray-700 px-5 py-3 text-lg font-semibold text-white">
+                      Sign in
+                    </a>
+                  </>
+                ) : (
+                  <a
+                    href="/login"
+                    onClick={logout}
+                    className="block rounded-lg bg-red-600 px-5 py-3 text-lg font-semibold text-white"
+                  >
+                    <FiLogOut className="inline-block h-5 w-5 mr-2" /> Sign out
+                  </a>
+                )}
+              </div>
             </div>
-          </div>
-        </div>
-      ) : null}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-
+      {/* ───── MOBILE USER DROPDOWN (appears on top of mobile menu) ───── */}
+      <AnimatePresence>
+        {profileOpen && !mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="fixed inset-x-0 top-20 z-50 mx-4 rounded-xl bg-gray-800/95 backdrop-blur-md shadow-2xl ring-1 ring-white/10 lg:hidden"
+          >
+            <div className="py-2">
+              {isLoggedin ? (
+                <>
+                  <a
+                    href={`/profile/${user?.name}`}
+                    className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-200 hover:bg-white/10"
+                  >
+                    <FiUser className="h-4 w-4" /> <span>Profile</span>
+                  </a>
+                  <a
+                    href="/login"
+                    onClick={logout}
+                    className="flex items-center space-x-2 px-4 py-2 text-sm text-red-400 hover:bg-red-900/20"
+                  >
+                    <FiLogOut className="h-4 w-4" /> <span>Sign out</span>
+                  </a>
+                </>
+              ) : (
+                <>
+                  <a href="/signup" className="block px-4 py-2 text-sm text-gray-200 hover:bg-white/10">
+                    Create Account
+                  </a>
+                  <a href="/login" className="block px-4 py-2 text-sm text-gray-200 hover:bg-white/10">
+                    Sign in
+                  </a>
+                </>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };
 
 export default Navbar;
-
-
-
-
-
