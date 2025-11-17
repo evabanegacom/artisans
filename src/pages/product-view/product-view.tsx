@@ -217,7 +217,7 @@ const ProductView = () => {
                     exit={{ opacity: 0 }}
                     className="flex gap-3 mt-4"
                   >
-                    <FacebookShareButton url={shareUrl} quote={title}>
+                    <FacebookShareButton url={shareUrl}>
                       <FacebookIcon size={40} round />
                     </FacebookShareButton>
                     <TwitterShareButton url={shareUrl} title={title}>

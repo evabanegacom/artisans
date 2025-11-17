@@ -45,7 +45,7 @@ if (userData) {
                     user: {
                         id: decodedToken.user_id,
                         email: decodedToken.email,
-                        name: decodedToken.name,
+                        name: decodedToken?.name,
                         activated: decodedToken.activated,
                         seller: decodedToken.seller,
                         store_name: decodedToken.store_name,

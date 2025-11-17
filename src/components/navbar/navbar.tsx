@@ -35,9 +35,13 @@ const Navbar = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm || "");
   const profileRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+  setLocalSearchTerm(searchTerm || "");
+}, [searchTerm]);
 
   /* ------------------------------------------------------------------ */
   /*   HELPERS                                                          */
@@ -48,13 +52,24 @@ const Navbar = () => {
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setSearchTerm(e.target.value));
-  };
+  const value = e.target.value;
+  setLocalSearchTerm(value);        // Update local input
+  dispatch(setSearchTerm(value));   // Update Redux
+};
 
-  const findProducts = (e: React.FormEvent) => {
-    e.preventDefault();
-    dispatch(searchProducts(searchTerm, pageNumber) as any);
-  };
+const findProducts = (e: React.FormEvent) => {
+  e.preventDefault();
+  const term = localSearchTerm.trim();
+  if (!term) return;
+
+  dispatch(setSearchTerm(term));
+  
+  // Navigate immediately
+  navigate(`/search-results?q=${encodeURIComponent(term)}`);
+  
+  // Then trigger search
+  dispatch(searchProducts(term, 1) as any);
+};
 
   /* ------------------------------------------------------------------ */
   /*   CLOSE DROPDOWNS ON OUTSIDE CLICK                                 */
