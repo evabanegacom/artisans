@@ -162,12 +162,11 @@ const ProductItem: React.FC<Props> = ({ product, getProducts }) => {
               </span>
             )}
           </div>
-
           {/* Buy Button */}
           <PaystackPayButton
             email={email}
             amount={product?.price * 100}
-            publicKey="pk_test_2c676d6b01cea0704354f1a486590a28da55a341"
+            publicKey={import.meta.env.VITE_PAYSTACK_PUBLIC_KEY}
             productId={product?.id}
             phone={phone}
             soldBy={product?.sold_by}
