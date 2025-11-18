@@ -52,11 +52,14 @@ const ProductItem: React.FC<Props> = ({ product, getProducts }) => {
   const handleClose = () => console.log('Payment closed');
 
   const handleButtonClick = () => {
-    if (user) {
-      paystackButtonRef.current?.triggerPayment();
-    } else {
-      setModalOpen(true);
-    }
+    // if (user) {
+    //   paystackButtonRef.current?.triggerPayment();
+    // } else {
+    //   setModalOpen(true);
+    // }
+    // even if there's a user, we still need their info
+    setModalOpen(true);
+    // after modal submission, payment will be triggered
   };
 
   const handleModalSubmit = (n: string, e: string, p: string) => {
