@@ -1,4 +1,3 @@
-// components/product-item.tsx
 import { useSelector } from 'react-redux';
 import { HiOutlineTrash } from "react-icons/hi2";
 import React, { useState, useRef, useEffect } from 'react';
@@ -40,7 +39,7 @@ const ProductItem: React.FC<Props> = ({ product, getProducts }) => {
     }
   };
 
-  const generateOrderNumber = () => `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+  // const generateOrderNumber = () => `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
   // const handleSuccess = (reference: any) => {
   //   const orderNumber = generateOrderNumber();
