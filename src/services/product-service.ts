@@ -45,6 +45,16 @@ const searchProducts = async (search: string, page :number) => {
   return response;
 }
 
+// const send_download_link = async (product_id: number) => {
+//   const response = await api.get(`/products/${product_id}/generate_download_link`);
+//   return response;
+// }
+
+  const send_download_link = async (product_id: number, email: string, name: string) => {
+    const response = await api.post(`/products/${product_id}/send_download_link`, { email, name });
+    return response;
+  }
+
 const ProductService = {
   createProduct,
   updateProduct,
@@ -54,7 +64,8 @@ const ProductService = {
   getProductsByCategory,
   getProductByStore,
   searchProducts,
-  getProductToEdit
+  getProductToEdit,
+  send_download_link,
 };
 
 export default ProductService;

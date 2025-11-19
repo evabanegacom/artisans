@@ -42,24 +42,48 @@ const ProductItem: React.FC<Props> = ({ product, getProducts }) => {
 
   const generateOrderNumber = () => `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
-  const handleSuccess = (reference: any) => {
-    const orderNumber = generateOrderNumber();
-    navigate(`/product/${product?.product_number}/success`, {
-      state: { orderNumber: reference?.reference || orderNumber },
-    });
+  // const handleSuccess = (reference: any) => {
+  //   const orderNumber = generateOrderNumber();
+  //   navigate(`/product/${product?.product_number}/success`, {
+  //     state: { orderNumber: reference?.reference || orderNumber },
+  //   });
+  // };
+
+  const handleSuccess = async (reference: any) => {
+    try {
+      const response = await ProductService.send_download_link(
+        product.id,
+        email,
+        name
+      )
+
+      console.log({response})
+  
+      if (response?.data?.success) {
+        navigate(`/product/${product.product_number}/success`, {
+          state: {
+            downloadUrl: response?.data?.order.download_url,
+            orderNumber: reference.reference,
+            expiresAt: response?.data?.order.expires_at,
+          },
+        });
+      } else {
+        alert('Order created but something went wrong.');
+      }
+    } catch (err) {
+      console.error('Failed to create order:', err);
+      alert('Payment successful, but failed to generate download link. Contact support.');
+    }
   };
 
   const handleClose = () => console.log('Payment closed');
 
   const handleButtonClick = () => {
-    // if (user) {
-    //   paystackButtonRef.current?.triggerPayment();
-    // } else {
-    //   setModalOpen(true);
-    // }
-    // even if there's a user, we still need their info
-    setModalOpen(true);
-    // after modal submission, payment will be triggered
+    if (user) {
+      paystackButtonRef.current?.triggerPayment();
+    } else {
+      setModalOpen(true);
+    }
   };
 
   const handleModalSubmit = (n: string, e: string, p: string) => {
@@ -165,11 +189,12 @@ const ProductItem: React.FC<Props> = ({ product, getProducts }) => {
               </span>
             )}
           </div>
+
           {/* Buy Button */}
           <PaystackPayButton
             email={email}
             amount={product?.price * 100}
-            publicKey={import.meta.env.VITE_PAYSTACK_PUBLIC_KEY}
+            publicKey={import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || ''}
             productId={product?.id}
             phone={phone}
             soldBy={product?.sold_by}

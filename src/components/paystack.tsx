@@ -91,7 +91,7 @@ const PaystackPayButton = forwardRef((props: PaystackPayButtonProps, ref) => {
             },
 
             {
-              email: 'Email',
+              display_name: 'Email',
               variable_name: 'email',
               value: email,
             }
