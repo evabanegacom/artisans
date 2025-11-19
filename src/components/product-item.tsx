@@ -1,4 +1,3 @@
-// components/product-item.tsx
 import { useSelector } from 'react-redux';
 import { HiOutlineTrash } from "react-icons/hi2";
 import React, { useState, useRef, useEffect } from 'react';
