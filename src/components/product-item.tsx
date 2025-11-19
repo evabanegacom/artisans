@@ -1,4 +1,3 @@
-// components/product-item.tsx
 import { useSelector } from 'react-redux';
 import { HiOutlineTrash } from "react-icons/hi2";
 import React, { useState, useRef, useEffect } from 'react';
@@ -40,13 +39,40 @@ const ProductItem: React.FC<Props> = ({ product, getProducts }) => {
     }
   };
 
-  const generateOrderNumber = () => `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+  // const generateOrderNumber = () => `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
-  const handleSuccess = (reference: any) => {
-    const orderNumber = generateOrderNumber();
-    navigate(`/product/${product?.product_number}/success`, {
-      state: { orderNumber: reference?.reference || orderNumber },
-    });
+  // const handleSuccess = (reference: any) => {
+  //   const orderNumber = generateOrderNumber();
+  //   navigate(`/product/${product?.product_number}/success`, {
+  //     state: { orderNumber: reference?.reference || orderNumber },
+  //   });
+  // };
+
+  const handleSuccess = async (reference: any) => {
+    try {
+      const response = await ProductService.send_download_link(
+        product.id,
+        email,
+        name
+      )
+
+      console.log({response})
+  
+      if (response?.data?.success) {
+        navigate(`/product/${product.product_number}/success`, {
+          state: {
+            downloadUrl: response?.data?.order.download_url,
+            orderNumber: reference.reference,
+            expiresAt: response?.data?.order.expires_at,
+          },
+        });
+      } else {
+        alert('Order created but something went wrong.');
+      }
+    } catch (err) {
+      console.error('Failed to create order:', err);
+      alert('Payment successful, but failed to generate download link. Contact support.');
+    }
   };
 
   const handleClose = () => console.log('Payment closed');
@@ -167,7 +193,7 @@ const ProductItem: React.FC<Props> = ({ product, getProducts }) => {
           <PaystackPayButton
             email={email}
             amount={product?.price * 100}
-            publicKey="pk_test_2c676d6b01cea0704354f1a486590a28da55a341"
+            publicKey={import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || ''}
             productId={product?.id}
             phone={phone}
             soldBy={product?.sold_by}

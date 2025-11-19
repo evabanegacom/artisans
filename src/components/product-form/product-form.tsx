@@ -30,6 +30,7 @@ const ProductForm: React.FC = () => {
     contact_number: user?.mobile || '',
     product_number: '',
     tags: ['craft'],
+    download_file: '',
     user_id: user?.id
   });
 
@@ -41,7 +42,16 @@ const ProductForm: React.FC = () => {
   const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const tagsValue = e.target.value;
     setFormData({ ...formData, tags: tagsValue.split(',').map(tag => tag.trim()) });
-  };  
+  };
+
+  const handleDownloadFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      setFormData({ ...formData, download_file: file });
+    } else {
+      setFormData({ ...formData, download_file: '' });
+    }
+  }
     
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name;
@@ -215,25 +225,14 @@ const ProductForm: React.FC = () => {
 <PictureInput name="pictureTwo" required={false} />
 <PictureInput name="pictureThree" required={false}/>
 <PictureInput name="pictureFour" required={false}/>
-
-      {/* <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pictureTwo">
-          More(Optional):
-        </label>
-        <input type="file" name="pictureTwo" onChange={handleFileChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+<div className="mb-4">
+       <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="download_file">
+        Upload downloadable product file:
+      </label>
+        <input placeholder='Downloadable File (for digital products)' type="file" name="download_file" 
+        onChange={handleDownloadFileChange}
+        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
       </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pictureThree">
-          More(Optional):
-        </label>
-        <input type="file" name="pictureThree" onChange={handleFileChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pictureFour">
-          More(Optional):
-        </label>
-        <input type="file" name="pictureFour" onChange={handleFileChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-      </div> */}
 
       
       <button disabled={loading} type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3">
