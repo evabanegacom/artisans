@@ -96,7 +96,7 @@ const UserStore = () => {
           </motion.div>
 
           {/* Add Product (Owner only) */}
-          {user && products?.store_name === store_name && (
+          {user && products?.store_name == store_name && (
             <motion.a
               href="/create-product"
               initial={{ y: 20, opacity: 0 }}
