@@ -14,7 +14,7 @@ interface PaystackPayButtonProps {
   name: string;
   onSuccess: (reference: any) => void;
   onClose: () => void;
-  buttonTrigger: () => void;
+  buttonTrigger?: () => void;
   text: string;
   className?: string;
 }

@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ProductService from "../../services/product-service";
 import { useParams, useNavigate } from "react-router-dom";
 import { formatAsCurrency } from "../../constants";
 import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiPhone, FiShare2, FiEdit3, FiTrash2, FiEye, FiDownload } from "react-icons/fi";
-import { FaWhatsapp, FaStore, FaStar } from "react-icons/fa";
+import { FiPhone, FiShare2, FiEdit3, FiTrash2, FiEye, FiDownload, FiShoppingBag } from "react-icons/fi";
+import { FaWhatsapp, FaStore, FaStar, FaShieldAlt } from "react-icons/fa";
 import { AiOutlineCopy } from "react-icons/ai";
 import Spinner from "../../constants/spinner";
 import Preview from "../../components/print-on-demand/preview";
 import ProductItem from "../../components/product-item";
 import { FacebookShareButton, TwitterShareButton, WhatsappShareButton, FacebookIcon, TwitterIcon, WhatsappIcon } from "react-share";
+import BuyerInfoModal from "@/components/buyer-info-modal";
+import PaystackPayButton from "@/components/paystack";
 
 const ProductView = () => {
   const { id } = useParams();
@@ -24,7 +26,12 @@ const ProductView = () => {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [showShare, setShowShare] = useState(false);
-
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [email, setEmail] = useState(user?.email || '');
+    const [name, setName] = useState(user?.name || '');
+    const [phone, setPhone] = useState(user?.mobile || '');
+    const [isPaymentReady, setPaymentReady] = useState(false);
+      const paystackButtonRef = useRef<{ triggerPayment: () => void } | null>(null);
   const shareUrl = window.location.href;
   const title = productDetails?.name || "Check out this amazing artwork!";
 
@@ -73,6 +80,54 @@ const ProductView = () => {
   useEffect(() => {
     getProduct();
   }, [id]);
+
+  const handleSuccess = async (reference: any) => {
+      try {
+        const response = await ProductService.send_download_link(
+          productDetails?.id,
+          email,
+          name
+        )
+    
+        if (response?.data?.success) {
+          navigate(`/product/${productDetails?.product_number}/success`, {
+            state: {
+              downloadUrl: response?.data?.order.download_url,
+              orderNumber: reference.reference,
+              expiresAt: response?.data?.order.expires_at,
+            },
+          });
+        } else {
+          alert('Order created but something went wrong.');
+        }
+      } catch (err) {
+        console.error('Failed to create order:', err);
+        alert('Payment successful, but failed to generate download link. Contact support.');
+      }
+    };
+
+  const handleButtonClick = () => {
+    if (user) {
+      paystackButtonRef.current?.triggerPayment();
+    } else {
+      setModalOpen(true);
+    }
+  };
+
+  useEffect(() => {
+      if (isPaymentReady) {
+        paystackButtonRef.current?.triggerPayment();
+        setPaymentReady(false);
+      }
+    }, [isPaymentReady]);
+
+  const handleModalSubmit = (n: string, e: string, p: string) => {
+    setName(n);
+    setEmail(e);
+    setPhone(p);
+    setModalOpen(false);
+    setPaymentReady(true);
+  };
 
   if (loading) return <Spinner />;
 
@@ -147,22 +202,69 @@ const ProductView = () => {
                 ))}
               </div>
 
-              {/* Owner Card */}
-              <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-2xl p-5 mb-6">
-                <div className="flex items-center gap-4">
-                  <img
-                    src={productDetails.user?.avatar?.url || "https://i.pravatar.cc/80"}
-                    alt={productDetails.sold_by}
-                    className="w-16 h-16 rounded-full ring-4 ring-white shadow-lg"
-                  />
-                  <div>
-                    <p className="font-semibold text-lg">{productDetails.sold_by}</p>
-                    <a href={`/store/${productDetails.sold_by}`} className="text-red-950 hover:underline flex items-center gap-1">
-                      <FaStore /> Visit Store
-                    </a>
-                  </div>
-                </div>
-              </div>
+              <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-2xl p-6 mb-6 shadow-md border border-gray-300">
+  <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+    {/* Seller Info */}
+    <div className="flex items-center gap-5">
+      <img
+        src={productDetails.user?.avatar?.url || "https://i.pravatar.cc/80"}
+        alt={productDetails.sold_by}
+        className="w-16 h-16 rounded-full ring-4 ring-white shadow-xl object-cover"
+      />
+      <div>
+        <p className="font-bold text-xl text-gray-800">{productDetails.sold_by}</p>
+        <a 
+          href={`/store/${productDetails.sold_by}`} 
+          className="text-red-950 hover:text-red-700 font-medium flex items-center gap-1.5 transition-colors"
+        >
+          <FaStore className="text-sm" />
+          Visit Store
+        </a>
+      </div>
+    </div>
+
+    {/* Buy Now Button - Prominent & Eye-catching */}
+    <div className="w-full sm:w-auto">
+  {/* Hidden Paystack Button (for programmatic trigger) */}
+  <PaystackPayButton
+    email={email}
+    amount={productDetails.price * 100}
+    publicKey={import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || ''}
+    productId={productDetails.id}
+    phone={phone}
+    soldBy={productDetails.sold_by}
+    picture={productDetails.pictureOne?.url}
+    productNumber={productDetails.product_number}
+    productName={productDetails.name}
+    userId={user?.id}
+    onSuccess={handleSuccess}
+    onClose={() => console.log('Payment closed')}
+    ref={paystackButtonRef}
+    name={name}
+    text="" // We don't want visible text here
+    className="hidden"
+  />
+
+  {/* Visible Beautiful "Buy Now" Button */}
+  <button
+    onClick={handleButtonClick}
+    className="w-full sm:w-auto group relative overflow-hidden bg-gradient-to-r from-red-950 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-bold py-4 px-10 rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3 text-lg"
+  >
+    <FiShoppingBag className="text-xl group-hover:animate-pulse" />
+    <span>Buy Now • {formatAsCurrency(productDetails.price)}</span>
+    <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
+  </button>
+</div>
+  </div>
+
+  {/* Optional: Small trust badge below */}
+  <div className="mt-4 text-center sm:text-left">
+    <p className="text-xs text-gray-600 flex items-center justify-center sm:justify-start gap-2">
+      <FaShieldAlt className="text-green-600" />
+      Secure payment • Instant download after purchase
+    </p>
+  </div>
+</div>
 
               {/* Action Buttons */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -305,6 +407,12 @@ const ProductView = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <BuyerInfoModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleModalSubmit}
+      />
     </>
   );
 };

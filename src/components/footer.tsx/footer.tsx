@@ -95,11 +95,11 @@ const Footer = () => {
             <div className="space-y-3 text-sm text-gray-400">
               <p className="flex items-center gap-2">
                 <FiMapPin className="text-emerald-500" />
-                123, Main Street<br />New York, NY 10001
+                30, Owolabi street<br />Amuwo Odofin, Lagos, Nigeria
               </p>
               <p className="flex items-center gap-2">
                 <FiMail className="text-emerald-500" />
-                contact@example.com
+                udegbue69@gmail.com
               </p>
               <p className="flex items-center gap-2">
                 <FiPhone className="text-emerald-500" />
