@@ -41,13 +41,6 @@ const ProductItem: React.FC<Props> = ({ product, getProducts }) => {
 
   // const generateOrderNumber = () => `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
-  // const handleSuccess = (reference: any) => {
-  //   const orderNumber = generateOrderNumber();
-  //   navigate(`/product/${product?.product_number}/success`, {
-  //     state: { orderNumber: reference?.reference || orderNumber },
-  //   });
-  // };
-
   const handleSuccess = async (reference: any) => {
     try {
       const response = await ProductService.send_download_link(
@@ -55,8 +48,6 @@ const ProductItem: React.FC<Props> = ({ product, getProducts }) => {
         email,
         name
       )
-
-      console.log({response})
   
       if (response?.data?.success) {
         navigate(`/product/${product.product_number}/success`, {
