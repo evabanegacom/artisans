@@ -58,6 +58,7 @@ const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm || "");
   dispatch(setSearchTerm(value));   // Update Redux
 };
 
+console.log({mobileOpen})
 const findProducts = (e: React.FormEvent) => {
   e.preventDefault();
   const term = localSearchTerm.trim();
@@ -70,6 +71,7 @@ const findProducts = (e: React.FormEvent) => {
   
   // Then trigger search
   dispatch(searchProducts(term, 1) as any);
+  if(mobileOpen) setMobileOpen(false);
 };
 
   /* ------------------------------------------------------------------ */
