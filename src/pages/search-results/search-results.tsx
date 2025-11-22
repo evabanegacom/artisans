@@ -83,7 +83,7 @@ const SearchResults = () => {
         </p>
 
         {loading ? (
-          <p className="text-lg text-gray-600">Searching for masterpieces...</p>
+          <p className="text-lg text-gray-600">Searching for Products...</p>
         ) : error ? (
           <p className="text-red-600">Error: {error}</p>
         ) : (
@@ -92,7 +92,7 @@ const SearchResults = () => {
             <strong className="text-3xl text-red-950 font-bold">
               {totalProducts || 0}
             </strong>{" "}
-            masterpiece{totalProducts !== 1 ? "s" : ""}
+            products{totalProducts !== 1 ? "s" : ""}
           </p>
         )}
       </motion.section>
@@ -162,7 +162,7 @@ const SearchResults = () => {
               </svg>
             </motion.div>
 
-            <h3 className="text-4xl font-bold text-gray-800 mb-4">No Artworks Found</h3>
+            <h3 className="text-4xl font-bold text-gray-800 mb-4">No Products Found</h3>
             <p className="text-xl text-gray-600 mb-10">
               Try a different search term or explore our collections.
             </p>
