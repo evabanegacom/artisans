@@ -34,7 +34,6 @@ const UserStore = () => {
       if (isOwner) {
         try {
           const stats = await ProductService.sales(user?.id, 1);
-          console.log({stats});
           setStoreStats(stats);
         } catch (e) { /* optional */ }
       }
