@@ -15,11 +15,11 @@ const UserStore = () => {
   const [products, setProducts] = useState<any>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [storeOwner, setStoreOwner] = useState<any>({});
-  const [storeStats, setStoreStats] = useState({ total_products: 0, total_sales: 0, total_revenue: "₦0" });
+  const [storeStats, setStoreStats] = useState<any>({ total_products: 0, total_sales: 0, total_revenue: "₦0" });
   const [loading, setLoading] = useState(false);
 
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
-  const isOwner = user?.store_name === store_name;
+  const isOwner = user?.store_name == store_name;
 
   const getProductsByStore = async () => {
     setLoading(true);
@@ -33,7 +33,7 @@ const UserStore = () => {
       // Fetch store stats (you can create this endpoint or reuse from sales)
       if (isOwner) {
         try {
-          const stats = await ProductService.sales(user.id, 1);
+          const stats = await ProductService.sales(user?.id, 1);
           console.log({stats});
           setStoreStats(stats);
         } catch (e) { /* optional */ }
