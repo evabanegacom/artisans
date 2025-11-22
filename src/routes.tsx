@@ -18,6 +18,7 @@ const EditProfile = lazy(() => import('./auth/edit-profile'));
 const SupportPage = lazy(() => import('./pages/support-pages/support-page'));
 const Preview = lazy(() => import('./components/print-on-demand/preview'));
 const SuccessPage = lazy(() => import('./pages/product-view/product-success'));
+const SalesPage = lazy(() => import('./pages/user-store/sales'));
 
 const routes = [
     {
@@ -92,6 +93,11 @@ const routes = [
     {
         path: '/preview',
         element: <Preview />
+    },
+
+    {
+        path: ':store_name/sales',
+        element: <SalesPage />
     },
 
     {
