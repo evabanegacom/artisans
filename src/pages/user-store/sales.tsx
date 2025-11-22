@@ -7,52 +7,29 @@ import {
   Clock, AlertCircle, ArrowUp, DollarSign, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import ProductService from '@/services/product-service';
-
-interface Sale {
-  id: number;
-  sale_id: string;
-  status: string;
-  created_at: string;
-  downloaded_at: string | null;
-  buyer_name: string;
-  buyer_email: string;
-  product_name: string;
-  product_image: string;
-  product_category: string;
-  store_name: string;
-  amount_formatted: string;
-}
-
-interface Pagination {
-  current_page: number;
-  total_pages: number;
-  total_sales: number;
-  per_page: number;
-  has_next: boolean;
-  has_prev: boolean;
-}
-
-interface Summary {
-  total_revenue: string;
-  total_orders: number;
-  completed_orders: number;
-  pending_orders: number;
-}
+import Pagination from '@/components/pagination';
+import { Sale, Summary, PaginationTypes } from '@/redux/types';
 
 const Sales: React.FC = () => {
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
   const [sales, setSales] = useState<Sale[]>([]);
   const [summary, setSummary] = useState<Summary | null>(null);
-  const [pagination, setPagination] = useState<Pagination | null>(null);
+  const [pagination, setPagination] = useState<PaginationTypes | null>(null);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
+
+  if(!user){
+    return <div className="min-h-screen flex items-center justify-center">
+      <p className="text-gray-600 text-lg">Please log in to view your sales dashboard.</p>
+    </div>;
+  }
 
   const fetchSales = async (pageNum: number = 1) => {
     if (!user?.id) return;
     setLoading(true);
     try {
       const data = await ProductService.sales(user.id, pageNum);
-      setSales(data.sales);
+      setSales(data?.sales);
       setSummary(data.summary);
       setPagination(data.pagination);
     } catch (error) {

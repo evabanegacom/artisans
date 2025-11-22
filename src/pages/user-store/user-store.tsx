@@ -15,11 +15,11 @@ const UserStore = () => {
   const [products, setProducts] = useState<any>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [storeOwner, setStoreOwner] = useState<any>({});
-  const [storeStats, setStoreStats] = useState({ total_products: 0, total_sales: 0, total_revenue: "₦0" });
+  const [storeStats, setStoreStats] = useState<any>({ total_products: 0, total_sales: 0, total_revenue: "₦0" });
   const [loading, setLoading] = useState(false);
 
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
-  const isOwner = user?.store_name === store_name;
+  const isOwner = user?.store_name == store_name;
 
   const getProductsByStore = async () => {
     setLoading(true);
@@ -33,7 +33,7 @@ const UserStore = () => {
       // Fetch store stats (you can create this endpoint or reuse from sales)
       if (isOwner) {
         try {
-          const stats = await ProductService.sales(user.id);
+          const stats = await ProductService.sales(user?.id, 1);
           setStoreStats(stats);
         } catch (e) { /* optional */ }
       }
@@ -156,12 +156,12 @@ const UserStore = () => {
                   </div>
                   <div>
                     <FaChartLine className="w-10 h-10 text-pink-400 mx-auto mb-2" />
-                    <p className="text-3xl font-black text-white">{storeStats.total_sales || 0}</p>
+                    <p className="text-3xl font-black text-white">{storeStats?.summary?.completed_orders || 0}</p>
                     <p className="text-gray-300 text-sm">Sales</p>
                   </div>
                   <div>
                     <FaDollarSign className="w-10 h-10 text-emerald-400 mx-auto mb-2" />
-                    <p className="text-3xl font-black text-white">{storeStats.total_revenue || "₦0"}</p>
+                    <p className="text-3xl font-black text-white">{storeStats?.summary?.total_revenue || "₦0"}</p>
                     <p className="text-gray-300 text-sm">Revenue</p>
                   </div>
                 </div>
