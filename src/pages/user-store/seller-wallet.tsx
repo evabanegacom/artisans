@@ -5,6 +5,7 @@ import axios from 'axios';
 import { format } from 'date-fns';
 import { Banknote, Clock, ArrowDownToLine, Plus, CheckCircle } from 'lucide-react';
 import WalletService from '@/services/wallet-service';
+import { banks } from '@/banks';
 
 interface WalletData {
   available_balance: number;
@@ -20,27 +21,6 @@ interface WalletData {
     bank_name?: string;
   } | null;
 }
-
-const banks = [
-  { code: "044", name: "Access Bank" },
-  { code: "063", name: "Access Bank (Diamond)" },
-  { code: "050", name: "Ecobank" },
-  { code: "084", name: "Enterprise Bank" },
-  { code: "070", name: "Fidelity Bank" },
-  { code: "011", name: "First Bank" },
-  { code: "214", name: "First City Monument Bank" },
-  { code: "058", name: "Guaranty Trust Bank" },
-  { code: "030", name: "Heritage Bank" },
-  { code: "082", name: "Keystone Bank" },
-  { code: "076", name: "Polaris Bank" },
-  { code: "039", name: "Stanbic IBTC Bank" },
-  { code: "232", name: "Sterling Bank" },
-  { code: "032", name: "Union Bank" },
-  { code: "033", name: "United Bank for Africa" },
-  { code: "215", name: "Unity Bank" },
-  { code: "035", name: "Wema Bank" },
-  { code: "057", name: "Zenith Bank" },
-];
 
 export default function SellerWallet() {
   const [data, setData] = useState<WalletData | null>(null);
@@ -182,7 +162,7 @@ const fetchWallet = async  () => {
 
         {/* Bank & Withdraw */}
         <div className="bg-white rounded-3xl shadow-2xl p-8">
-          {data?.bank_details ? (
+          {data?.bank_details?.account_number ? (
             <div className="flex items-center justify-between mb-8">
               <div>
                 <p className="text-gray-600">Withdraw to</p>
