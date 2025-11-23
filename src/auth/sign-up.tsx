@@ -38,11 +38,31 @@ const SignUp = () => {
 
   const handleChange = (e: any) => {
     const { name, value, files } = e.target;
+  
+    if (files && files[0]) {
+      const file = files[0];
+      const maxSize = 2 * 1024 * 1024; // 2MB
+  
+      if (file.size > maxSize) {
+        alert("File size must not exceed 2MB.");
+        e.target.value = ""; // reset input
+        return;
+      }
+  
+      setUser((prevUser: any) => ({
+        ...prevUser,
+        [name]: file,
+      }));
+      return;
+    }
+  
+    // For normal text fields
     setUser((prevUser: any) => ({
       ...prevUser,
-      [name]: files ? files[0] : value,
+      [name]: value,
     }));
   };
+  
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();

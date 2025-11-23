@@ -19,6 +19,7 @@ const SupportPage = lazy(() => import('./pages/support-pages/support-page'));
 const Preview = lazy(() => import('./components/print-on-demand/preview'));
 const SuccessPage = lazy(() => import('./pages/product-view/product-success'));
 const SalesPage = lazy(() => import('./pages/user-store/sales'));
+const SellerWallet = lazy(() => import('./pages/user-store/seller-wallet'));
 
 const routes = [
     {
@@ -73,6 +74,11 @@ const routes = [
     {
         path: '/create-product',
         element: <ProductForm />
+    },
+
+    {
+        path: '/seller-wallet',
+        element: <SellerWallet />
     },
 
     {
