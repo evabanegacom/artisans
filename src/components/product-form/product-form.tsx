@@ -46,12 +46,24 @@ const ProductForm: React.FC = () => {
 
   const handleDownloadFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
+  
     if (file) {
+      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+  
+      if (file.size > maxSize) {
+        alert("File size must not exceed 5MB.");
+        // Clear the input value so user can re-select
+        e.target.value = "";
+        setFormData({ ...formData, download_file: '' });
+        return;
+      }
+  
       setFormData({ ...formData, download_file: file });
     } else {
       setFormData({ ...formData, download_file: '' });
     }
-  }
+  };
+  
     
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name;
