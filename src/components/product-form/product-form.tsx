@@ -51,7 +51,7 @@ const ProductForm: React.FC = () => {
       const maxSize = 5 * 1024 * 1024; // 5MB in bytes
   
       if (file.size > maxSize) {
-        alert("File size must not exceed 5MB.");
+        toast.error("File size must not exceed 5MB.");
         // Clear the input value so user can re-select
         e.target.value = "";
         setFormData({ ...formData, download_file: '' });
