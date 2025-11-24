@@ -5,7 +5,8 @@ import axios from 'axios';
 import { format } from 'date-fns';
 import { Banknote, Clock, ArrowDownToLine, Plus, CheckCircle } from 'lucide-react';
 import WalletService from '@/services/wallet-service';
-import { banks } from '@/banks';
+import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 
 interface WalletData {
   available_balance: number;
@@ -29,9 +30,10 @@ export default function SellerWallet() {
   const [amount, setAmount] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [bankCode, setBankCode] = useState('');
-  const [accountName, setAccountName] = useState('');
+  const user = useSelector((state: any) => state?.reducer?.auth?.user);
+  const [accountName, setAccountName] = useState(user?.name);
   const [verifying, setVerifying] = useState(false);
-
+  const [banks, setBanks] = useState<Array<{ name: string; code: string }>>([]);
   const token = localStorage.getItem('jwt_token');
 
   useEffect(() => {
@@ -54,15 +56,10 @@ const fetchWallet = async  () => {
     if (!accountNumber || !bankCode || accountNumber.length < 10) return;
     setVerifying(true);
     try {
-      const res = await axios.post('/api/v1/users/verify_bank', {
-        account_number: accountNumber,
-        bank_code: bankCode
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setAccountName(res.data.account_name);
+      const response = await WalletService.verifyAccountNumber(accountNumber, bankCode);
+      setAccountName(response?.account_name);
     } catch (err: any) {
-      alert(err.response?.data?.error || "Verification failed");
+      toast.error(err.response?.data?.error || "Verification failed");
       setAccountName('');
     } finally {
       setVerifying(false);
@@ -71,39 +68,49 @@ const fetchWallet = async  () => {
 
   const saveBankDetails = async () => {
     try {
-      await axios.post('/api/v1/users/update_bank', {
-        account_number: accountNumber,
-        bank_code: bankCode,
-        account_name: accountName
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      alert("Bank details saved!");
+      const response = await WalletService.saveBankDetails(accountNumber, bankCode, accountName || '');
+      if(response){
+      toast.success("Bank details saved successfully");
       setShowBankModal(false);
       fetchWallet();
+      }
     } catch (err) {
-      alert("Failed to save bank details");
+      toast.error("Failed to save bank details");
     }
   };
 
   const withdraw = async () => {
     const amt = parseFloat(amount);
-    if (amt < 1000) return alert("Minimum withdrawal is ₦1,000");
-    if (!data?.bank_details) return alert("Add your bank account first");
+    if (amt < 1000) return toast.error("Minimum withdrawal is ₦1,000");
+    if (!data?.bank_details) return toast.error("Add your bank account first");
 
     if (confirm(`Withdraw ₦${amt.toLocaleString()}?`)) {
       try {
         await axios.post('/api/v1/withdraw', { amount: amt }, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        alert("Withdrawal successful! Check your bank in 1-2 hours.");
+        toast.error("Withdrawal successful! Check your bank in 1-2 hours.");
         setAmount('');
         fetchWallet();
       } catch (err: any) {
-        alert(err.response?.data?.error || "Withdrawal failed");
+        toast.error(err.response?.data?.error || "Withdrawal failed");
       }
     }
   };
+
+  const getBankCodes = async () => {
+    try {
+      const response = await WalletService.banks();
+      setBanks(response);
+    } catch (err) {
+      console.error("Failed to fetch banks");
+      return [];
+    }
+  }
+
+  useEffect(() => {
+    getBankCodes();
+  }, []);
 
   if (loading) {
     return (
