@@ -31,7 +31,6 @@ let initialState: AuthProps = {
 
 // Load user from localStorage
 const storedUser = localStorage.getItem("user");
-console.log({storedUser});
 
 if (storedUser) {
     try {

@@ -92,7 +92,6 @@ export default function SellerWallet() {
         //   headers: { Authorization: `Bearer ${token}` }
         // });
         const response = await WalletService.withdraw(amount);
-        console.log({ response });
         toast.success("Withdrawal successful! Check your bank in 1-2 hours.");
         setAmount('');
         fetchWallet();

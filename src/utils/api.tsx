@@ -44,7 +44,6 @@ export const submitFormData = async (formData: FormData, endpoint:string) => {
     });
 
     // Handle success if needed
-    console.log('Success:', response?.data);
     return response.data;
   } catch (error) {
     // Handle error
@@ -62,7 +61,6 @@ export const updateFormData = async (formData: FormData, endpoint:string) => {
     });
 
     // Handle success if needed
-    console.log('Success:', response?.data);
     return response.data;
   } catch (error) {
     // Handle error

@@ -58,7 +58,6 @@ const ResetPassword = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault()
-    console.log({ newPassword })
     setSending(true)
     if (newPassword?.newPassword !== newPassword?.confirmPassword) {
       toast.error('Passwords do not match');

@@ -105,7 +105,6 @@ const findProducts = (e: React.FormEvent) => {
   /* ------------------------------------------------------------------ */
   /*   RENDER                                                           */
   /* ------------------------------------------------------------------ */
-  console.log(user?.seller)
   return (
     <nav
       className={`relative transition-all duration-300 z-10 ${

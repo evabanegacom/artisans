@@ -19,14 +19,12 @@ const UserStore = () => {
   const [loading, setLoading] = useState(false);
 
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
-  console.log({user})
   const isOwner = user?.store_name == store_name;
 
   const getProductsByStore = async () => {
     setLoading(true);
     try {
       const storeInfo = await AuthService.findUserByStoreName(store_name);
-      console.log({storeInfo})
       setStoreOwner(storeInfo?.user);
 
       const response = await ProductService.getProductByStore(store_name, currentPage);

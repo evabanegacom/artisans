@@ -67,7 +67,6 @@ const EditProduct: React.FC = () => {
     const getProduct = async () => {
         try {
             const product = await ProductService.getProductToEdit(id as string);
-            console.log({product})
             setProductDetail(product?.data as any);
             setFormData({
                 name: product?.data?.name,
@@ -132,15 +131,12 @@ const EditProduct: React.FC = () => {
             // Append file inputs
             for (const [name, file] of Object.entries(formData)) {
                 if (file instanceof File) {
-                    console.log({file})
                     productData.append(name, file);
                 }else if(file === '') {
                     productData.append(name, '');
-                    console.log({file})
                 }
             }
 
-            console.log({productData})
             await ProductService.updateProduct(productData, productDetail?.id as any);
             toast.success('Product updated successfully');
             getProduct();

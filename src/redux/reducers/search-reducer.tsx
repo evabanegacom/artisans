@@ -37,7 +37,6 @@ const searchReducer = (state = initialState, action: AnyAction): SearchState => 
       };
 
     case SET_SEARCH_RESULTS:
-      console.log("Reducer - received search results:", action.payload);
       return {
         ...state,
         products: action?.payload?.products || [],
