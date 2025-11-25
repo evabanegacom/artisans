@@ -105,6 +105,7 @@ const findProducts = (e: React.FormEvent) => {
   /* ------------------------------------------------------------------ */
   /*   RENDER                                                           */
   /* ------------------------------------------------------------------ */
+  console.log(user?.seller)
   return (
     <nav
       className={`relative transition-all duration-300 z-10 ${
@@ -159,12 +160,12 @@ const findProducts = (e: React.FormEvent) => {
               {user?.seller ? "Dashboard" : "Start selling"}
             </a>
 
-            <a
-              href={user?.seller ? `/store/${user?.store_name}` : "/create-product"}
+            {user?.seller && <a
+              href={user?.seller ? `/store/${user?.store_name}` : "/seller-signUp"}
               className="rounded-lg px-4 py-2 text-sm font-medium text-gray-200 hover:bg-white/10 hover:text-white transition"
             >
-              Add Product
-            </a>
+              Add Products
+            </a>}
 
             {/* Mega‑menu for categories */}
             <div className="relative group">
