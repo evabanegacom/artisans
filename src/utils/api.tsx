@@ -5,7 +5,7 @@ export const api: any = axios.create({
   baseURL: baseURL,
 });
 
-const token = localStorage.getItem('user');
+const token = localStorage.getItem('token');
 
 // Request interceptor
 api.interceptors.request.use(

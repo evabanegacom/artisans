@@ -143,7 +143,7 @@ const findProducts = (e: React.FormEvent) => {
           onClick={() => setProfileOpen(!profileOpen)}  
           className="lg:hidden">
            <img
-                    src={user?.url || "https://i.pravatar.cc/80"}
+                    src={user?.avatar?.url || "https://i.pravatar.cc/80"}
                     alt={user?.name}
                     className="h-8 w-8 rounded-full object-cover"
                   />
@@ -249,7 +249,7 @@ const findProducts = (e: React.FormEvent) => {
                   className="flex items-center space-x-2 rounded-full bg-white/10 p-1 pr-3 text-sm font-medium text-gray-200 backdrop-blur-sm hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/30"
                 >
                   <img
-                    src={user?.url || "https://i.pravatar.cc/80"}
+                    src={user?.avatar?.url || "https://i.pravatar.cc/80"}
                     alt={user?.name}
                     className="h-8 w-8 rounded-full object-cover"
                   />
