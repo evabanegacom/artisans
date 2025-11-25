@@ -19,6 +19,7 @@ const UserStore = () => {
   const [loading, setLoading] = useState(false);
 
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
+  console.log({user})
   const isOwner = user?.store_name == store_name;
 
   const getProductsByStore = async () => {
