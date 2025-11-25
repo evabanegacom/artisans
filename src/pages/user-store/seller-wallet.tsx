@@ -43,7 +43,6 @@ export default function SellerWallet() {
   const fetchWallet = async () => {
     try {
       const response = await WalletService.fetchWallet();
-      console.log({ response });
       setData(response);
     } catch (err) {
       console.error(err);
@@ -89,9 +88,11 @@ export default function SellerWallet() {
 
     if (confirm(`Withdraw ₦${amt.toLocaleString()}?`)) {
       try {
-        await axios.post('/api/v1/withdraw', { amount: amt }, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        // await axios.post('/api/v1/withdraw', { amount: amt }, {
+        //   headers: { Authorization: `Bearer ${token}` }
+        // });
+        const response = await WalletService.withdraw(amount);
+        console.log({ response });
         toast.success("Withdrawal successful! Check your bank in 1-2 hours.");
         setAmount('');
         fetchWallet();

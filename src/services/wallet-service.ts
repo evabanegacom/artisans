@@ -25,11 +25,17 @@ import { api } from '../utils/api';
     return response?.data;
   }
 
+  const withdraw = async (amount: string) => {
+    const response = await api.post('/withdraw', { amount });
+    return response?.data;
+  }
+
 const WalletService = {
     fetchWallet,
     verifyAccountNumber,
     saveBankDetails,
-    banks
+    banks,
+    withdraw
 }
 
 export default WalletService;
