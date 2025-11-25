@@ -25,7 +25,7 @@ const ProductItem: React.FC<Props> = ({ product, getProducts }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isPaymentReady, setPaymentReady] = useState(false);
   const paystackButtonRef = useRef<{ triggerPayment: () => void } | null>(null);
-
+  console.log({user, product})
   const deleteProduct = async () => {
     setDeleting(true);
     try {

@@ -2,11 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
-import { format } from 'date-fns';
 import { Banknote, Clock, ArrowDownToLine, Plus, CheckCircle } from 'lucide-react';
 import WalletService from '@/services/wallet-service';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
+import Select from 'react-select'; // ← Added for searchable bank selection
 
 interface WalletData {
   available_balance: number;
@@ -31,7 +31,7 @@ export default function SellerWallet() {
   const [accountNumber, setAccountNumber] = useState('');
   const [bankCode, setBankCode] = useState('');
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
-  const [accountName, setAccountName] = useState(user?.name);
+  const [accountName, setAccountName] = useState(user?.name || '');
   const [verifying, setVerifying] = useState(false);
   const [banks, setBanks] = useState<Array<{ name: string; code: string }>>([]);
   const token = localStorage.getItem('jwt_token');
@@ -40,24 +40,24 @@ export default function SellerWallet() {
     fetchWallet();
   }, []);
 
-const fetchWallet = async  () => {
+  const fetchWallet = async () => {
     try {
-        const response = await WalletService.fetchWallet();
-        console.log({response})
-        setData(response);
-    }catch (err) {
-        console.error(err);
-    }finally {
-        setLoading(false);
+      const response = await WalletService.fetchWallet();
+      console.log({ response });
+      setData(response);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-}
+  };
 
   const verifyAccount = async () => {
     if (!accountNumber || !bankCode || accountNumber.length < 10) return;
     setVerifying(true);
     try {
       const response = await WalletService.verifyAccountNumber(accountNumber, bankCode);
-      setAccountName(response?.account_name);
+      setAccountName(response?.account_name || '');
     } catch (err: any) {
       toast.error(err.response?.data?.error || "Verification failed");
       setAccountName('');
@@ -69,10 +69,13 @@ const fetchWallet = async  () => {
   const saveBankDetails = async () => {
     try {
       const response = await WalletService.saveBankDetails(accountNumber, bankCode, accountName || '');
-      if(response){
-      toast.success("Bank details saved successfully");
-      setShowBankModal(false);
-      fetchWallet();
+      if (response) {
+        toast.success("Bank details saved successfully");
+        setShowBankModal(false);
+        setAccountNumber('');
+        setBankCode('');
+        setAccountName('');
+        fetchWallet();
       }
     } catch (err) {
       toast.error("Failed to save bank details");
@@ -89,7 +92,7 @@ const fetchWallet = async  () => {
         await axios.post('/api/v1/withdraw', { amount: amt }, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        toast.error("Withdrawal successful! Check your bank in 1-2 hours.");
+        toast.success("Withdrawal successful! Check your bank in 1-2 hours.");
         setAmount('');
         fetchWallet();
       } catch (err: any) {
@@ -104,13 +107,60 @@ const fetchWallet = async  () => {
       setBanks(response);
     } catch (err) {
       console.error("Failed to fetch banks");
-      return [];
     }
-  }
+  };
 
   useEffect(() => {
     getBankCodes();
   }, []);
+
+  // React Select Options
+  const bankOptions = banks.map(bank => ({
+    value: bank.code,
+    label: bank.name,
+  }));
+
+  // Custom styles to match your design
+  const customStyles = {
+    control: (provided: any) => ({
+      ...provided,
+      borderRadius: '1rem',
+      border: '2px solid #e5e7eb',
+      padding: '0.75rem',
+      fontSize: '1.125rem',
+      boxShadow: 'none',
+      '&:hover': {
+        borderColor: '#a78bfa',
+      },
+    }),
+    menu: (provided: any) => ({
+      ...provided,
+      borderRadius: '1rem',
+      marginTop: '0.5rem',
+      boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+    }),
+    option: (provided: any, state: any) => ({
+      ...provided,
+      backgroundColor: state.isSelected
+        ? '#a78bfa'
+        : state.isFocused
+        ? '#e9d5ff'
+        : 'white',
+      color: state.isSelected ? 'white' : 'black',
+      padding: '0.75rem 1rem',
+      fontSize: '1.1rem',
+    }),
+    singleValue: (provided: any) => ({
+      ...provided,
+      fontSize: '1.125rem',
+      fontWeight: '500',
+    }),
+    placeholder: (provided: any) => ({
+      ...provided,
+      color: '#9ca3af',
+      fontSize: '1.125rem',
+    }),
+  };
 
   if (loading) {
     return (
@@ -249,7 +299,7 @@ const fetchWallet = async  () => {
         )}
       </div>
 
-      {/* Bank Modal */}
+      {/* Bank Modal - Now using React Select */}
       {showBankModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <motion.div
@@ -259,49 +309,63 @@ const fetchWallet = async  () => {
           >
             <h2 className="text-3xl font-bold mb-6">Add Bank Account</h2>
             <div className="space-y-5">
-              <select
-                value={bankCode}
-                onChange={(e) => setBankCode(e.target.value)}
-                className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl text-lg"
-              >
-                <option value="">Select Bank</option>
-                {banks.map(b => (
-                  <option key={b.code} value={b.code}>{b.name}</option>
-                ))}
-              </select>
+
+              {/* Searchable Bank Selection with React Select */}
+              <Select
+                options={bankOptions}
+                value={bankOptions.find(opt => opt.value === bankCode) || null}
+                onChange={(selected: any) => setBankCode(selected?.value || '')}
+                placeholder="Search and select your bank..."
+                isSearchable
+                isLoading={banks.length === 0}
+                styles={customStyles}
+                noOptionsMessage={() => "No banks found"}
+                className="text-lg"
+              />
 
               <input
                 type="text"
-                placeholder="Account Number"
+                placeholder="Account Number (10 digits)"
                 value={accountNumber}
                 onChange={(e) => {
-                  setAccountNumber(e.target.value);
-                  if (e.target.value.length === 10) verifyAccount();
+                  const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                  setAccountNumber(value);
+                  if (value.length === 10 && bankCode) {
+                    verifyAccount();
+                  }
                 }}
                 className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl text-lg"
               />
 
-              <div className="p-4 bg-gray-50 rounded-2xl">
-                {verifying && <p className="text-gray-600">Verifying...</p>}
-                {accountName && (
+              <div className="p-4 bg-gray-50 rounded-2xl min-h-[60px] flex items-center">
+                {verifying && <p className="text-gray-600">Verifying account...</p>}
+                {!verifying && accountName && (
                   <p className="text-green-600 font-bold flex items-center gap-2">
                     <CheckCircle className="w-6 h-6" />
                     {accountName}
                   </p>
                 )}
+                {!verifying && !accountName && accountNumber.length === 10 && bankCode && (
+                  <p className="text-red-500">Could not verify account</p>
+                )}
               </div>
 
               <div className="flex gap-4">
                 <button
-                  onClick={() => setShowBankModal(false)}
-                  className="flex-1 py-4 bg-gray-200 rounded-2xl font-bold"
+                  onClick={() => {
+                    setShowBankModal(false);
+                    setAccountNumber('');
+                    setBankCode('');
+                    setAccountName('');
+                  }}
+                  className="flex-1 py-4 bg-gray-200 rounded-2xl font-bold hover:bg-gray-300 transition"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={saveBankDetails}
-                  disabled={!accountName}
-                  className="flex-1 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl font-bold disabled:from-gray-400 disabled:to-gray-500"
+                  disabled={!accountName || verifying || !bankCode || accountNumber.length !== 10}
+                  className="flex-1 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl font-bold disabled:from-gray-400 disabled:to-gray-500 transition"
                 >
                   Save Bank
                 </button>

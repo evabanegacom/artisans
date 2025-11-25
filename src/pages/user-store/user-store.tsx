@@ -26,6 +26,7 @@ const UserStore = () => {
     setLoading(true);
     try {
       const storeInfo = await AuthService.findUserByStoreName(store_name);
+      console.log({storeInfo})
       setStoreOwner(storeInfo?.user);
 
       const response = await ProductService.getProductByStore(store_name, currentPage);
