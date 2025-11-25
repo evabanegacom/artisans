@@ -74,7 +74,8 @@ const SignUp = () => {
     try {
       const response = await AuthService.createAccount(formData);
       toast.success(response?.message);
-      localStorage.setItem('user', JSON.stringify(response?.jwt_token));
+      localStorage.setItem('token', JSON.stringify(response?.jwt_token));
+      localStorage.setItem('user', JSON.stringify(response?.user));
       setTimeout(() => {
         window.location.href = '/';
       }, 2000);

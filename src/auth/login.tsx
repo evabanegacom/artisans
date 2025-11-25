@@ -31,7 +31,9 @@ const Login = () => {
         localStorage.clear();
         try {
             const response = await AuthService.login(user);
-            localStorage.setItem('user', JSON.stringify(response.jwt_token));
+            toast.success(response?.message);
+      localStorage.setItem('token', JSON.stringify(response?.jwt_token));
+      localStorage.setItem('user', JSON.stringify(response?.user));
             // Handle success, redirect, or perform additional actions
             setLoading(false)
             setTimeout(() => {

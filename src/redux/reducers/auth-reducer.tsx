@@ -1,62 +1,49 @@
-import { jwtDecode } from "jwt-decode";
+interface AvatarProps {
+    url: string;
+}
 
-interface userDataProps {
-    id: string;
-    email: string;
+interface UserDataProps {
+    id: number;
+    uuid: string;
     name: string;
+    email: string;
     activated: boolean;
     seller: boolean;
     store_name: string;
     mobile: string;
     state: string;
-    url: string;
+    account_name: string | null;
+    account_number: string | null;
+    bank_code: string | null;
+    paystack_recipient_code: string | null;
+    avatar: AvatarProps | null;
 }
 
-interface authProps {
+interface AuthProps {
     isAuth: boolean;
-    user: userDataProps | null;
+    user: UserDataProps | null;
 }
 
-let initialState: authProps = {
+let initialState: AuthProps = {
     isAuth: false,
     user: null
 };
 
-const userData = localStorage?.getItem("user");
+// Load user from localStorage
+const storedUser = localStorage.getItem("user");
+console.log({storedUser});
 
-if (userData) {
+if (storedUser) {
     try {
-        // Parse stored JSON
-        const token = JSON.parse(userData);
+        const parsedUser: UserDataProps = JSON.parse(storedUser);
 
-        // Extract token string (IMPORTANT FIX)
-
-        if (token && typeof token === "string") {
-            const decodedToken: any = jwtDecode(token);
-            const expiresAt = new Date(decodedToken.exp * 1000);
-
-            if (new Date() > expiresAt) {
-                // Token expired — clear user
-                localStorage.removeItem("user");
-            } else {
-                // Token still valid — hydrate state
-                initialState = {
-                    isAuth: true,
-                    user: {
-                        id: decodedToken.user_id,
-                        email: decodedToken.email,
-                        name: decodedToken?.name,
-                        activated: decodedToken.activated,
-                        seller: decodedToken.seller,
-                        store_name: decodedToken.store_name,
-                        mobile: decodedToken.mobile,
-                        state: decodedToken.state,
-                        url: decodedToken.avatar?.url
-                    }
-                };
-            }
+        if (parsedUser && parsedUser.id) {
+            initialState = {
+                isAuth: true,
+                user: parsedUser
+            };
         } else {
-            console.warn("Stored user has no valid token");
+            localStorage.removeItem("user");
         }
     } catch (error) {
         console.error("Failed to parse stored user:", error);

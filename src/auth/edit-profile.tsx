@@ -44,8 +44,9 @@ const EditProfile = () => {
     try {
       const response = await AuthService.updateUserInfo(formData, user?.id);
       // Handle success, redirect, or perform additional actions
-      toast.success(response?.message)
-      localStorage.setItem('user', JSON.stringify(response?.jwt_token));
+      toast.success(response?.message);
+      localStorage.setItem('token', JSON.stringify(response?.jwt_token));
+      localStorage.setItem('user', JSON.stringify(response?.user));
       // setTimeout(() => {
       //   window.location.href = '/';
       // }, 2000)

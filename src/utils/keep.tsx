@@ -292,6 +292,13 @@
 //   );
 // };
 
+// recious@precious-HP-EliteBook-x360-1030-G4:~/artisans$ fly ssh console -a artisans --command "bundle exec rails console"
+// Connecting to fdaa:0:9f2b:a7b:15d:db44:7cf:2... complete
+// Loading production environment (Rails 7.0.8.1)
+// Switch to inspect mode.
+// User.all
+
+
 // export default Navbar;
 
 import React from 'react'
