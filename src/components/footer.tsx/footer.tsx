@@ -1,6 +1,7 @@
 /*  components/Footer.tsx  */
 import { FiMail, FiPhone, FiMapPin, FiFacebook, FiTwitter, FiInstagram, FiYoutube, FiSend } from "react-icons/fi";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const categories = [
@@ -99,7 +100,9 @@ const Footer = () => {
               </p>
               <p className="flex items-center gap-2">
                 <FiMail className="text-emerald-500" />
-                udegbue69@gmail.com
+                <Link to='/support'>
+                  Contact Support
+                </Link>
               </p>
               <p className="flex items-center gap-2">
                 <FiPhone className="text-emerald-500" />

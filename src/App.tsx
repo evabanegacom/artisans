@@ -52,7 +52,20 @@ function App() {
   return (
     <ErrorBoundary fallback={<div>Something went wrong</div>}>
       <div className='w-full overflow-hidden'>
-        <ToastContainer />
+        <ToastContainer
+  position="top-right"
+  autoClose={5000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+  theme="light"
+  limit={3}
+  style={{ zIndex: 9999 }}
+/>
         <Navbar />
           <Suspense fallback={<Spinner size={16} color="text-blue-500" />}>
             <Routes>

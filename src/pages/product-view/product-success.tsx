@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useLocation, useNavigate, Link } from 'react-router-dom';
 import { CheckCircle, Download, Home, Package } from 'lucide-react';
 import ProductService from '../../services/product-service';
 
@@ -125,9 +125,9 @@ const SuccessPage: React.FC = () => {
             {/* Support Note */}
             <p className="text-center text-sm text-gray-500 mt-8">
               Need help? Contact support at{' '}
-              <a href="mailto:support@yoursite.com" className="text-emerald-600 hover:underline font-medium">
-                support@yoursite.com
-              </a>
+              <Link to="/support" className="text-emerald-600 hover:underline font-medium">
+                our support team
+              </Link>
             </p>
           </div>
         </div>
