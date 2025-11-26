@@ -19,14 +19,12 @@ const UserStore = () => {
   const [loading, setLoading] = useState(false);
 
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
-  console.log({user})
   const isOwner = user?.store_name == store_name;
 
   const getProductsByStore = async () => {
     setLoading(true);
     try {
       const storeInfo = await AuthService.findUserByStoreName(store_name);
-      console.log({storeInfo})
       setStoreOwner(storeInfo?.user);
 
       const response = await ProductService.getProductByStore(store_name, currentPage);
@@ -142,44 +140,59 @@ const UserStore = () => {
             </motion.div>
 
             {/* Store Stats (Only for Owner) */}
-            {isOwner && (
-              <motion.div
-                initial={{ y: 50, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20"
-              >
-                <h3 className="text-2xl font-bold text-white mb-6 text-center">Your Store Stats</h3>
-                <div className="grid grid-cols-3 gap-6 text-center">
-                  <div>
-                    <FaBox className="w-10 h-10 text-purple-400 mx-auto mb-2" />
-                    <p className="text-3xl font-black text-white">{storeStats.total_products || products.products?.length || 0}</p>
-                    <p className="text-gray-300 text-sm">Products</p>
-                  </div>
-                  <div>
-                    <FaChartLine className="w-10 h-10 text-pink-400 mx-auto mb-2" />
-                    <p className="text-3xl font-black text-white">{storeStats?.summary?.completed_orders || 0}</p>
-                    <p className="text-gray-300 text-sm">Sales</p>
-                  </div>
-                  <div>
-                    <FaDollarSign className="w-10 h-10 text-emerald-400 mx-auto mb-2" />
-                    <p className="text-3xl font-black text-white">{storeStats?.summary?.total_revenue || "₦0"}</p>
-                    <p className="text-gray-300 text-sm">Revenue</p>
-                  </div>
-                </div>
+          
+{isOwner && (
+  <motion.div
+    initial={{ y: 50, opacity: 0 }}
+    animate={{ y: 0, opacity: 1 }}
+    transition={{ delay: 0.4 }}
+    className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20"
+  >
+    <h3 className="text-2xl font-bold text-white mb-6 text-center">Your Store Stats</h3>
+    <div className="grid grid-cols-3 gap-6 text-center">
+      <div>
+        <FaBox className="w-10 h-10 text-purple-400 mx-auto mb-2" />
+        <p className="text-3xl font-black text-white">{storeStats.total_products || products.products?.length || 0}</p>
+        <p className="text-gray-300 text-sm">Products</p>
+      </div>
+      <div>
+        <FaChartLine className="w-10 h-10 text-pink-400 mx-auto mb-2" />
+        <p className="text-3xl font-black text-white">{storeStats?.summary?.completed_orders || 0}</p>
+        <p className="text-gray-300 text-sm">Sales</p>
+      </div>
+      <div>
+        <FaDollarSign className="w-10 h-10 text-emerald-400 mx-auto mb-2" />
+        <p className="text-3xl font-black text-white">{storeStats?.summary?.total_revenue || "₦0"}</p>
+        <p className="text-gray-300 text-sm">Revenue</p>
+      </div>
+    </div>
 
-                {/* SALES DASHBOARD BUTTON */}
-                <Link to={`/${store_name}/sales`}>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="w-full mt-8 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-2xl shadow-2xl hover:shadow-purple-500/50 transition-all text-lg"
-                  >
-                    Go to Sales Dashboard
-                  </motion.button>
-                </Link>
-              </motion.div>
-            )}
+    <div className="mt-8 space-y-4">
+      {/* Sales Dashboard Button */}
+      <Link to={`/${store_name}/sales`}>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="w-full px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-2xl shadow-2xl hover:shadow-purple-500/50 transition-all text-lg"
+        >
+          Go to Sales Dashboard
+        </motion.button>
+      </Link>
+
+      {/* Withdrawal Dashboard Button - NEW */}
+      <Link to={`/${store_name}/seller-wallet`}>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="w-full mt-6 px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-2xl shadow-2xl hover:shadow-emerald-500/50 transition-all text-lg flex items-center justify-center gap-3"
+        >
+          <FaDollarSign size={24} />
+          <span>Withdrawal Dashboard</span>
+        </motion.button>
+      </Link>
+    </div>
+  </motion.div>
+)}
 
             {/* Action Buttons */}
             <motion.div
