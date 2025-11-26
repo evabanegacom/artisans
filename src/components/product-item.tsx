@@ -25,7 +25,8 @@ const ProductItem: React.FC<Props> = ({ product, getProducts }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isPaymentReady, setPaymentReady] = useState(false);
   const paystackButtonRef = useRef<{ triggerPayment: () => void } | null>(null);
-  console.log({user, product})
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
+
   const deleteProduct = async () => {
     setDeleting(true);
     try {
@@ -42,6 +43,7 @@ const ProductItem: React.FC<Props> = ({ product, getProducts }) => {
   // const generateOrderNumber = () => `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
   const handleSuccess = async (reference: any) => {
+    setPaymentProcessing(true);
     try {
       const response = await ProductService.send_download_link(
         product.id,
@@ -63,6 +65,8 @@ const ProductItem: React.FC<Props> = ({ product, getProducts }) => {
     } catch (err) {
       console.error('Failed to create order:', err);
       alert('Payment successful, but failed to generate download link. Contact support.');
+    } finally {
+      setPaymentProcessing(false);
     }
   };
 
@@ -256,6 +260,36 @@ const ProductItem: React.FC<Props> = ({ product, getProducts }) => {
         onClose={() => setModalOpen(false)}
         onSubmit={handleModalSubmit}
       />
+
+      {/* Payment Processing Loader */}
+<AnimatePresence>
+  {paymentProcessing && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm"
+    >
+      <motion.div
+        initial={{ scale: 0.9 }}
+        animate={{ scale: 1 }}
+        exit={{ scale: 0.9 }}
+        className="bg-white rounded-2xl p-8 shadow-2xl flex flex-col items-center gap-4"
+      >
+        {/* Spinner */}
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-gray-200 rounded-full animate-spin border-t-red-600"></div>
+          <FiShoppingBag className="absolute inset-0 m-auto text-red-600" size={32} />
+        </div>
+
+        <div className="text-center">
+          <h3 className="text-lg font-bold text-gray-900">Processing Your Order...</h3>
+          <p className="text-sm text-gray-600 mt-1">Generating your secure download link</p>
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
     </>
   );
 };
