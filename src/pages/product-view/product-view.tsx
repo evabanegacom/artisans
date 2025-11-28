@@ -161,7 +161,9 @@ const ProductView = () => {
               <img
                 src={productDetails.image_urls?.[activeImg] || "/placeholder.jpg"}
                 alt={productDetails.name}
-                className="w-full h-96 md:h-full object-cover"
+                onContextMenu={(e) => e.preventDefault()}
+                draggable={false}
+                className="w-full h-96 md:h-full object-cover cursor-not-allowed"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition" />
             </motion.div>
@@ -175,7 +177,7 @@ const ProductView = () => {
                   onClick={() => setActiveImg(i)}
                   className={`rounded-xl overflow-hidden border-4 ${activeImg === i ? "border-red-950" : "border-transparent"}`}
                 >
-                  <img src={img} alt="" className="w-full h-24 object-cover" />
+                  <img src={img} alt="" draggable={false} className="w-full h-24 object-cover" onContextMenu={(e) => e.preventDefault()} />
                 </motion.button>
               ))}
             </div>
@@ -214,6 +216,8 @@ const ProductView = () => {
         src={productDetails.user?.avatar?.url || "https://i.pravatar.cc/80"}
         alt={productDetails.sold_by}
         className="w-16 h-16 rounded-full ring-4 ring-white shadow-xl object-cover"
+        draggable={false}
+        onContextMenu={(e) => e.preventDefault()}
       />
       <div>
         <p className="font-bold text-xl text-gray-800">{productDetails.sold_by}</p>

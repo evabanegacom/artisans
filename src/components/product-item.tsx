@@ -112,6 +112,8 @@ const ProductItem: React.FC<Props> = ({ product, getProducts }) => {
           <img
             src={product?.pictureOne?.url || "/api/placeholder/400/400"}
             alt={product?.name}
+            onContextMenu={(e) => e.preventDefault()}
+            draggable={false}
             loading="lazy"
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           />
