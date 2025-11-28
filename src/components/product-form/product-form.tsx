@@ -47,7 +47,7 @@ const ProductForm: React.FC = () => {
     if (file) {
       const maxSize = 10 * 1024 * 1024; // 20MB
       if (file.size > maxSize) {
-        toast.error("Digital file must not exceed 20MB.");
+        toast.error("Digital file must not exceed 10MB.");
         e.target.value = "";
         setFormData({ ...formData, download_file: '' });
         return;
