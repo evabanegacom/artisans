@@ -45,7 +45,7 @@ const ProductForm: React.FC = () => {
   const handleDownloadFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const maxSize = 20 * 1024 * 1024; // 20MB
+      const maxSize = 10 * 1024 * 1024; // 20MB
       if (file.size > maxSize) {
         toast.error("Digital file must not exceed 20MB.");
         e.target.value = "";
@@ -256,7 +256,7 @@ const ProductForm: React.FC = () => {
                       onChange={handleDownloadFileChange}
                       className="block w-full text-sm text-gray-600 file:mr-4 file:py-4 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gradient-to-r file:from-indigo-600 file:to-purple-600 file:text-white hover:file:from-indigo-700 hover:file:to-purple-700 cursor-pointer"
                     />
-                    <p className="text-xs text-gray-500 mt-2">Max 20MB • PDF, ZIP, MP4, etc.</p>
+                    <p className="text-xs text-gray-500 mt-2">Max 10MB • PDF, ZIP, MP4, etc.</p>
                   </div>
 
                   <div className="pt-8 text-center">
