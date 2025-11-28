@@ -340,11 +340,11 @@ const ProductView = () => {
         </div>
 
         {/* ===== PRINTABLES / PHOTOGRAPHY PREVIEW ===== */}
-        {(productDetails.category === "Printables" || productDetails.category === "Photography") && (
+        {/* {(productDetails.category === "Printables" || productDetails.category === "Photography") && (
           <div className="mt-16">
             <Preview preferred={productDetails.image_urls[0]} fill={false} />
           </div>
-        )}
+        )} */}
 
         {/* ===== SIMILAR PRODUCTS ===== */}
         {similarProducts.length > 0 && (

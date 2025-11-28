@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { uniqueProductNumber } from '../../constants';
 import ProductService from '../../services/product-service';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,7 +12,6 @@ const ProductForm: React.FC = () => {
   const user = useSelector((state: any) => state?.reducer?.auth?.user);
   const isLoggedin = useSelector((state: any) => state?.reducer?.auth?.isAuth);
   const [sending, setSending] = useState(false);
-
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState<any>({
@@ -31,227 +29,258 @@ const ProductForm: React.FC = () => {
     product_number: '',
     tags: ['craft'],
     download_file: '',
-    user_id: user?.id
+    user_id: user?.id,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | any>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
   const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const tagsValue = e.target.value;
-    setFormData({ ...formData, tags: tagsValue.split(',').map(tag => tag.trim()) });
+    setFormData({ ...formData, tags: tagsValue.split(',').map(tag => tag.trim()).filter(Boolean) });
   };
 
   const handleDownloadFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files && e.target.files[0];
-  
+    const file = e.target.files?.[0];
     if (file) {
-      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
-  
+      const maxSize = 20 * 1024 * 1024; // 20MB
       if (file.size > maxSize) {
-        toast.error("File size must not exceed 5MB.");
-        // Clear the input value so user can re-select
+        toast.error("Digital file must not exceed 20MB.");
         e.target.value = "";
         setFormData({ ...formData, download_file: '' });
         return;
       }
-  
       setFormData({ ...formData, download_file: file });
     } else {
       setFormData({ ...formData, download_file: '' });
     }
   };
-  
-    
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name;
-    const file = e.target.files && e.target.files[0];
+    const file = e.target.files?.[0];
+
     const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/svg+xml"];
-    const maxSize = 1024 * 1024; // 1 megabyte
+    const maxSize = 1024 * 1024; // 1MB
+
     if (file && !allowedTypes.includes(file.type)) {
-      toast.error("Please select a valid image file (JPEG, JPG, PNG, SVG).");
-      e.target.value = ''; // Clear the input
+      toast.error("Only JPEG, JPG, PNG, and SVG images are allowed.");
+      e.target.value = '';
       return;
     }
 
     if (file && file.size > maxSize) {
-      toast.error("The selected image file is too large. Please select an image file under 1 megabyte.");
+      toast.error("Image must be under 1MB.");
       e.target.value = '';
       return;
     }
 
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData({ ...formData, [name]: file }); // Store the file itself, not its data URL
-      };
-      reader.readAsDataURL(file);
+      setFormData({ ...formData, [name]: file });
     } else {
       setFormData({ ...formData, [name]: '' });
     }
   };
-  
-  const handleSubmit = async (e: any) => {
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Critical: Enforce main image manually
+    if (!formData.pictureOne || !(formData.pictureOne instanceof File)) {
+      toast.error("Please upload the main product image (Picture 1).");
+      return;
+    }
+
     setLoading(true);
-  
+
     try {
       const productData = new FormData();
-  
-      // Append all form data except file inputs and tags
+
       Object.entries(formData).forEach(([key, value]: [string, any]) => {
-        if (typeof value !== 'object' || value instanceof File) {
+        if (value instanceof File && value.size > 0) {
           productData.append(key, value);
+        } else if (key === 'tags' && Array.isArray(value)) {
+          productData.append(key, value.join(','));
+        } else if (value !== null && value !== undefined && value !== '') {
+          productData.append(key, String(value));
         }
       });
-  
-      // Append file inputs
-      productData.append('tags', formData.tags.join(','));
-      
-
-      for (const [name, file] of Object.entries(formData)) {
-        if (file instanceof File) {
-          productData.append(name, file);
-        }
-      }
-  
-      // Append tags
 
       await ProductService.createProduct(productData);
-      // Handle success, redirect, or perform additional actions
-      toast.success('Product created successfully');
-      window.location.href = `/store/${user?.store_name}`
-    } catch (error) {
-      // Handle error
-      console.error('Error creating product:', error);
-      toast.error('Error creating product');
+      toast.success('Product published successfully!');
+      window.location.href = `/store/${user?.store_name}`;
+    } catch (error: any) {
+      const msg = error?.response?.data?.message || 'Failed to create product. Please try again.';
+      toast.error(msg);
     } finally {
-      setLoading(false); // Set loading state to false regardless of success or failure
+      setLoading(false);
     }
   };
 
-  const generateActivationLink = async (e: any) => {
-    setSending(true)
+  const generateActivationLink = async () => {
+    setSending(true);
     try {
-      const response = await AuthService?.generateActivationLink(user?.email);
-      // Handle success, redirect, or perform additional actions
-      toast.success(response?.message)
-    } catch (error:any) {
-      // Handle error
-      const errorMessages = error?.response?.data?.message
-      toast.error(errorMessages)
-      console.error('Error creating user:', error);
+      const response = await AuthService.generateActivationLink(user?.email);
+      toast.success(response?.message || "Activation link sent to your email!");
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Failed to send activation link.");
     } finally {
-      setSending(false); // Set loading state to false regardless of success or failure
+      setSending(false);
     }
   };
 
-  const PictureInput = ({ name, required }: { name: string, required: boolean }) => (
-    <div className="mb-4">
-      <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={name}>
-        {name === 'pictureOne' ? 'Product Image:' : 'More(Optional):'}
+  // Premium File Upload Box (required attribute REMOVED from input)
+  const FileUploadBox = ({ name, label, required = false }: { name: string; label: string; required?: boolean }) => (
+    <div className="group">
+      <label className="block text-sm font-semibold text-gray-700 mb-2">
+        {label} {required && <span className="text-red-500">*</span>}
       </label>
-      <div className="relative border border-gray-300 bg-white rounded-md">
-        <input type="file" required={required} name={name} onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-        <div className="flex items-center justify-center py-2 px-4">
-          <svg className="w-6 h-6 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-          </svg>
-          {formData[name] ? (
-            <span className="text-gray-600">{formData[name].name}</span>
-          ) : (
-            <span className="text-gray-600">Choose a file...</span>
-          )}
+      <div className="relative overflow-hidden rounded-xl border-2 border-dashed border-gray-300 bg-gray-50/50 hover:border-indigo-400 hover:bg-indigo-50/30 transition-all duration-300 cursor-pointer">
+        <input
+          type="file"
+          name={name}
+          onChange={handleFileChange}
+          className="absolute inset-0 opacity-0 cursor-pointer z-10"
+          accept="image/jpeg,image/jpg,image/png,image/svg+xml"
+        />
+        <div className="p-8 text-center">
+          <div className="mx-auto w-16 h-16 mb-4 text-indigo-500 group-hover:scale-110 transition-transform">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 48 48">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M24 16v16m-8-8h16" />
+              <circle cx="24" cy="24" r="20" strokeWidth={2} fill="none" />
+            </svg>
+          </div>
+          <p className="text-sm font-medium text-gray-700">
+            {formData[name] ? formData[name].name : "Click to upload or drag and drop"}
+          </p>
+          <p className="text-xs text-gray-500 mt-1">PNG, JPG, SVG · Max 1MB</p>
         </div>
       </div>
     </div>
   );
 
-  if (!user) {
-    return <Navigate to='/login' />;
-  }
-  
+  if (!user) return <Navigate to="/login" />;
+
   return (
-    <div className='bg-gray-200 py-3'>
-      {isLoggedin && user?.activated === false ?
-    <div className="text-center mt-3">
-      <span className="text-red-500 font-bold text-sm mb-2">Your account is not activated</span>
-      <button onClick={generateActivationLink} className="text-green-500 hover:text-green-700 ml-2">
-        {sending ? <Loader /> : 'Click here'}
-      </button>
-      <span className="text-red-500 font-bold text-sm ml-2">to activate your account</span>
-    </div>
-  : 
-  <>
-    <h1 className='text-center text-2xl font-bold text-white bg-blue-800 py-4 rounded-md mb-3'>Add Product</h1>
-    <form onSubmit={handleSubmit} className="max-w-lg mx-auto mt-8 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-      <div className="mb-4">
-        <input placeholder='Product Name' type="text" name="name" required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-      </div>
-      <div className="mb-4">
-        <textarea placeholder='Product description' name="description" required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
-      </div>
-      <div className="mb-4">
-        <input type="number" placeholder='Product Price' name="price" required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-      </div>
-      <div className="mb-4">
-        <select name="category" value={formData.category} required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-400 leading-tight focus:outline-none focus:shadow-outline">
-          <option value="">Select Product Category</option>
-          {categories.map(category => (
-            <option key={category?.id} value={category?.name}>
-              {category?.title}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className="mb-4">
-        <input placeholder='Quantity' type="number" name="quantity" required onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-      </div>
-
-      <div className="mb-4">
-        <input placeholder='Tags' type="text" name="tags" onChange={handleTagsChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-        <small className="text-gray-500">Enter 5 tags separated by commas</small>
-      </div>
-
-<div className="mb-4">
-      <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pictureOne">
-        Product Image:
-      </label>
-      <div className="relative border border-gray-300 bg-white rounded-md">
-        <input type="file" required name="pictureOne" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-        <div className="flex items-center justify-center py-2 px-4">
-          <svg className="w-6 h-6 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-          </svg>
-          {formData?.pictureOne ? (
-            <span className="text-gray-600">{formData?.pictureOne?.name}</span>
-          ) : (
-            <span className="text-gray-600">Choose a file...</span>
-          )}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50 py-12 px-4">
+      {/* Not Activated Banner */}
+      {isLoggedin && !user?.activated && (
+        <div className="max-w-4xl mx-auto mb-10 p-8 bg-gradient-to-r from-red-500 to-pink-600 rounded-2xl shadow-2xl text-white text-center">
+          <p className="text-lg font-semibold">Your account is not activated yet.</p>
+          <button
+            onClick={generateActivationLink}
+            disabled={sending}
+            className="mt-4 inline-flex items-center gap-2 bg-white text-red-600 font-bold py-3 px-8 rounded-full hover:bg-gray-100 transition shadow-lg"
+          >
+            {sending ? <Loader /> : "Resend Activation Link"}
+          </button>
         </div>
-      </div>
-    </div>
+      )}
 
-<PictureInput name="pictureTwo" required={false} />
-<PictureInput name="pictureThree" required={false}/>
-<PictureInput name="pictureFour" required={false}/>
-<div className="mb-4">
-       <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="download_file">
-        Upload downloadable product file:
-      </label>
-        <input placeholder='Downloadable File (for digital products)' type="file" name="download_file" 
-        onChange={handleDownloadFileChange}
-        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-      </div>
+      {/* Main Form - Only shown when activated */}
+      {isLoggedin && user?.activated && (
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h1 className="text-5xl font-extrabold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              Add New Product
+            </h1>
+            <p className="mt-3 text-lg text-gray-600">Showcase your craftsmanship to the world</p>
+          </div>
 
-      
-      <button disabled={loading} type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3">
-        {loading ? <Loader /> : 'Submit'} </button>
-    </form>
-    </>
-    }
+          <div className="backdrop-blur-xl bg-white/80 shadow-2xl rounded-3xl overflow-hidden border border-white/20">
+            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-1">
+              <div className="bg-white p-10">
+                <form onSubmit={handleSubmit} className="space-y-8">
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Product Name <span className="text-red-500">*</span></label>
+                      <input type="text" name="name" required onChange={handleChange} placeholder="e.g. Handwoven Silk Scarf"
+                        className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all outline-none" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Price (₦) <span className="text-red-500">*</span></label>
+                      <input type="number" name="price" required onChange={handleChange} placeholder="25000"
+                        className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all outline-none" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Description <span className="text-red-500">*</span></label>
+                    <textarea name="description" required rows={5} onChange={handleChange} placeholder="Tell customers why they’ll love this piece..."
+                      className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all outline-none resize-none" />
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Category <span className="text-red-500">*</span></label>
+                      <select name="category" required onChange={handleChange as any}
+                        className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                        <option value="">Choose category</option>
+                        {categories.map((cat: any) => (
+                          <option key={cat.id} value={cat.name}>{cat.title}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Quantity <span className="text-red-500">*</span></label>
+                      <input type="number" name="quantity" required onChange={handleChange} placeholder="10"
+                        className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all outline-none" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Tags <span className="text-gray-500 text-xs font-normal">(comma-separated, max 20)</span>
+                    </label>
+                    <input type="text" placeholder="handmade, african print, ankara, luxury, gift" onChange={handleTagsChange}
+                      className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all outline-none" />
+                  </div>
+
+                  <div className="space-y-6">
+                    <h3 className="text-xl font-bold text-gray-800">Product Images</h3>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <FileUploadBox name="pictureOne" label="Main Product Image" required />
+                      <FileUploadBox name="pictureTwo" label="Image 2 (Optional)" />
+                      <FileUploadBox name="pictureThree" label="Image 3 (Optional)" />
+                      <FileUploadBox name="pictureFour" label="Image 4 (Optional)" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Digital Product File (Optional)</label>
+                    <input
+                      type="file"
+                      name="download_file"
+                      onChange={handleDownloadFileChange}
+                      className="block w-full text-sm text-gray-600 file:mr-4 file:py-4 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gradient-to-r file:from-indigo-600 file:to-purple-600 file:text-white hover:file:from-indigo-700 hover:file:to-purple-700 cursor-pointer"
+                    />
+                    <p className="text-xs text-gray-500 mt-2">Max 20MB • PDF, ZIP, MP4, etc.</p>
+                  </div>
+
+                  <div className="pt-8 text-center">
+                    <button
+                      disabled={loading}
+                      type="submit"
+                      className="inline-flex items-center gap-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold text-lg py-5 px-12 rounded-full shadow-2xl hover:shadow-indigo-500/50 transform hover:scale-105 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+                    >
+                      {loading ? <Loader /> : (
+                        <>
+                          <span>Publish Product</span>
+                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
