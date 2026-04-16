@@ -1,319 +1,383 @@
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import ProductService from '../../services/product-service';
+import { useParams, Navigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import ProductService from '../../services/product-service';
 import Loader from '../../constants/Loader';
 import categories from '../../constants/categories';
-import { Navigate, useParams } from 'react-router-dom';
 import { AiFillDelete } from 'react-icons/ai';
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes, FaImage, FaTag } from 'react-icons/fa';
 
 const EditProduct: React.FC = () => {
-    const { id } = useParams();
-    const user = useSelector((state: any) => state?.reducer?.auth?.user);
-    const [loading, setLoading] = useState(false);
-    const [productDetail, setProductDetail] = useState<any>({});
+  const { id } = useParams<{ id: string }>();
+  const user = useSelector((state: any) => state?.reducer?.auth?.user);
 
-    const [formData, setFormData] = useState<any>({
-        name: productDetail?.name || '',
-        description: productDetail?.description || '',
-        price: productDetail?.price || '',
-        category: productDetail?.category || '',
-        quantity: productDetail?.quantity || '',
+  const [loading, setLoading] = useState(false);
+  const [productDetail, setProductDetail] = useState<any>({});
+  const [formData, setFormData] = useState<any>({
+    name: '',
+    description: '',
+    price: '',
+    category: '',
+    quantity: '',
+    sold_by: user?.store_name || '',
+    contact_number: user?.mobile || '',
+    product_number: '',
+    tags: [] as string[],
+    pictureOne: null as File | null,
+    pictureTwo: null as File | null,
+    pictureThree: null as File | null,
+    pictureFour: null as File | null,
+    user_id: user?.id,
+  });
+
+  const fileRefs = {
+    pictureOne: useRef<HTMLInputElement>(null),
+    pictureTwo: useRef<HTMLInputElement>(null),
+    pictureThree: useRef<HTMLInputElement>(null),
+    pictureFour: useRef<HTMLInputElement>(null),
+  };
+
+  // Fetch product details
+  const getProduct = async () => {
+    try {
+      setLoading(true);
+      const response = await ProductService.getProductToEdit(id as string);
+      const product = response?.data;
+
+      setProductDetail(product);
+      setFormData({
+        name: product?.name || '',
+        description: product?.description || '',
+        price: product?.price || '',
+        category: product?.category || '',
+        quantity: product?.quantity || '',
         sold_by: user?.store_name || '',
         contact_number: user?.mobile || '',
-        product_number: productDetail?.product_number || '',
-        pictureOne: '',
-        pictureTwo: '',
-        pictureThree: '',
-        pictureFour: '',
-        tags: ['beauty'],
-        user_id: user?.id
+        product_number: product?.product_number || '',
+        tags: product?.tags || [],
+        user_id: user?.id,
+      });
+    } catch (error) {
+      toast.error('Failed to load product details');
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (id) getProduct();
+  }, [id]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev: any) => ({ ...prev, [name]: value }));
+  };
+
+  const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const tagsValue = e.target.value;
+    setFormData((prev: any) => ({
+      ...prev,
+      tags: tagsValue.split(',').map((tag) => tag.trim()).filter(Boolean),
+    }));
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      tags: prev.tags.filter((tag: string) => tag !== tagToRemove),
+    }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name } = e.target;
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+    const maxSize = 2.5 * 1024 * 1024; // 2.5MB
+
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Please upload a valid image (JPG, PNG, or WebP)");
+      return;
+    }
+
+    if (file.size > maxSize) {
+      toast.error("Image size must be less than 2.5MB");
+      return;
+    }
+
+    setFormData((prev: any) => ({ ...prev, [name]: file }));
+  };
+
+  const triggerFileSelect = (field: keyof typeof fileRefs) => {
+    fileRefs[field].current?.click();
+  };
+
+  const handleDeleteImage = async (index: string) => {
+    if (index === 'One') {
+      toast.error("You cannot delete the main image. Replace it instead.");
+      return;
+    }
+
+    if (!window.confirm(`Delete this image?`)) return;
+
+    setLoading(true);
+    try {
+      const updatedFormData = { ...formData, [`picture${index}`]: '' };
+      await ProductService.updateProduct(updatedFormData, productDetail?.id);
+      toast.success("Image removed successfully");
+      getProduct();
+    } catch (error) {
+      toast.error("Failed to delete image");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const formPayload = new FormData();
+
+    // Append text fields
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key === 'tags' && Array.isArray(value)) {
+        value.forEach(tag => formPayload.append('tags[]', tag));
+      } else if (value !== null && value !== undefined && !(value instanceof File)) {
+        formPayload.append(key, value as string);
+      }
     });
-    
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const name = e.target.name;
-        const file = e.target.files && e.target.files[0];
-        const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/svg+xml"];
-        const maxSize = 1024 * 1024; // 1 megabyte
+    // Append image files
+    ['pictureOne', 'pictureTwo', 'pictureThree', 'pictureFour'].forEach((key) => {
+      if (formData[key] instanceof File) {
+        formPayload.append(key, formData[key]);
+      }
+    });
 
-        if (file && !allowedTypes.includes(file.type)) {
-            toast.error("Please select a valid image file (JPEG, JPG, PNG, SVG).");
-            e.target.value = ''; // Clear the input
-            return;
-        }
-
-        if (file && file.size > maxSize) {
-            toast.error("The selected image file is too large. Please select an image file under 1 megabyte.");
-            e.target.value = '';
-            return;
-        }
-
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setFormData({ ...formData, [name]: file }); // Store the file itself, not its data URL
-            };
-            reader.readAsDataURL(file);
-        } else {
-            setFormData({ ...formData, [name]: '' });
-        }
-    };
-    
-
-    const getProduct = async () => {
-        try {
-            const product = await ProductService.getProductToEdit(id as string);
-            console.log({product})
-            setProductDetail(product?.data as any);
-            setFormData({
-                name: product?.data?.name,
-                description: product?.data?.description,
-                price: product?.data?.price,
-                category: product?.data?.category,
-                quantity: product?.data?.quantity,
-                sold_by: user?.store_name,
-                contact_number: user?.mobile,
-                product_number: product?.data?.product_number,
-                tags: product?.data?.tags,
-                user_id: user?.id
-            });
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        getProduct();
-    }, []);
-
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | any>) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
-
-    const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const tagsValue = e.target.value;
-        setFormData({ ...formData, tags: tagsValue.split(',').map(tag => tag.trim()) });
-    };
-
-    
-
-    const handleSubmit = async (e: any) => {
-        e.preventDefault();
-        setLoading(true);
-        try {
-            // Fetch the existing product data
-            const existingProduct = await ProductService.getProduct(id as any);
-            const existingTags = existingProduct.data.tags;
-
-            // Merge the existing tags with the new tags
-            const updatedTags = [...existingTags, ...formData.tags];
-
-            const productData: any = new FormData();
-
-            // Append all form data except file inputs
-            Object.entries(formData).forEach(([key, value]: [string, any]) => {
-                if (key !== 'tags' && (typeof value !== 'object' || value instanceof File)) {
-                    productData.append(key, value);
-                }
-            });
-
-            // Append updated tags
-            updatedTags.forEach(tag => {
-                productData.append('tags[]', tag);
-            });
-            // Append file inputs
-            for (const [name, file] of Object.entries(formData)) {
-                if (file instanceof File) {
-                    console.log({file})
-                    productData.append(name, file);
-                }else if(file === '') {
-                    productData.append(name, '');
-                    console.log({file})
-                }
-            }
-
-            console.log({productData})
-            await ProductService.updateProduct(productData, productDetail?.id as any);
-            toast.success('Product updated successfully');
-            getProduct();
-        } catch (error) {
-            toast.error('Error updating product');
-        } finally {
-            setLoading(false);
-        }
-    };
-    
-    const handleRemoveTag = async (tagToRemove: string) => {
-        // Filter out the tag to remove from the tags state
-        const updatedTags = productDetail?.tags?.filter((tag: string) => tag !== tagToRemove);
-
-        // Update the formData state with the updated tags
-        setFormData((prevFormData: any) => ({ ...prevFormData, tags: updatedTags }));
-
-        try {
-            // Call ProductService.updateProduct with the updated formData
-            const updatedFormData = { ...formData, tags: updatedTags || [] }; // Ensure tags property is always included
-            await ProductService.updateProduct(updatedFormData, productDetail?.id as any);
-            getProduct();
-        } catch (error) {
-            console.error('Error updating product:', error);
-            // Handle error appropriately, such as displaying an error message to the user
-        }
-    };
-
-    const handleDeleteImage = async (index: string) => {
-        if(index === 'One') {
-            toast.error('You cannot delete the main image, you can only replace it with another image.');
-            return;
-        }
-        setLoading(true);
-        try {
-            const updatedFormData = { ...formData, [`picture${index}`]: '' };
-            await ProductService.updateProduct(updatedFormData, productDetail?.id as any);
-            getProduct();
-        } catch (error) {
-            console.error('Error deleting image:', error);
-            // Handle error appropriately, such as displaying an error message to the user
-        } finally {
-            setLoading(false);
-        }
+    try {
+      await ProductService.updateProduct(formPayload, productDetail?.id);
+      toast.success("Product updated successfully!");
+      getProduct(); // Refresh data
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Failed to update product");
+    } finally {
+      setLoading(false);
     }
+  };
 
-    if (!user) {
-        return <Navigate to='/login' />;
-    }
+  if (!user) return <Navigate to="/login" />;
 
-    return (
-        <>
-            {productDetail && productDetail?.name ?
-                <div className='bg-gray-200 py-3'>
-                    <h1 className='text-center text-2xl font-bold text-white bg-blue-800 py-4 rounded-md mb-3'>Edit</h1>
-                    <form onSubmit={handleSubmit} className="max-w-lg mx-auto mt-8 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-                                Product Name:
-                            </label>
-                            <input type="text" name="name" onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 placeholder-gray-400 leading-tight focus:outline-none focus:shadow-outline" placeholder={productDetail?.name} />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
-                                Description:
-                            </label>
-                            <textarea name="description" placeholder={productDetail?.description} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight placeholder-gray-400 focus:outline-none focus:shadow-outline"></textarea>
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="price">
-                                Price:
-                            </label>
-                            <input type="number" name="price" placeholder={productDetail?.price} onChange={handleChange} className="shadow appearance-none border placeholder-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="category">
-                                Category:
-                            </label>
-                            <select name="category" value={formData?.category} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                                <option value="">{productDetail?.category}</option>
-                                {categories.map(category => (
-                                    <option key={category?.id} value={category?.name}>
-                                        {category?.title}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="quantity">
-                                Quantity:
-                            </label>
-                            <input type="number" placeholder={productDetail?.quantity} name="quantity" onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 placeholder-gray-400 leading-tight focus:outline-none focus:shadow-outline" />
-                        </div>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-3 bg-white shadow-md px-8 py-4 rounded-3xl">
+            <FaImage className="text-3xl text-amber-600" />
+            <h1 className="text-4xl font-bold text-gray-800">Edit Product</h1>
+          </div>
+          <p className="text-gray-600 mt-3">Update your product details and images</p>
+        </div>
 
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="tags">
-                                Tags:
-                            </label>
-                            <input
-                                placeholder={
-                                    productDetail?.tags.length > 0
-                                        ? [...new Set(productDetail?.tags)].join(', ')
-                                        : 'no tags'
-                                }
-                                type="text"
-                                name="tags"
-                                onChange={handleTagsChange}
-                                className="placeholder-gray-400 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            />
-                            <small className="text-gray-500">Enter 5 tags separated by commas</small>
-                            <div className='flex flex-wrap gap-2 items-center mt-1'>
-                                {[...new Set(productDetail?.tags)]?.map((tag: any) => (
-                                    <div className='flex gap-1 items-center bg-gray-200 text-gray-600 px-2 py-1 rounded-full text-xs font-bold mr-1'>
-                                        <span key={tag}>{tag}</span>
-                                        <FaTimes className="text-red-500" onClick={() => handleRemoveTag(tag)} cursor='pointer' />
-                                    </div>
-                                ))}
+        <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
+          <form onSubmit={handleSubmit} className="p-10 space-y-8">
+            {/* Basic Information */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Product Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="w-full px-5 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                  placeholder="Product name"
+                  required
+                />
+              </div>
 
-                            </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Price (₦)</label>
+                <input
+                  type="number"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleChange}
+                  className="w-full px-5 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                  placeholder="Price"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                rows={5}
+                className="w-full px-5 py-4 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-y transition-all"
+                placeholder="Describe your product..."
+                required
+              />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Category</label>
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  className="w-full px-5 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"
+                  required
+                >
+                  <option value="">Select Category</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.name}>
+                      {cat.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Quantity</label>
+                <input
+                  type="number"
+                  name="quantity"
+                  value={formData.quantity}
+                  onChange={handleChange}
+                  className="w-full px-5 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Tags */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <FaTag /> Tags
+              </label>
+              <input
+                type="text"
+                placeholder="Enter tags separated by commas"
+                onChange={handleTagsChange}
+                className="w-full px-5 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              />
+              <div className="flex flex-wrap gap-2 mt-3">
+                {formData.tags.map((tag: string, index: number) => (
+                  <div
+                    key={index}
+                    className="bg-amber-100 text-amber-800 px-4 py-1.5 rounded-full flex items-center gap-2 text-sm font-medium"
+                  >
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTag(tag)}
+                      className="text-amber-600 hover:text-red-600 transition-colors"
+                    >
+                      <FaTimes size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Images Section */}
+            <div className="space-y-8">
+              <h3 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                <FaImage /> Product Images
+              </h3>
+
+              {['One', 'Two', 'Three', 'Four'].map((num, idx) => {
+                const field = `picture${num}` as keyof typeof formData;
+                const currentImage = productDetail?.[`picture${num}`]?.url;
+
+                return (
+                  <div key={num} className="border border-gray-200 rounded-3xl p-6 bg-gray-50">
+                    <label className="block text-sm font-semibold text-gray-700 mb-3">
+                      {idx === 0 ? 'Main Image *' : `Additional Image ${idx}`}
+                    </label>
+
+                    <input
+                      type="file"
+                      ref={fileRefs[field]}
+                      name={field as string}
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="hidden"
+                    />
+
+                    <div className="flex flex-col sm:flex-row gap-6 items-center">
+                      <button
+                        type="button"
+                        onClick={() => triggerFileSelect(field as keyof typeof fileRefs)}
+                        className="flex-1 border-2 border-dashed border-gray-300 hover:border-amber-500 rounded-2xl py-10 text-center transition-all hover:bg-white"
+                      >
+                        <FaImage className="mx-auto text-4xl text-gray-400 mb-3" />
+                        <p className="text-sm text-gray-600 font-medium">Click to upload new image</p>
+                        <p className="text-xs text-gray-500 mt-1">PNG, JPG, WebP • Max 2.5MB</p>
+                        {/* {display the update image name} */}
+                        <p className='text-xs text-gray-500 mt-1'>{formData[field] instanceof File ? formData[field].name : ''}</p>
+                      </button>
+
+                      {currentImage && (
+                        <div className="relative w-48 h-48 rounded-2xl overflow-hidden shadow-md border border-gray-200">
+                          <img
+                            src={currentImage}
+                            alt={`Product ${num}`}
+                            className="w-full h-full object-cover"
+                          />
+                          {num !== 'One' && (
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteImage(num)}
+                              className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors"
+                            >
+                              <AiFillDelete size={18} />
+                            </button>
+                          )}
                         </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
 
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pictureOne">
-                                Product Image:
-                            </label>
-                            <input type="file" name="pictureOne" onChange={handleFileChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                            {productDetail?.pictureOne?.url && <img src={productDetail?.pictureOne?.url} alt={productDetail?.name} className="object-cover object-center w-full h-full block transition duration-300 ease-in-out " />}
-                            {productDetail?.pictureOne?.url && <button type="button" className="text-red-500 hover:text-red-700" onClick={() => handleDeleteImage('One') }><AiFillDelete /></button>}
-                        </div>
+            {/* Contact Info */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Contact Number</label>
+              <input
+                type="text"
+                name="contact_number"
+                value={formData.contact_number}
+                onChange={handleChange}
+                className="w-full px-5 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                placeholder="08012345678"
+              />
+            </div>
 
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pictureTwo">
-                                More(Optional):
-                            </label>
-                            <input type="file" name="pictureTwo" onChange={handleFileChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                            {productDetail?.pictureTwo?.url && <img src={productDetail?.pictureTwo?.url} alt={productDetail?.name} className="object-cover object-center w-full h-full block transition duration-300 ease-in-out " />}
-                            {productDetail?.pictureTwo?.url && <button type="button" className="text-red-500 hover:text-red-700" onClick={() => handleDeleteImage('Two')}><AiFillDelete /></button>}
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pictureThree">
-                                More(Optional):
-                            </label>
-                            <input type="file" name="pictureThree" onChange={handleFileChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                            {productDetail?.pictureThree?.url && <img src={productDetail?.pictureThree?.url} alt={productDetail?.name} className="object-cover object-center w-full h-full block transition duration-300 ease-in-out " />}
-                            {productDetail?.pictureThree?.url && <button type="button" className="text-red-500 hover:text-red-700" onClick={() => handleDeleteImage('Three')}><AiFillDelete /></button>}
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="pictureFour">
-                                More(Optional):
-                            </label>
-                            <input type="file" name="pictureFour" onChange={handleFileChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                            {productDetail?.pictureFour?.url && <img src={productDetail?.pictureFour?.url} alt={productDetail?.name} className="object-cover object-center w-full h-full block transition duration-300 ease-in-out " />}
-                            {productDetail?.pictureFour?.url && <button type="button" className="text-red-500 hover:text-red-700" onClick={() => handleDeleteImage('Four')}><AiFillDelete /></button>}
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="contact_number">
-                                Contact Number:
-                            </label>
-                            <input type="text" placeholder={productDetail?.contact_number} name="contact_number" onChange={handleChange} className="shadow placeholder-gray-400 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                        </div>
-
-                        <button disabled={loading} type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3">
-                            {loading ? <Loader /> : 'Submit'} </button>
-                    </form>
-                </div>
-                : null}
-        </>
-    );
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full mt-8 bg-gradient-to-r from-amber-700 to-red-800 hover:from-amber-800 hover:to-red-900 text-white font-bold py-4 rounded-2xl text-lg shadow-lg transition-all disabled:opacity-70"
+            >
+              {loading ? <Loader /> : 'Update Product'}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default EditProduct;
-``
-

@@ -93,7 +93,7 @@ const UserStore = () => {
         <div className="absolute inset-0 bg-black/30 backdrop-blur-3xl"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
 
-        <div className="relative container mx-auto px-6 z-10">
+        <div className="relative container mx-auto px-6">
           <div className="grid lg:grid-cols-3 gap-10 items-center">
             {/* Store Info Card */}
             <motion.div

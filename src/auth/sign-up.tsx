@@ -1,4 +1,4 @@
-import { useState, useRef, } from 'react'
+import { useState, useRef } from 'react';
 import AuthService from '../services/auth-service';
 import { RiEyeFill, RiEyeOffFill } from 'react-icons/ri';
 import Loader from '../constants/Loader';
@@ -9,176 +9,261 @@ import './auth.css';
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [ loading, setLoading ] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
-  const fileRef = useRef<any>(null);
+  const [loading, setLoading] = useState(false);
+  
+  const fileRef = useRef<HTMLInputElement>(null);
 
-  const toggleShowPasswordConfirmation = () => {
-    setShowPasswordConfirmation(!showPasswordConfirmation);
-  }
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const triggerOnChange = () => {
-    fileRef.current.click();
-  };
-
-  const [user, setUser] = useState<any>({
+  const [user, setUser] = useState({
     name: '',
     email: '',
     password: '',
     password_confirmation: '',
-    avatar: null,
+    avatar: null as File | null,
     seller: false,
     state: '',
     mobile: '',
-  })
+  });
 
-  const handleChange = (e: any) => {
-    const { name, value, files } = e.target;
-  
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  const toggleShowPasswordConfirmation = () => setShowPasswordConfirmation(!showPasswordConfirmation);
+
+  const triggerFileSelect = () => fileRef.current?.click();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, files } = e.target as HTMLInputElement;
+
     if (files && files[0]) {
       const file = files[0];
       const maxSize = 2 * 1024 * 1024; // 2MB
-  
+
       if (file.size > maxSize) {
-        alert("File size must not exceed 2MB.");
-        e.target.value = ""; // reset input
+        toast.error("File size must not exceed 2MB.");
+        e.target.value = "";
         return;
       }
-  
-      setUser((prevUser: any) => ({
-        ...prevUser,
-        [name]: file,
-      }));
+
+      setUser(prev => ({ ...prev, [name]: file }));
       return;
     }
-  
-    // For normal text fields
-    setUser((prevUser: any) => ({
-      ...prevUser,
-      [name]: value,
-    }));
-  };
-  
 
-  const handleSubmit = async (e: any) => {
+    setUser(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
     const formData = new FormData();
     Object.entries(user).forEach(([key, value]) => {
-      formData.append(key, value as any);
+      if (value !== null) formData.append(key, value as any);
     });
+
     try {
       const response = await AuthService.createAccount(formData);
-      toast.success(response?.message);
+      toast.success(response?.message || "Account created successfully!");
+
       localStorage.setItem('token', JSON.stringify(response?.jwt_token));
       localStorage.setItem('user', JSON.stringify(response?.user));
+
       setTimeout(() => {
         window.location.href = '/';
-      }, 2000);
+      }, 1800);
     } catch (error: any) {
-      // Improved error handling
       const errorMessages = error?.response?.data?.errors;
-      if (errorMessages && errorMessages.length > 0) {
-        toast.error(errorMessages.join(' OR '));
+      if (errorMessages?.length > 0) {
+        toast.error(errorMessages.join(', '));
       } else {
-        toast.error('An error occurred');
+        toast.error('Something went wrong. Please try again.');
       }
-      console.error('Error creating user:', error);
     } finally {
-      setLoading(false); // Set loading state to false regardless of success or failure
+      setLoading(false);
     }
   };
-  
+
   return (
     <>
-    <ToastContainer />
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-    <div style={{ background: '#EAE3C9' }} className="max-w-lg w-full rounded-lg py-6 px-8 sm:py-8 sm:px-10 md:py-10 md:px-16">
-        <h5 className="font-bold text-start form-color mb-8">Create Account</h5>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <input placeholder='Full Name' required type="text" name="name" id="name" className="mt-1 p-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-b border-gray-300 rounded-md" onChange={handleChange} />
-          </div>
+      <ToastContainer position="top-center" autoClose={3000} />
 
-          <div>
-            <input type="email" required placeholder='Email' name="email" id="email" className="mt-1 border-b focus:outline-none focus:ring-blue-500 p-2 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" onChange={handleChange} />
-          </div>
-
-          <div>
-            <input type="text" required placeholder='Mobile' name="mobile" id="mobile" className="mt-1 border-b focus:outline-none focus:ring-blue-500 p-2 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" onChange={handleChange} />
-          </div>
-
-          <div>
-            <select required value={user?.state} name="state" id="state" className="mt-1 border-b focus:outline-none focus:ring-blue-500 p-2 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" onChange={handleChange}>
-              <option>Select Location</option>
-              {states.map((state, index) => (
-                <option key={index} value={state}>{state}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="relative">
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <input required type={showPassword ? 'text' : 'password'} name="password" id="password" placeholder='Password' className="focus:ring-0 focus:outline-none block w-full pr-10 sm:text-sm border-b border-gray-300 p-2 border-gray-300 rounded-md" onChange={handleChange} />
-              <button type="button" className="absolute inset-y-0 right-0 pr-3 flex items-center" onClick={togglePasswordVisibility}>
-                {showPassword ? <RiEyeOffFill className="h-5 w-5 text-gray-400" /> : <RiEyeFill className="h-5 w-5 text-gray-400" />}
-              </button>
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-rose-50 to-indigo-100 flex items-center justify-center p-6">
+        <div className="max-w-lg w-full">
+          {/* Card */}
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-amber-800 to-red-900 px-10 py-12 text-center">
+              <div className="mx-auto w-20 h-20 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6">
+                <span className="text-4xl">✨</span>
+              </div>
+              <h1 className="text-4xl font-bold text-white tracking-tight">Create Account</h1>
+              <p className="text-amber-100 mt-3 text-lg">Join our community of artisans and creators</p>
             </div>
-          </div>
 
-          <div className="relative">
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <input required type={showPasswordConfirmation ? 'text' : 'password'} placeholder='Confirm Password' name="password_confirmation" id="password_confirmation" className="focus:ring-0 focus:outline-none block border-b w-full pr-10 sm:text-sm border-gray-300 p-2 rounded-md" onChange={handleChange} />
-              <button type="button" className="absolute inset-y-0 right-0 pr-3 flex items-center" onClick={toggleShowPasswordConfirmation}>
-                {showPasswordConfirmation ? <RiEyeOffFill className="h-5 w-5 text-gray-400" /> : <RiEyeFill className="h-5 w-5 text-gray-400" />}
-              </button>
-            </div>
-          </div>
+            {/* Form */}
+            <div className="p-10">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Full Name */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    value={user.name}
+                    onChange={handleChange}
+                    placeholder="Enter your full name"
+                    className="w-full px-5 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                  />
+                </div>
 
-          <div className="relative">
-            <label htmlFor="avatar" className="block text-sm font-medium text-gray-700">Optional:</label>
-            <input ref={fileRef} type="file" name="avatar" id="avatar" className="hidden" onChange={handleChange} />
-            <div className="mt-1 flex items-center whitespace-nowrap">
-              <span onClick={triggerOnChange} className="mr-2 inline-block py-2 px-4 bg-white border border-gray-300 rounded-md shadow-sm text-sm text-gray-700 hover:bg-gray-50 cursor-pointer font-bold">
-                Choose Image
-              </span>
-              {user.avatar ? <span className="text-gray-500 overflow-hidden overflow-ellipsis whitespace-no-wrap">{user.avatar.name}</span> : <span className="text-gray-500">No file chosen</span>}
-            </div>
-          </div>
+                {/* Email */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    value={user.email}
+                    onChange={handleChange}
+                    placeholder="you@example.com"
+                    className="w-full px-5 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                  />
+                </div>
 
+                {/* Mobile */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                  <input
+                    type="tel"
+                    name="mobile"
+                    required
+                    value={user.mobile}
+                    onChange={handleChange}
+                    placeholder="08012345678"
+                    className="w-full px-5 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                  />
+                </div>
 
-          <div className='mt-4'>
-            <button disabled={loading} type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white button-bg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">{loading ? <Loader /> : 'Sign Up'}</button>
-          </div>
-        </form>
+                {/* State */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">State / Location</label>
+                  <select
+                    name="state"
+                    required
+                    value={user.state}
+                    onChange={handleChange}
+                    className="w-full px-5 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white transition-all"
+                  >
+                    <option value="">Select your state</option>
+                    {states.map((state, index) => (
+                      <option key={index} value={state}>{state}</option>
+                    ))}
+                  </select>
+                </div>
 
-        {/* <div className="text-center flex justify-between mt-4">
-          <p className="text-gray-700 ml-2">
-            ALready have an account?
-          </p>
-          <a href="/login" className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800 mr-2">
-            Sign in
-          </a>
-        </div> */}
+                {/* Password */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      name="password"
+                      required
+                      value={user.password}
+                      onChange={handleChange}
+                      placeholder="Create a strong password"
+                      className="w-full px-5 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent pr-12 transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={togglePasswordVisibility}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      {showPassword ? <RiEyeOffFill size={22} /> : <RiEyeFill size={22} />}
+                    </button>
+                  </div>
+                </div>
 
-<div className="text-center flex justify-center items-center text-xs mt-8">
-                <p className="text-gray-700 ml-2">
-                    Already have an account?
-                </p>
-                <a href="/login" className="dark-text inline-block align-baseline font-bold text-xs hover:text-blue-800 mr-2">
+                {/* Confirm Password */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                  <div className="relative">
+                    <input
+                      type={showPasswordConfirmation ? 'text' : 'password'}
+                      name="password_confirmation"
+                      required
+                      value={user.password_confirmation}
+                      onChange={handleChange}
+                      placeholder="Confirm your password"
+                      className="w-full px-5 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent pr-12 transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={toggleShowPasswordConfirmation}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      {showPasswordConfirmation ? <RiEyeOffFill size={22} /> : <RiEyeFill size={22} />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Avatar Upload */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Profile Picture (Optional)</label>
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    name="avatar"
+                    accept="image/*"
+                    onChange={handleChange}
+                    className="hidden"
+                  />
+                  <div 
+                    onClick={triggerFileSelect}
+                    className="border-2 border-dashed border-gray-300 hover:border-amber-500 rounded-2xl p-8 text-center cursor-pointer transition-all hover:bg-amber-50"
+                  >
+                    <div className="mx-auto w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mb-3">
+                      📸
+                    </div>
+                    <p className="text-sm font-medium text-gray-700">Click to upload photo</p>
+                    <p className="text-xs text-gray-500 mt-1">PNG, JPG up to 2MB</p>
+                    {user.avatar && (
+                      <p className="mt-3 text-xs text-amber-600 font-medium truncate">
+                        {user.avatar.name}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full mt-8 bg-gradient-to-r from-amber-800 to-red-900 hover:from-amber-900 hover:to-red-950 text-white font-semibold py-4 rounded-2xl text-lg shadow-lg transition-all duration-300 disabled:opacity-70"
+                >
+                  {loading ? <Loader /> : 'Create My Account'}
+                </button>
+              </form>
+
+              {/* Login Link */}
+              <div className="text-center mt-8">
+                <p className="text-gray-600">
+                  Already have an account?{' '}
+                  <a href="/login" className="font-semibold text-amber-700 hover:text-amber-800 transition-colors">
                     Sign in
-                </a>
+                  </a>
+                </p>
+              </div>
             </div>
+          </div>
 
+          {/* Footer Note */}
+          <p className="text-center text-gray-500 text-sm mt-8">
+            Join thousands of artisans building beautiful businesses
+          </p>
+        </div>
       </div>
-
-    </div>
     </>
-  )
-}
+  );
+};
 
-export default SignUp
+export default SignUp;
