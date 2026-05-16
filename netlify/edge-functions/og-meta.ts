@@ -46,24 +46,45 @@ export default async (request: Request, context: Context) => {
   const response = await context.next();
   const html = await response.text();
 
-  const updatedHtml = html.replace(
-    `<meta property="og:title" content="Artisans hub" />`,
-    `
-    <meta property="og:title" content="${title}" />
-    <meta property="og:description" content="${description}" />
-    <meta property="og:image" content="${image}" />
-    <meta property="og:url" content="${productUrl}" />
-    <meta property="og:type" content="product" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="${title}" />
-    <meta name="twitter:description" content="${description}" />
-    <meta name="twitter:image" content="${image}" />
-    <title>${title} | Artisans Hub</title>
-    `
-  );
+  const updatedHtml = html
+    .replace(
+      `<meta property="og:title" content="Artisans hub" />`,
+      `<meta property="og:title" content="${title}" />`
+    )
+    .replace(
+      `<meta property="og:description" content="A brief description about Artisans hub" />`,
+      `<meta property="og:description" content="${description}" />`
+    )
+    .replace(
+      `<meta property="og:url" content="https://artisans-hub.netlify.app/" />`,
+      `<meta property="og:url" content="${productUrl}" />`
+    )
+    .replace(
+      `<meta property="og:image" content="https://res.cloudinary.com/spetsnaz/image/upload/v1603546589/71xsZ9XMCtJtTa1tmKanbeVG.jpg" />`,
+      `<meta property="og:image" content="${image}" />`
+    )
+    .replace(
+      `<meta name="twitter:title" content="Artisans hub" />`,
+      `<meta name="twitter:title" content="${title}" />`
+    )
+    .replace(
+      `<meta name="twitter:description" content="A brief description about Artisans hub" />`,
+      `<meta name="twitter:description" content="${description}" />`
+    )
+    .replace(
+      `<meta name="twitter:image" content="https://res.cloudinary.com/spetsnaz/image/upload/v1603546589/71xsZ9XMCtJtTa1tmKanbeVG.jpg" />`,
+      `<meta name="twitter:image" content="${image}" />`
+    )
+    .replace(
+      `<title>Artisans hub</title>`,
+      `<title>${title} | Artisans Hub</title>`
+    );
 
   return new Response(updatedHtml, {
-    headers: { "content-type": "text/html", "Cache-Control": "no-cache, no-store, must-revalidate", },
+    headers: { 
+      "content-type": "text/html",
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+    },
   });
 };
 
