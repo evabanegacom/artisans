@@ -63,7 +63,7 @@ export default async (request: Request, context: Context) => {
   );
 
   return new Response(updatedHtml, {
-    headers: { "content-type": "text/html" },
+    headers: { "content-type": "text/html", "Cache-Control": "no-cache, no-store, must-revalidate", },
   });
 };
 
