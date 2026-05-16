@@ -86,6 +86,7 @@
     "vaul": "^1.1.2"
   },
   "devDependencies": {
+    "@netlify/edge-functions": "^3.0.6",
     "@types/fabric": "^5.3.7",
     "@types/node": "^20.12.2",
     "@types/react": "^18.2.66",
